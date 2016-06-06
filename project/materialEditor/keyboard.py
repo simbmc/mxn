@@ -1,0 +1,80 @@
+'''
+Created on 07.04.2016
+
+@author: mkennert
+'''
+from kivy.uix.button import Button
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.label import Label
+
+'''
+The class Keyboard was developed to give the user the possibility
+to write words with a keyboard. 
+the keyboard-object is a popup
+'''
+class Keyboard(GridLayout):
+    #Constructor
+    def __init__(self, **kwargs):
+        super(Keyboard, self).__init__(**kwargs)
+        self.alphabet_small='qwertzuiopasdfghjkl_.yxcvbnm'
+        self.createSmallKeyboard()
+        self.cols=1
+        self.add_widget(self.layout)
+        self._parent=None
+        
+    '''
+    the method createSmallKeyboard create the
+    gui of the keyboard
+    '''
+    def createSmallKeyboard(self):
+        self.textinput = Label(text='')
+        self.layout=GridLayout(cols=1)
+        self.layout.add_widget(self.textinput)
+        self.smallKeyboard=GridLayout(cols=10)
+        for i in range(0,len(self.alphabet_small)):
+            cur=Button(text=self.alphabet_small[i])
+            cur.bind(on_press=self.appending)
+            self.smallKeyboard.add_widget(cur)
+        btnDelete=Button(text='<<')
+        btnDelete.bind(on_press=self.delete)
+        btnFinished=Button(text='ok')
+        btnFinished.bind(on_press=self.finished)
+        self.smallKeyboard.add_widget(btnDelete)
+        self.smallKeyboard.add_widget(btnFinished)
+        self.layout.add_widget(self.smallKeyboard)
+    '''
+    the method appending appends character at the end.
+    the method is called when the user use the keyboard
+    '''
+    def appending(self,button): 
+        self.textinput.text+=button.text
+    
+    '''
+    the method delete delete character at the end.
+    the method is called when the press the button '<<'
+    '''
+    def delete(self,button):
+        self.textinput.text=self.textinput.text[:-1]
+    
+    '''
+    the method finished close the popup when the user
+    is finished and press the button 'ok'
+    '''
+    def finished(self,button):
+        self._parent.finishedKeyboard()
+    
+    '''
+    the method resetText reset the text of the label
+    the method must be called from the developer when
+    the text must be deleted
+    '''
+    def resetText(self):
+        self.textinput.text=''
+    
+    '''
+    the method signInParent to set the parent of 
+    the object. the parent must have the method finishedKeyboard
+    '''
+    def signInParent(self, parent):
+        self._parent=parent
+        
