@@ -15,25 +15,27 @@ from crossSectionEditor.rectangleInformation import RectangleInformation
 from designClass.design import Design
 from materialEditor.creater import MaterialCreater
 from materialEditor.iobserver import IObserver
+from materialEditor.numpad import Numpad
 
 
 class ReinforcementEditor(GridLayout, IObserver):
     # Constructor
+
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols = 2
-        self.spacing=20
+        self.spacing = 20
         self.btnSize = Design.btnSize
         self.content = GridLayout(cols=1)
         self.containsView = False
         self.add_widget(self.content)
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.crossSection = cs
         self.allMaterials = self.crossSection.allMaterials
         self.allMaterials.addListener(self)
@@ -41,7 +43,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.csShape = cs.getCSRectangle()
         self.rectangleInformation = RectangleInformation()
         self.shape = self.rectangleInformation
-        self.rectangleInformation.setCrossSection(self.csShape)
+        self.rectangleInformation.set_crossSection(self.csShape)
         self.createGui()
         self.signIn()
 
@@ -51,6 +53,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def createGui(self):
         self.createCrossSectionArea()
+        self.createNumpad()
         self.createAddDeleteArea()
         self.createMaterialInformation()
         self.createAddLayerInformationArea()
@@ -69,7 +72,9 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def createAddDeleteArea(self):
-        self.btnArea = BoxLayout(orientation='horizontal')
+        self.btnArea = GridLayout(cols=2,row_force_default=True,
+                                  row_default_height=self.btnSize, 
+                                  size_hint_y=None, height=self.btnSize)
         addBtn = Button(
             text='add layer', size_hint_y=None, height=self.btnSize)
         addBtn.bind(on_press=self.showAddLayerArea)
@@ -78,7 +83,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         deleteBtn.bind(on_press=self.deleteLayer)
         self.btnArea.add_widget(addBtn)
         self.btnArea.add_widget(deleteBtn)
-        self.content.add_widget(self.btnArea)
+        
 
     '''
     the method createMaterialInformation create the area where you can 
@@ -106,10 +111,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         labelLayout.add_widget(self.materialStrength)
         labelLayout.add_widget(Label(text='percent:'))
         labelLayout.add_widget(self.materialPercent)
-        self.percentValue = Slider(min=0.05, max=0.2, value=0.1)
-        self.percentValue.bind(value=self.setPercent)
+        self.materialArea.add_widget(self.btnArea)
         self.materialArea.add_widget(labelLayout)
-        self.materialArea.add_widget(self.percentValue)
         self.content.add_widget(self.materialArea)
 
     '''
@@ -118,15 +121,21 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def createCrossSectionArea(self):
-        self.crossSectionPrice = Label(text='-')
-        self.crossSectionWeight = Label(text='-')
-        self.crossSectionStrength = Label(text='-')
-        self.crossSectionArea = GridLayout(cols=2)
-        self.crossSectionArea.add_widget(Label(text='price [Euro/m]:'))
+        h = 20
+        self.crossSectionPrice = Label(text='-', size_hint_y=None, height=h)
+        self.crossSectionWeight = Label(text='-', size_hint_y=None, height=h)
+        self.crossSectionStrength = Label(text='-', size_hint_y=None, height=h)
+        self.crossSectionArea = GridLayout(
+            cols=2, row_force_default=True,
+                         row_default_height=h, size_hint_y=None, height=3*h)
+        self.crossSectionArea.add_widget(
+            Label(text='price [Euro/m]:', size_hint_y=None, height=h))
         self.crossSectionArea.add_widget(self.crossSectionPrice)
-        self.crossSectionArea.add_widget(Label(text='weight [kg]:'))
+        self.crossSectionArea.add_widget(
+            Label(text='weight [kg]:', size_hint_y=None, height=h))
         self.crossSectionArea.add_widget(self.crossSectionWeight)
-        self.crossSectionArea.add_widget(Label(text='tensile strength [MPa]:'))
+        self.crossSectionArea.add_widget(
+            Label(text='tensile strength [MPa]:', size_hint_y=None, height=h))
         self.crossSectionArea.add_widget(self.crossSectionStrength)
         self.content.add_widget(self.crossSectionArea)
 
@@ -143,11 +152,24 @@ class ReinforcementEditor(GridLayout, IObserver):
             text='steel', size_hint_y=None, height=self.btnSize)
         self.materialOption.bind(on_release=self.popup.open)
         self.addingMaterialArea.add_widget(self.materialOption)
-        self.materialPercentWhileCreating = Label(text='percent: 10%')
-        self.addingMaterialArea.add_widget(self.materialPercentWhileCreating)
-        self.sliderLayerPercent = Slider(min=0.05, max=0.2, value=0.1)
-        self.sliderLayerPercent.bind(value=self.setPercenetWhileCreating)
-        self.addingMaterialArea.add_widget(self.sliderLayerPercent)
+        self.btnX = Button(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.btnY = Button(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.btnHeight = Button(
+            text='0.0', size_hint_y=None, height=self.btnSize)
+        self.btnWidth = Button(
+            text='0.0', size_hint_y=None, height=self.btnSize)
+        self.btnX.bind(on_press=self.showNumpad)
+        self.btnY.bind(on_press=self.showNumpad)
+        self.btnHeight.bind(on_press=self.showNumpad)
+        self.btnWidth.bind(on_press=self.showNumpad)
+        self.addingMaterialArea.add_widget(Label(text='x-coordinate:'))
+        self.addingMaterialArea.add_widget(self.btnX)
+        self.addingMaterialArea.add_widget(Label(text='y-coordinate:'))
+        self.addingMaterialArea.add_widget(self.btnY)
+        self.addingMaterialArea.add_widget(Label(text='height:'))
+        self.addingMaterialArea.add_widget(self.btnHeight)
+        self.addingMaterialArea.add_widget(Label(text='width:'))
+        self.addingMaterialArea.add_widget(self.btnWidth)
 
     '''
     the method createMaterialOptions create the popup where you can 
@@ -175,7 +197,8 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def createConfirmCancelArea(self):
-        self.confirmCancelArea = BoxLayout()
+        self.confirmCancelArea = GridLayout(cols=2,row_force_default=True,
+                         row_default_height=self.btnSize, size_hint_y=None, height=self.btnSize)
         confirmBtn = Button(
             text='confirm', size_hint_y=None, height=self.btnSize)
         confirmBtn.bind(on_press=self.addLayer)
@@ -191,9 +214,9 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def showAddLayerArea(self, button):
+        self.content.remove_widget(self.crossSectionArea)
         self.content.remove_widget(self.materialArea)
         self.content.remove_widget(self.btnArea)
-        self.sliderLayerPercent.value = 0.1
         self.content.add_widget(self.addingMaterialArea, 0)
         self.content.add_widget(self.confirmCancelArea, 1)
 
@@ -206,7 +229,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.content.remove_widget(self.addingMaterialArea)
         self.content.remove_widget(self.confirmCancelArea)
         self.content.add_widget(self.materialArea, 0)
-        self.content.add_widget(self.btnArea, 1)
+        self.content.add_widget(self.crossSectionArea, 1)
 
     '''
     the method addLayer add a new layer at the cross section
@@ -218,7 +241,9 @@ class ReinforcementEditor(GridLayout, IObserver):
         for i in range(0, self.allMaterials.getLength()):
             if self.allMaterials.allMaterials[i].name == self.materialOption.text:
                 self.csShape.addLayer(
-                    self.sliderLayerPercent.value, self.allMaterials.allMaterials[i])
+                    float(self.btnX.text), float(self.btnY.text),
+                    float(self.btnHeight.text), float(self.btnWidth.text),
+                    self.allMaterials.allMaterials[i])
                 return
     '''
     the method cancelAdding would be must call when the user wouldn't 
@@ -241,13 +266,12 @@ class ReinforcementEditor(GridLayout, IObserver):
     the information, when the user selected a other rectangle in the view
     '''
 
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def updateLayerInformation(self, name, price, density, stiffness, strength):
         self.materialName.text = str(name)
         self.materialPrice.text = str(price)
         self.materialDensity.text = str(density)
         self.materialStiffness.text = str(stiffness)
         self.materialStrength.text = str(strength)
-        self.percentValue.value = percent
 
     '''
     the method updateCrossSectionInformation update the cross section information.
@@ -291,26 +315,6 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.materialOption.text = Button.text
 
     '''
-    the method setPercent change the percentage share 
-    of the materials. 
-    Attention: this method must be call when the materials already exist
-    '''
-
-    def setPercent(self, instance, value):
-        self.csShape.setPercent(value)
-        self.materialPercent.text = str(int(value * 100)) + ' %'
-
-    '''
-    the method setPercenetWhileCreating change the percentage share 
-    of the materials. Attention: this method must be call 
-    when the materials isn't exist
-    '''
-
-    def setPercenetWhileCreating(self, instance, value):
-        self.materialPercentWhileCreating.text = 'percent: ' + \
-            str(int(value * 100)) + ' %'
-
-    '''
     add the view at the left side of the editor
     '''
 
@@ -346,5 +350,36 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def signIn(self):
         self.crossSection.setReinforcementEditor(self)
-    
-    
+
+    '''
+    create the numpad
+    '''
+
+    def createNumpad(self):
+        self.numpad = Numpad()
+        self.numpad.signInParent(self)
+        self.popupNumpad = Popup(content=self.numpad)
+
+    '''
+    open the numpad popup
+    '''
+
+    def showNumpad(self, btn):
+        self.popupNumpad.open()
+        self.btnFocus = btn
+
+    '''
+    close the numpad popup
+    '''
+
+    def closeNumpad(self):
+        self.popupNumpad.dismiss()
+
+    '''
+    close the numpad popup and 
+    set the choosen text with the numpad input
+    '''
+
+    def finishedNumpad(self):
+        self.btnFocus.text = self.numpad.textinput.text
+        self.popupNumpad.dismiss()

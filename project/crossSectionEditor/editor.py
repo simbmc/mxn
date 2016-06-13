@@ -30,17 +30,17 @@ class CrossSectionEditor(GridLayout):
         self.containsView = True
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.crossSection = cs
         # default cross section rectangle
         self.csShape = cs.getCSRectangle()
         self.rectangleInformation = RectangleInformation()
         self.shape = self.rectangleInformation
-        self.rectangleInformation.setCrossSection(self.csShape)
+        self.rectangleInformation.set_crossSection(self.csShape)
         self.focusInformation = self.rectangleInformation
         self.createGui()
 
@@ -137,7 +137,7 @@ class CrossSectionEditor(GridLayout):
         self.crossSection.view = self.csShape
         if self.firstTimeDoubleT:
             self.doubleTInformation = DoubleTInformation()
-            self.doubleTInformation.setCrossSection(self.csShape)
+            self.doubleTInformation.set_crossSection(self.csShape)
             self.firstTimeDoubleT = False
         self.remove_widget(self.shape)
         self.shape = self.doubleTInformation
@@ -164,7 +164,7 @@ class CrossSectionEditor(GridLayout):
         self.crossSection.view = self.csShape
         if self.firstTimeT:
             self.tInformation = TInformation()
-            self.tInformation.setCrossSection(self.csShape)
+            self.tInformation.set_crossSection(self.csShape)
             self.firstTimeT = False
         self.remove_widget(self.shape)
         self.shape = self.tInformation

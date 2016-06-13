@@ -113,7 +113,7 @@ class MainWindow(GridLayout):
         self.ackView = Ack()
         self.csShape.setAck(self.ackView)
         # sign in by the cross section
-        self.ackView.setCrossSection(self.csShape)
+        self.ackView.set_crossSection(self.csShape)
 
     '''
     create the material-editor
@@ -122,7 +122,7 @@ class MainWindow(GridLayout):
     def createMaterialEditor(self):
         self.materialEditor = MaterialEditor()
         # sign in by the cross section
-        self.materialEditor.setCrossSection(self.crossSection)
+        self.materialEditor.set_crossSection(self.crossSection)
 
     '''
     create the cross section-editor
@@ -130,7 +130,7 @@ class MainWindow(GridLayout):
 
     def createCrossSectionEditor(self):
         self.csEditor = CrossSectionEditor()
-        self.csEditor.setCrossSection(self.crossSection)
+        self.csEditor.set_crossSection(self.crossSection)
         self.csEditor.addView()
         self.add_widget(self.csEditor)
         self.content = self.csEditor
@@ -141,7 +141,7 @@ class MainWindow(GridLayout):
 
     def createReinforcementEditor(self):
         self.reEditor = ReinforcementEditor()
-        self.reEditor.setCrossSection(self.crossSection)
+        self.reEditor.set_crossSection(self.crossSection)
         # self.reEditor.addView(self.csShape.view)
 
     ##########################################################################
@@ -198,7 +198,9 @@ class MainWindow(GridLayout):
         self.content = self.reEditor
         self.popup.dismiss()
 
+
 class CSIApp(App):
+
     def build(self):
         return MainWindow()
 

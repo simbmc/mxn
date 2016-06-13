@@ -31,8 +31,8 @@ class Ack(GridLayout):
         self.ackLeft.setAck(self)
         self.ackLeft.setAckRight(self.ackRight)
         self.ackRight.setAckLeft(self.ackLeft)
-        self.ackLeft.setCrossSection(self.csShape)
-        self.ackRight.setCrossSection(self.csShape)
+        self.ackLeft.set_crossSection(self.csShape)
+        self.ackRight.set_crossSection(self.csShape)
         self.contentAck.add_widget(self.ackLeft)
         self.contentAck.add_widget(self.ackRight)
         self.add_widget(self.contentAck)
@@ -45,10 +45,10 @@ class Ack(GridLayout):
         self.strainSlider.bind(value=self.update_strain)
     
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
-    def setCrossSection(self,cs):
+    def set_crossSection(self,cs):
         self.csShape=cs
         self.createGui()
     
@@ -63,7 +63,7 @@ class Ack(GridLayout):
     '''
     set the maximum of the slider
     '''
-    def setMaxStrain(self,value):
+    def set_maxStrain(self,value):
         self.strainSlider.max=value
     
     '''
@@ -78,11 +78,11 @@ class Ack(GridLayout):
     '''
     return the current strain
     '''
-    def getCurrentStrain(self):
+    def get_currentStrain(self):
         return self.strainSlider.value
     
     '''
     return the max strain
     '''
-    def getMaxStrain(self):
+    def get_maxStrain(self):
         return self.strainSlider.max

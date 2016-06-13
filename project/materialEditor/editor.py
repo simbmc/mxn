@@ -123,10 +123,10 @@ class MaterialEditor(ScrollView, IObserver):
         self.popupCreate.dismiss()
     
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
-    def setCrossSection(self,cs):
+    def set_crossSection(self,cs):
         self.csShape=cs
         self.allMaterials=self.csShape.allMaterials
         self.allMaterials.addListener(self)

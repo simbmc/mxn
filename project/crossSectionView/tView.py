@@ -8,7 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layerT import LayerT
+from layers.layerRectangle import LayerRectangle
 from plot.filled_rect import FilledRect
 
 
@@ -75,12 +75,12 @@ class TView(AView, GridLayout):
         self.hmax = self.csShape.getHeight()
         self.wmax = self.csShape.getWidth()
         # update graph
-        self.updateAllGraph()
+        #self.updateAllGraph()
 
     '''
     update the graph and the layers
     '''
-
+    '''
     def updateAllGraph(self):
         # update graph
         self.deltaX = self.wmax / 10.
@@ -98,12 +98,12 @@ class TView(AView, GridLayout):
             self.updateWidth()
             self.updateHeight()
             self.updateCrossSectionInformation()
-
+    '''
     '''
     update the width of the layer
     '''
     # not finished yet
-
+    '''
     def updateWidth(self):
         delta = self.wmax / 2. + self.deltaX / 2.
         for l in self.layers:
@@ -119,12 +119,12 @@ class TView(AView, GridLayout):
             elif not l.w2 == self.otw:
                 l.w2 = self.tw
                 l.r2.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-
+    '''
     '''
     update the height of the layers
     '''
     # not finished yet
-
+    '''
     def updateHeight(self):
         delta = self.wmax / 2. + self.deltaX / 2.
         a = self.hmax / self.ohmax
@@ -160,9 +160,10 @@ class TView(AView, GridLayout):
                     self.bh - l.h2 / 2., self.bh]
 
     '''
+    '''
     set the percent of the selected layer
     '''
-
+    '''
     def setPercent(self, value):
         for l in self.layers:
             if l.r1.color == Design.focusColor:
@@ -201,62 +202,27 @@ class TView(AView, GridLayout):
                     else:
                         l.r2.yrange = [self.bh - l.h2 / 2., self.bh]
         self.updateCrossSectionInformation()
-
+    '''
     '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
-    def addLayer(self, value, material):
-        h = self.hmax * value
-        # Case 1
-        # Falls das Layer prozentual gesehen in dem Top-Area passt
-        if h <= self.th:
-            print('case 1')
-            lx = self.wmax / 2. - self.tw / 2. + self.deltaX
-            l = LayerT(h, 0,
-                       self.tw, self.tw,
-                       next(Design.colorcycler), value)
-            l.setMaterial(material)
-            y1 = self.hmax - h / 2.
-            h1 = l.h1
-            r1 = FilledRect(xrange=[lx - self.deltaX / 2., self.tw + lx - self.deltaX / 2.],
-                            yrange=[y1 - h1 / 2., y1 + h1 / 2.],
-                            color=l.colors)
-            y2 = self.hmax - h / 2.
-            h2 = l.h2
-            r2 = FilledRect(xrange=[lx - self.deltaX / 2., self.tw + lx - self.deltaX / 2.],
-                            yrange=[
-                                y2 - l.h2 / 2. - self.deltaY, y2 + l.h2 / 2. - self.deltaY],
-                            color=l.colors)
-        # Case 2:
-        # Falls das Layer nicht im toparea, aber im toparea+middlearea passt
-        elif h <= self.th + self.mh:
-            print('case 2')
-            lx1 = self.wmax / 2. - self.tw / 2. + self.deltaX
-            lx2 = self.wmax / 2. - self.bw / 2. + self.deltaX
-            ly1 = self.hmax - h1 / 2.
-            h2 = h - h1
-            ly2 = ly1 - self.th / 2. - h2 / 2.
-            l = LayerT(h1, h2,
-                       self.tw, self.mw,
-                       next(Design.colorcycler), value)
-            l.setMaterial(material)
-            h1 = l.h1
-            r1 = FilledRect(xrange=[lx1 - self.deltaX / 2.,
-                                    self.tw + lx1 - self.deltaX / 2.],
-                            yrange=[ly1 - h1 / 2.,
-                                    ly1 + h1 / 2.],
-                            color=l.colors)
-            h2 = l.h2
-            r2 = FilledRect(xrange=[lx2 - self.deltaX / 2.,
-                                    self.bw + lx2 - self.deltaX / 2.],
-                            yrange=[ly2 - h2 / 2., ly2 + h2 / 2.],
-                            color=l.colors)
-        l.setFilledRect1(r1)
-        l.setFilledRect2(r2)
-        self.graph.add_plot(r1)
-        self.graph.add_plot(r2)
+    def addLayer(self, x, y, h, w, material):
+        l = LayerRectangle(x, y, h, w,
+                           next(Design.colorcycler))
+        l.setMaterial(material)
+        l.setMaterial(material)
+        filledRectCs = FilledRect(xrange=[x, x+w],
+                                  yrange=[y, y + h],
+                                  color=l.colors)
+        filledRectAck = FilledRect(xrange=[x, x+w],
+                                  yrange=[y, y + h],
+                                  color=l.colors)
+        self.graph.add_plot(filledRectCs)
+        l.setFilledRectCs(filledRectCs)
+        l.setFilledRectAck(filledRectAck)
         self.layers.append(l)
+        self.csShape.calculateStrength()
         self.updateCrossSectionInformation()
     
     '''
@@ -273,9 +239,9 @@ class TView(AView, GridLayout):
     '''
     update the layer information in the information-area
     '''
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def updateLayerInformation(self, name, price, density, stiffness, strength):
         self.csShape.setLayerInformation(name, price, density,
-                                    stiffness, strength, percent)
+                                    stiffness, strength)
     
     '''
     update the cross section information
@@ -286,54 +252,6 @@ class TView(AView, GridLayout):
         self.csShape.calculateStrength()
         self.csShape.setCrossSectionInformation()
     
-    '''
-    the method on_touch_move is invoked after the user touch within a rectangle and move it.
-    it changes the position of the rectangle
-    '''
-
-    def on_touch_move(self, touch):
-        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        y = (touch.y - y0) / gh * self.hmax
-        x = (touch.x - x0) / gw * self.wmax
-        delta = self.wmax / 2. + self.deltaX / 2.
-        for l in self.layers:
-            # select the l which has the focus
-            if l.mouseWithinX(x) and l.r1.color == Design.focusColor:
-                # case 1
-                if y + l.h1 > self.hmax:
-                    return
-                # case 2
-                elif y - l.h2 < 0:
-                    return
-                # case 4
-                elif y - l.h2 < self.bh and y + l.h1 > self.bh:
-                    print('move case 4')
-                    l.setXRange1([delta - self.tw / 2., delta + self.tw / 2.])
-                    l.setXRange2([delta - self.bw / 2., delta + self.bw / 2.])
-                    height1 = -self.bh + y + l.h1
-                    l.setYRange1([self.bh, self.bh + height1])
-                    l.setYRange2([y - l.h2, self.bh])
-                    l.w1 = self.tw
-                    l.w2 = self.bw
-                    return
-                else:
-                    l.setYRange1([y, y + l.h1])
-                    l.setYRange2([y - l.h2, y])
-                    if y < self.bh:
-                        l.setXRange1(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.setXRange2(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.w1 = self.bw
-                        l.w2 = self.bw
-                    else:
-                        l.setXRange1(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.setXRange2(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.w1 = self.tw
-                        l.w2 = self.tw
                 
                     
     '''
@@ -341,6 +259,8 @@ class TView(AView, GridLayout):
     '''
 
     def getFreePlaces(self):
+        return []
+        '''
         self.freePlaces = []
         # running index
         y = 0
@@ -380,11 +300,14 @@ class TView(AView, GridLayout):
         else:
             self.appendLayer(0, h)
         return self.freePlaces
+        '''
     
     '''
     append the free layer in the freeplaces
     '''
     def appendLayer(self,y1,y2):
+        pass
+        '''
         #case 1
         if y1<self.bh and y2>self.bh:
             self.freePlaces.append([y1, self.bh,self.bw])
@@ -395,17 +318,21 @@ class TView(AView, GridLayout):
                 self.freePlaces.append([y1,y2,self.bw])
             else:
                 self.freePlaces.append([y1,y2,self.tw])
+        '''
             
     '''
     return the layer which is nearest at the bottom
     '''
     def findLayer(self):
+        pass
+        '''
         minY=self.hmax
         for layer in self.layers:
                 if minY>layer.r2.yrange[0]:
                     minY=layer.r2.yrange[0]
                     ret=layer
         return ret
+        '''
         
     '''
     the method on_touch_down is invoked when the user touch within a rectangle.
@@ -416,24 +343,30 @@ class TView(AView, GridLayout):
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
-        y = (touch.y - y0) / gh * self.hmax
         x = (touch.x - x0) / gw * self.wmax
-        changed = False
+        y = (touch.y - y0) / gh * self.hmax
+        focus = False  # one is alreay focus
         for l in self.layers:
-            if l.mouseWithin(x, y) and changed == False:
-                changed = True
-                l.setColor(Design.focusColor)
-                info = l.getMaterialInformations()
-                self.updateLayerInformation(info[0], info[1],
-                                            info[2], info[3],
-                                            info[4], l.percent)
+            if l.mouseWithin(x, y):
+                if l.focus == True:
+                    self.updateAllGraph()
+                    return
+                if l.focus == False:
+                    l.focus = True
+                    l.filledRectCs.color = Design.focusColor
+                    info = l.getMaterialInformations()
+                    self.csShape.setLayerInformation(info[0], info[1], info[
+                        2], info[3], info[4])
             else:
-                l.resetColor()
+                if l.focus == True:
+                    l.focus = False
+                    l.filledRectCs.color=l.colors
+        
     '''
     set the cross section
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.csShape = cs
         self.bh = self.csShape.getHeightBottom()
         self.bw = self.csShape.getWidthBottom()

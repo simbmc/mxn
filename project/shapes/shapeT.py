@@ -24,7 +24,7 @@ class ShapeT(AShape, GridLayout):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = TView()
-        self.view.setCrossSection(self)
+        self.view.set_crossSection(self)
         
     '''
     return the top-width
@@ -107,8 +107,8 @@ class ShapeT(AShape, GridLayout):
     the method addLayer add new materials in the view
     '''
 
-    def addLayer(self, percent, material):
-        self.view.addLayer(percent, material)
+    def addLayer(self, x, y, h, w, material):
+        self.view.addLayer(x, y, h, w, material)
 
     '''
     delete the selected layer
@@ -121,9 +121,9 @@ class ShapeT(AShape, GridLayout):
     update the layerinformation in the cs-information
     '''
 
-    def setLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def setLayerInformation(self, name, price, density, stiffness, strength):
         self.information.updateLayerInformation(
-            name, price, density, stiffness, strength, percent)
+            name, price, density, stiffness, strength)
     
     '''
     update the cross section information in the cs-information
@@ -166,6 +166,8 @@ class ShapeT(AShape, GridLayout):
     '''
 
     def calculateStrength(self):
+        self.strength=0.
+        '''
         strength=0.
         #cur supremum
         self.minOfMaxstrain=1e10
@@ -198,4 +200,4 @@ class ShapeT(AShape, GridLayout):
             freePlacesSize+=(i[1]-i[0])*i[2]
         strength+=self.minOfMaxstrain*freePlacesSize/csSize*self.concreteStiffness
         self.strength=strength
-    
+        '''

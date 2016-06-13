@@ -8,14 +8,13 @@ from layers.aLayer import ALayer
 
 class LayerRectangle(ALayer):
     # Constructor
-    def __init__(self, x, y, h, w, colors, percent):
+    def __init__(self, x, y, h, w, colors):
         self.x = x
         self.y = y
         self.h = h
         self.w = w
         self.colors = colors
         self.focus = False
-        self.percent = percent
         self.filledRectCs=None
         self.filledRectAck=None
         
@@ -25,32 +24,8 @@ class LayerRectangle(ALayer):
     '''
 
     def mouseWithin(self, x, y):
-        if y < self.y + self.h / 2. and y > self.y - self.h / 2.\
-             and x > 0. and x < self.w:
-            return True
-        else:
-            return False
-    
-    '''
-    check if the mouse is in the rectangle
-    return true, if the mouse is within, otherwise return false
-    Attention: it checks only the x. this method
-    was developed to make the the movement of the layer faster
-    '''
-    def mouseWithinX(self, x):
-        if x > 0. and x < self.w:
-            return True
-        else:
-            return False
-    
-       
-    '''
-    checked wheter the layers are the same
-    '''
-
-    def equals(self, x, y, w, h):
-        if self.x == x and self.y == y and self.h == h \
-        and self.w == w:
+        if y < self.filledRectAck.yrange[1] and y>self.filledRectAck.yrange[0]\
+             and x < self.filledRectAck.xrange[1] and x>self.filledRectAck.xrange[0]:
             return True
         else:
             return False

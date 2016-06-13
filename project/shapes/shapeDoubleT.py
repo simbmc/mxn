@@ -29,7 +29,7 @@ class ShapeDoubleT(GridLayout, AShape):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = DoubleTView()
-        self.view.setCrossSection(self)
+        self.view.set_crossSection(self)
 
     '''
     return the top-width
@@ -151,14 +151,14 @@ class ShapeDoubleT(GridLayout, AShape):
     '''
 
     def setAck(self, ack):
-        self.ack=ack
+        self.ack = ack
 
     '''
     the method addLayer add new materials in the view
     '''
 
-    def addLayer(self, percent, material):
-        self.view.addLayer(percent, material)
+    def addLayer(self, x, y, h, w, material):
+        self.view.addLayer(x, y, h, w, material)
 
     '''
     delete the selected layer
@@ -171,16 +171,17 @@ class ShapeDoubleT(GridLayout, AShape):
     update the layerinformation in the cs-information
     '''
 
-    def setLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def setLayerInformation(self, name, price, density, stiffness, strength):
         self.information.updateLayerInformation(
-            name, price, density, stiffness, strength, percent)
+            name, price, density, stiffness, strength)
 
     '''
     update the cross section information in the cs-information
     '''
 
     def setCrossSectionInformation(self):
-        self.information.updateCrossSectionInformation(self.price, self.weight, self.strength)
+        self.information.updateCrossSectionInformation(
+            self.price, self.weight, self.strength)
 
     '''
     set the percent
@@ -194,57 +195,62 @@ class ShapeDoubleT(GridLayout, AShape):
     '''
 
     def calculateWeightPrice(self):
-        weight=0.
-        price=0.
-        #go trough all layers and get the weight of them
+        weight = 0.
+        price = 0.
+        # go trough all layers and get the weight of them
         for l in self.view.layers:
-            cur=l.getWeight()
-            weight+=cur
-            price+=cur*l.material.price
-        #if the percentOfLayers is not 1 there is a matrix
-        #with concrete as material
-        freeplaces=self.view.getFreePlaces()
+            cur = l.getWeight()
+            weight += cur
+            price += cur * l.material.price
+        # if the percentOfLayers is not 1 there is a matrix
+        # with concrete as material
+        freeplaces = self.view.getFreePlaces()
         for i in freeplaces:
-            cur=(i[1]-i[0])*i[2]*self.concreteDensity
-            weight+=cur
-            price+=cur*self.concretePrice
-        self.weight=weight
-        self.price=price
+            cur = (i[1] - i[0]) * i[2] * self.concreteDensity
+            weight += cur
+            price += cur * self.concretePrice
+        self.weight = weight
+        self.price = price
 
     '''
     calculate the strength of the cross section
     '''
 
     def calculateStrength(self):
-        strength=0.
-        #cur supremum
-        self.minOfMaxstrain=1e10
-        #max strain is necessary for other calculations
-        self.maxOfMaxstrain=0
-        #find the minimum max_strain and the maximum max_strain
+        self.strength = 0.
+        '''
+        strength = 0.
+        # cur supremum
+        self.minOfMaxstrain = 1e10
+        # max strain is necessary for other calculations
+        self.maxOfMaxstrain = 0
+        # find the minimum max_strain and the maximum max_strain
         for l in self.view.layers:
-            curStrain=l.getStrain()
-            #proof whether the curStrain is smaller as the min
-            if curStrain<self.minOfMaxstrain:
-                self.minOfMaxstrain=curStrain
-            #proof whether the curStrain is bigger as the max
-            if curStrain>self.maxOfMaxstrain:
-                self.maxOfMaxstrain=curStrain
-        #if the percentOfLayers is not 1 there is a matrix
-        #with concrete as material
-        freePlaces=self.view.getFreePlaces()
-        if len(freePlaces)>0:
-            curValue=self.concreteStrength/self.concreteStiffness
-            if self.minOfMaxstrain>curValue:
-                self.minOfMaxstrain=curValue
-            if self.maxOfMaxstrain<curValue:
-                self.maxOfMaxstrain=curValue
-        #calculate the strength
-        csSize=self.th*self.tw+self.mw*self.mh+self.bh*self.bw
+            curStrain = l.getStrain()
+            # proof whether the curStrain is smaller as the min
+            if curStrain < self.minOfMaxstrain:
+                self.minOfMaxstrain = curStrain
+            # proof whether the curStrain is bigger as the max
+            if curStrain > self.maxOfMaxstrain:
+                self.maxOfMaxstrain = curStrain
+        # if the percentOfLayers is not 1 there is a matrix
+        # with concrete as material
+        freePlaces = self.view.getFreePlaces()
+        if len(freePlaces) > 0:
+            curValue = self.concreteStrength / self.concreteStiffness
+            if self.minOfMaxstrain > curValue:
+                self.minOfMaxstrain = curValue
+            if self.maxOfMaxstrain < curValue:
+                self.maxOfMaxstrain = curValue
+        # calculate the strength
+        csSize = self.th * self.tw + self.mw * self.mh + self.bh * self.bw
         for l in self.view.layers:
-            strength+=self.minOfMaxstrain*l.material.stiffness*l.getSize()/csSize
-        freePlacesSize=0.
+            strength += self.minOfMaxstrain * \
+                l.material.stiffness * l.getSize() / csSize
+        freePlacesSize = 0.
         for i in freePlaces:
-            freePlacesSize+=(i[1]-i[0])*i[2]
-        strength+=self.minOfMaxstrain*freePlacesSize/csSize*self.concreteStiffness
-        self.strength=strength
+            freePlacesSize += (i[1] - i[0]) * i[2]
+        strength += self.minOfMaxstrain * \
+            freePlacesSize / csSize * self.concreteStiffness
+        self.strength = strength
+        '''

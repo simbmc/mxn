@@ -10,6 +10,7 @@ from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layerDoubleT import LayerDoubleT
 from plot.filled_rect import FilledRect
+from layers.layerRectangle import LayerRectangle
 
 
 class DoubleTView(AView, GridLayout):
@@ -44,7 +45,7 @@ class DoubleTView(AView, GridLayout):
 
     def drawDoubleT(self):
         x0 = self.graph.xmax / 2.
-        y1 = self.graph.ymax/1e3
+        y1 = self.graph.ymax / 1e3
         x1 = x0 - self.bw / 2.
         y2 = y3 = self.bh
         x3 = x1 + self.bw / 2. - self.mw / 2.
@@ -55,7 +56,7 @@ class DoubleTView(AView, GridLayout):
         x9 = x7 - self.tw / 2. + self.mw / 2.
         x11 = x9 + self.bw / 2. - self.mw / 2.
         return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y6),
-                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1),(x1,y1)]
+                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1), (x1, y1)]
 
     '''
     update the view when the model has changed
@@ -85,7 +86,7 @@ class DoubleTView(AView, GridLayout):
     '''
     set the percent of the selected layer
     '''
-
+    '''
     def setPercent(self, value):
         for l in self.layers:
             if l.r1.color == Design.focusColor:
@@ -103,7 +104,7 @@ class DoubleTView(AView, GridLayout):
                     l.r1.xrange = [x, x + self.bw]
                     l.r2.xrange = [x, x + self.bw]
                     l.r3.xrange = [x, x + self.bw]
-                    y1=l.r1.yrange[0]
+                    y1 = l.r1.yrange[0]
                     l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 2
@@ -112,7 +113,7 @@ class DoubleTView(AView, GridLayout):
                     x = delta - self.mw / 2.
                     l.r1.xrange = [x, x + self.mw]
                     l.r2.xrange = [x, x + self.mw]
-                    y1=l.r1.yrange[0]
+                    y1 = l.r1.yrange[0]
                     l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 3
@@ -122,7 +123,7 @@ class DoubleTView(AView, GridLayout):
                     l.r1.xrange = [x, x + self.tw]
                     l.r2.xrange = [x, x + self.tw]
                     l.r3.xrange = [x, x + self.tw]
-                    y1=l.r1.yrange[0]
+                    y1 = l.r1.yrange[0]
                     l.r1.yrange = [y1, y1 + l.h1]
                     l.r3.yrange = [0, 0]
                 # case 4
@@ -162,14 +163,23 @@ class DoubleTView(AView, GridLayout):
                     l.r3.xrange = [x3, x3 + self.bw]
         self.updateCrossSectionInformation()
     '''
+    '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
-    def addLayer(self, value, material):
-        h = self.hmax * value
-        h1 = self.th
-        tw = self.tw
-        mw = self.mw
+    def addLayer(self, x, y, h, w, material):
+        l = LayerRectangle(x, y, h, w,
+                           next(Design.colorcycler))
+        l.setMaterial(material)
+        filledRectCs = FilledRect(xrange=[x, x + w],
+                                  yrange=[y, y + h],
+                                  color=l.colors)
+        filledRectAck = FilledRect(xrange=[x, x + w],
+                                   yrange=[y, y + h],
+                                   color=l.colors)
+        l.setFilledRectCs(filledRectCs)
+        l.setFilledRectAck(filledRectAck)
+        '''
         # Case 1
         # Falls das Layer prozentual gesehen in dem Top-Area passt
         if h <= self.th:
@@ -250,7 +260,10 @@ class DoubleTView(AView, GridLayout):
         self.graph.add_plot(r1)
         self.graph.add_plot(r2)
         self.graph.add_plot(r3)
+        '''
+        self.graph.add_plot(filledRectCs)
         self.layers.append(l)
+        self.csShape.calculateStrength()
         self.updateCrossSectionInformation()
 
     '''
@@ -270,7 +283,7 @@ class DoubleTView(AView, GridLayout):
         self.p.points = self.drawDoubleT()
         self.graph.add_plot(self.p)
         # update layers
-        if len(self.layers)>0:
+        if len(self.layers) > 0:
             self.updateWidth()
             self.updateHeight()
             self.updateCrossSectionInformation()
@@ -278,6 +291,7 @@ class DoubleTView(AView, GridLayout):
     '''
     update the width of the layer
     '''
+
     def updateWidth(self):
         delta = self.wmax / 2. + self.deltaX / 2.
         for l in self.layers:
@@ -317,15 +331,15 @@ class DoubleTView(AView, GridLayout):
         delta = self.wmax / 2. + self.deltaX / 2.
         a = self.hmax / self.ohmax
         for l in self.layers:
-            l.r1.yrange[0]=a*l.r1.yrange[0]
+            l.r1.yrange[0] = a * l.r1.yrange[0]
             l.r1.yrange[1] = a * l.r1.yrange[1]
-            l.r2.yrange[0]=a*l.r2.yrange[0]
+            l.r2.yrange[0] = a * l.r2.yrange[0]
             l.r2.yrange[1] = a * l.r2.yrange[1]
-            l.r3.yrange[0]=a*l.r3.yrange[0]
+            l.r3.yrange[0] = a * l.r3.yrange[0]
             l.r3.yrange[1] = a * l.r3.yrange[1]
-            l.h1=a*l.h1
-            l.h2=a*l.h2
-            l.h3=a*l.h3
+            l.h1 = a * l.h1
+            l.h2 = a * l.h2
+            l.h3 = a * l.h3
             print('h1: ' + str(l.h1))
             print('h2: ' + str(l.h1))
             print('h3: ' + str(l.h1))
@@ -388,21 +402,23 @@ class DoubleTView(AView, GridLayout):
     '''
 
     def getFreePlaces(self):
+        return []
+        '''
         self.freePlaces = []
         # running index
         y = 0
         h = self.hmax
         # if the cross section contains layers
         if not len(self.layers) == 0:
-            #minLayer is the layer nearest at the bottom
-            minLayer=self.findLayer()
-            if minLayer.r3.yrange==[0,0]:
+            # minLayer is the layer nearest at the bottom
+            minLayer = self.findLayer()
+            if minLayer.r3.yrange == [0, 0]:
                 minValue = minLayer.r2.yrange[0]
             else:
                 minValue = minLayer.r3.yrange[0]
-            nextMinValue = minLayer.getHeight()+minValue
+            nextMinValue = minLayer.getHeight() + minValue
             self.appendLayer(y, minValue)
-            y=minLayer.getHeight()+minValue
+            y = minLayer.getHeight() + minValue
             while y < h:
                 # layerExist is a switch to proofs whether
                 # a layer exist over the runnning index or not
@@ -410,26 +426,26 @@ class DoubleTView(AView, GridLayout):
                 minValue = h
                 for layer in self.layers:
                     if not layer is minLayer:
-                        #the r3 of the layer is not in use
-                        if layer.r3.yrange==[0,0] and layer.r2.yrange[0] >= y and layer.r2.yrange[0] < minValue:
+                        # the r3 of the layer is not in use
+                        if layer.r3.yrange == [0, 0] and layer.r2.yrange[0] >= y and layer.r2.yrange[0] < minValue:
                             layerExist = True
                             minValue = layer.r2.yrange[0]
-                            nextMinValue = layer.getHeight()+minValue
-                        #the r3 of the layer is in use
+                            nextMinValue = layer.getHeight() + minValue
+                        # the r3 of the layer is in use
                         elif layer.r3.yrange[0] >= y and layer.r3.yrange[0] < minValue:
                             print('case 2')
                             layerExist = True
                             minValue = layer.r3.yrange[0]
-                            nextMinValue = layer.getHeight()+minValue
+                            nextMinValue = layer.getHeight() + minValue
                         # if the running index is equals the min, means that there's no
                         # area
                         if y < minValue:
-                            print('y: '+str(y))
-                            print('minValue: '+str(minValue))
-                            if minValue<h:
+                            print('y: ' + str(y))
+                            print('minValue: ' + str(minValue))
+                            if minValue < h:
                                 self.appendLayer(y, minValue)
                         y = nextMinValue
-                        print('nextvalue: '+str(y))
+                        print('nextvalue: ' + str(y))
                 # if no layer exist over the running index then that's the last
                 # area which is free.
                 if not layerExist:
@@ -439,51 +455,59 @@ class DoubleTView(AView, GridLayout):
         else:
             self.appendLayer(0, h)
         return self.freePlaces
-    
+        '''
+
     '''
     append the free layer in the freeplaces
     '''
-    def appendLayer(self,y1,y2):
-        #case 1
-        if y1<self.bh and y2>self.bh and y2<self.mh+self.bh:
-            self.freePlaces.append([y1, self.bh,self.bw])
-            self.freePlaces.append([self.bh, y2,self.mw])
-        #case 2
-        elif y1<self.bh and y2>self.bh:
-            self.freePlaces.append([y1, self.bh,self.bw])
-            self.freePlaces.append([self.bh, self.mh+self.bh,self.mw])
-            self.freePlaces.append([self.bh+self.mh,y2,self.tw])
-        #case 3
-        elif y1<self.mh+self.bh and y2>self.mh+self.bh:
-            self.freePlaces.append([y1, self.mh+self.bh,self.mw])
-            self.freePlaces.append([self.mh+self.bh, y2,self.tw])
-        #case 4
+
+    def appendLayer(self, y1, y2):
+        pass
+        '''
+        # case 1
+        if y1 < self.bh and y2 > self.bh and y2 < self.mh + self.bh:
+            self.freePlaces.append([y1, self.bh, self.bw])
+            self.freePlaces.append([self.bh, y2, self.mw])
+        # case 2
+        elif y1 < self.bh and y2 > self.bh:
+            self.freePlaces.append([y1, self.bh, self.bw])
+            self.freePlaces.append([self.bh, self.mh + self.bh, self.mw])
+            self.freePlaces.append([self.bh + self.mh, y2, self.tw])
+        # case 3
+        elif y1 < self.mh + self.bh and y2 > self.mh + self.bh:
+            self.freePlaces.append([y1, self.mh + self.bh, self.mw])
+            self.freePlaces.append([self.mh + self.bh, y2, self.tw])
+        # case 4
         else:
-            if y2<self.bh:
-                self.freePlaces.append([y1,y2,self.bw])
-            elif y2<self.bh+self.mh:
-                self.freePlaces.append([y1,y2,self.mw])
+            if y2 < self.bh:
+                self.freePlaces.append([y1, y2, self.bw])
+            elif y2 < self.bh + self.mh:
+                self.freePlaces.append([y1, y2, self.mw])
             else:
-                self.freePlaces.append([y1,y2,self.tw])
+                self.freePlaces.append([y1, y2, self.tw])
+        '''
     '''
     return the layer which is nearest at the bottom
     '''
+
     def findLayer(self):
-        minY=self.th+self.mh+self.bh
+        pass
+        '''
+        minY = self.th + self.mh + self.bh
         for layer in self.layers:
-            if not layer.r3.yrange==[0,0]:
-                if minY>layer.r3.yrange[0]:
-                    minY=layer.r3.yrange[0]
-                    ret=layer
-                    print('minY: '+str(minY))
+            if not layer.r3.yrange == [0, 0]:
+                if minY > layer.r3.yrange[0]:
+                    minY = layer.r3.yrange[0]
+                    ret = layer
+                    print('minY: ' + str(minY))
             else:
-                if minY>layer.r2.yrange[0]:
-                    minY=layer.r2.yrange[0]
-                    print('minY: '+str(minY))
-                    ret=layer
+                if minY > layer.r2.yrange[0]:
+                    minY = layer.r2.yrange[0]
+                    print('minY: ' + str(minY))
+                    ret = layer
         return ret
-                
-            
+        '''
+
     '''
     update the cross section information
     '''
@@ -506,104 +530,10 @@ class DoubleTView(AView, GridLayout):
     '''
     update the layer information in the information-area
     '''
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
+
+    def updateLayerInformation(self, name, price, density, stiffness, strength):
         self.csShape.setLayerInformation(name, price, density,
-                                    stiffness, strength, percent)
-
-    '''
-    the method on_touch_move is invoked after the user touch within a rectangle and move it.
-    it changes the position of the rectangle
-    '''
-
-    def on_touch_move(self, touch):
-        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        y = (touch.y - y0) / gh * self.hmax
-        x = (touch.x - x0) / gw * self.wmax
-        delta = self.wmax / 2. + self.deltaX / 2.
-        for l in self.layers:
-            # select the l which has the focus
-            if l.mouseWithinX(x) and l.r1.color == Design.focusColor:
-                # case 1
-                if y + l.h1 > self.hmax:
-                    return
-                # case 2
-                elif y - l.h2 < 0:
-                    return
-                # case 3
-                elif y + l.h1 > self.bh + self.mh and y - l.h2 < self.bh:
-                    print('move case 3')
-                    x1 = delta - self.tw / 2.
-                    l.setXRange1([x1, x1 + self.tw])
-                    l.setYRange1([self.bh + self.mh, y + l.h1])
-                    x2 = delta - self.mw / 2.
-                    l.setXRange2([x2, x2 + self.mw])
-                    l.setYRange2(
-                        [self.hmax - self.th - self.mh, self.hmax - self.th])
-                    x3 = delta - self.bw / 2.
-                    l.setXRange3([x3, x3 + self.bw])
-                    l.w3 = self.bw
-                    l.setYRange3([y - l.h2, self.bh])
-                    l.w1 = self.tw
-                    l.w2 = self.mw
-                    l.w3 = self.bw
-                    return
-                # case 4
-                elif y - l.h2 < self.bh and y + l.h1 > self.bh:
-                    print('move case 4')
-                    l.setXRange1([delta - self.mw / 2., delta + self.mw / 2.])
-                    l.setXRange2([delta - self.bw / 2., delta + self.bw / 2.])
-                    height1 = -self.bh + y + l.h1
-                    l.setYRange1([self.bh, self.bh + height1])
-                    l.setYRange2([y - l.h2, self.bh])
-                    l.setYRange3([0, 0])
-                    l.w1 = self.mw
-                    l.w2 = self.bw
-                    l.w3 = 0
-                    return
-                # case 5
-                elif y + l.h1 > self.bh + self.mh and \
-                        y - l.h2 < self.bh + self.mh:
-                    print('move case 5')
-                    l.setXRange1([delta - self.tw / 2., delta + self.tw / 2.])
-                    l.setXRange2([delta - self.mw / 2., delta + self.mw / 2.])
-                    height1 = y + l.h1 - self.bh - self.mh
-                    l.setYRange1(
-                        [self.bh + self.mh, self.bh + self.mh + height1])
-                    l.setYRange2([y - l.h2, self.bh + self.mh])
-                    l.setYRange3([0, 0])
-                    l.w1 = self.tw
-                    l.w2 = self.mw
-                    l.w3 = 0
-                    return
-                # case 6
-                else:
-                    print('move case 6')
-                    l.setYRange1([y, y + l.h1])
-                    l.setYRange2([y - l.h2, y])
-                    #l.setYRange3([0, 0])
-                    if y < self.bh:
-                        l.setXRange1(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.setXRange2(
-                            [delta - self.bw / 2., delta + self.bw / 2.])
-                        l.w1 = self.bw
-                        l.w2 = self.bw
-                    elif y < self.bh + self.mh:
-                        l.setXRange1(
-                            [delta - self.mw / 2., delta + self.mw / 2.])
-                        l.setXRange2(
-                            [delta - self.mw / 2., delta + self.mw / 2.])
-                        l.w1 = self.mw
-                        l.w2 = self.mw
-                    elif y < self.bh + self.mh + self.th:
-                        l.setXRange1(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.setXRange2(
-                            [delta - self.tw / 2., delta + self.tw / 2.])
-                        l.w1 = self.tw
-                        l.w2 = self.tw
-                    return
+                                         stiffness, strength)
 
     '''
     the method on_touch_down is invoked when the user touch within a rectangle.
@@ -618,21 +548,27 @@ class DoubleTView(AView, GridLayout):
         x = (touch.x - x0) / gw * self.wmax
         changed = False
         for l in self.layers:
-            if l.mouseWithin(x, y) and changed == False:
-                changed = True
-                l.setColor(Design.focusColor)
-                info = l.getMaterialInformations()
-                self.updateLayerInformation(info[0], info[1],
-                                            info[2], info[3],
-                                            info[4], l.percent)
+            if l.mouseWithin(x, y):
+                if l.focus:
+                    self.percent_change = False
+                    self.updateAllGraph()
+                    return
+                else:
+                    l.focus = True
+                    l.filledRectCs.color = Design.focusColor
+                    info = l.getMaterialInformations()
+                    self.csShape.setLayerInformation(info[0], info[1],
+                                                     info[2], info[3], info[4])
             else:
-                l.resetColor()
+                if l.focus == True:
+                    l.focus = False
+                    l.filledRectCs.color = l.colors
 
     '''
     set the cross section
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.csShape = cs
         self.bh = self.csShape.getHeightBottom()
         self.bw = self.csShape.getWidthBottom()

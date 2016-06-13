@@ -36,11 +36,11 @@ class AckRight(GridLayout):
     
     
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.csShape = cs
         self.createGui()
 
@@ -80,19 +80,19 @@ class AckRight(GridLayout):
             eps1, eps2 = 1e6, 1e6
         # draw the free places of the cross section
         concreteStress = self.csShape.concreteStiffness * \
-            self.ack.getCurrentStrain() * (self.ack.getCurrentStrain() <= eps1)
+            self.ack.get_currentStrain() * (self.ack.get_currentStrain() <= eps1)
         maxStress = concreteStress
         for layer in self.concreteLayers:
             layer.xrange=[0.,concreteStress]
         # draw the stress of the reinforcing layers
         for layer in self.csShape.view.layers:
-            if self.ack.getCurrentStrain() <= eps1:
-                layerStress = layer.material.stiffness * self.ack.getCurrentStrain()
-            elif self.ack.getCurrentStrain() <= eps2:
+            if self.ack.get_currentStrain() <= eps1:
+                layerStress = layer.material.stiffness * self.ack.get_currentStrain()
+            elif self.ack.get_currentStrain() <= eps2:
                 layerStress = layer.material.stiffness * eps1
             else:
                 layerStress = layer.material.stiffness * eps1 + \
-                    layer.material.stiffness * (self.ack.getCurrentStrain() - eps2)
+                    layer.material.stiffness * (self.ack.get_currentStrain() - eps2)
             maxStress = max(maxStress, layerStress)
             layer.filledRectAck.xrange=[0, layerStress]
             self.graph.add_plot(layer.filledRectAck)
@@ -100,10 +100,10 @@ class AckRight(GridLayout):
     
     def findMaxStress(self):
         self.maxStress = self.csShape.concreteStiffness * \
-            self.ack.getMaxStrain()
+            self.ack.get_maxStrain()
         if self.csShape.view.layers:
             for l in self.csShape.view.layers:
-                curValue = l.material.stiffness * self.ack.getMaxStrain()
+                curValue = l.material.stiffness * self.ack.get_maxStrain()
                 if self.maxStress < curValue:
                     self.maxStress = curValue
         self.graph.xmax = self.maxStress

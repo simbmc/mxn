@@ -28,20 +28,9 @@ class AView(object):
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def on_touch_move(self, touch):
+    def set_crossSection(self, cs):
         raise NotImplemented('not implemented')
     
-    @abstractmethod
-    def on_touch_down(self, touch):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def setCrossSection(self, cs):
-        raise NotImplemented('not implemented')
-    
-    @abstractmethod
-    def updateAllGraph(self):
-        raise NotImplemented('not implemented')
     
     @abstractmethod
     def updateCrossSectionInformation(self):

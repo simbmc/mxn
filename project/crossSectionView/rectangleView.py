@@ -31,25 +31,6 @@ class CSRectangleView(GridLayout, AView):
         self.percent_change = False
         self.layers = []
         self.createGraph()
-#         self.add_widget(self.updateAllGraph)
-
-    '''
-    the method updateAllGraph update the graph. the method should be called, when
-    something has changed
-    '''
-
-    def updateAllGraph(self):
-        for l in self.layers:
-            y = l.y
-            h = l.h
-            l.filledRectCs.xrange = [0., self.cw]
-            l.filledRectCs.yrange = [y - h / 2., y + h / 2.]
-            if l.focus:
-                l.filledRectCs.color = Design.focusColor
-            else:
-                l.filledRectCs.color = l.colors
-        if len(self.layers) == 0:
-            self.graph._clear_buffer()
 
     '''
     the method createGraph create the graph, where you can add 
@@ -85,40 +66,6 @@ class CSRectangleView(GridLayout, AView):
         w=self.cw/1e3
         return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
     
-    '''
-    the method on_touch_move is invoked after the user touch within a rectangle and move it.
-    it changes the position of the rectangle
-    '''
-
-    def on_touch_move(self, touch):
-        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.ch
-        for l in self.layers:
-            if l.focus and l.mouseWithinX(x):
-                # case:1 the l don't collide with the border of the cross
-                # section
-                if y > l.h / 2 and \
-                        y < self.ch - l.h / 2:
-                    l.setYRange([
-                        y - l.h / 2., y + l.h / 2.])
-                    l.setYCoordinate(y)
-                    return
-                # case:2 the l collide with the bottom border of the cross section
-                #        the user can't move the l down
-                elif y < l.h / 2:
-                    l.setYRange([0., l.h])
-                    l.setYCoordinate(l.h / 2)
-                    return
-                # case:3 the l collide with the top border of the cross section
-                #       the user can't move the l up
-                elif y > self.ch - l.h / 2:
-                    l.setYRange([
-                        self.ch - l.h, self.ch])
-                    l.setYCoordinate(
-                        self.ch - l.h / 2)
-                    return
 
     '''
     the method on_touch_down is invoked when the user touch within a rectangle.
@@ -131,7 +78,6 @@ class CSRectangleView(GridLayout, AView):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.cw
         y = (touch.y - y0) / gh * self.ch
-        changed = False
         focus = False  # one is alreay focus
         for l in self.layers:
             if l.mouseWithin(x, y):
@@ -141,57 +87,36 @@ class CSRectangleView(GridLayout, AView):
                     return
                 if l.focus == False and focus == False:
                     l.focus = True
+                    l.filledRectCs.color = Design.focusColor
                     focus = True
-                    cur_info = l.getMaterialInformations()
-                    self.csShape.setLayerInformation(cur_info[0], cur_info[1], cur_info[
-                        2], cur_info[3], cur_info[4], l.h / self.ch)
-                    changed = True
+                    info = l.getMaterialInformations()
+                    self.csShape.setLayerInformation(info[0], info[1], info[
+                        2], info[3], info[4])
             else:
                 if l.focus == True:
                     l.focus = False
-                    changed = True
-        # update just when something has change
-        if changed:
-            self.updateAllGraph()
-
-    # not yet so relevant. maybe when we have time, we can finished it
-    '''
-    def collide(self,x,y,_width,h):
-        for rectangle in self.layers:
-            if not rectangle.equals(x, y, _width, h):
-                #Case:1
-                if y+h/2>rectangle.y-rectangle.h/2 and y+h/2<rectangle.y-rectangle.h/2:
-                    print('Fall:1')
-                    return rectangle.h+h
-                #Case:2
-                elif y-h/2<rectangle.y+rectangle.h/2 and y+h/2>rectangle.y+rectangle.h/2:
-                    print('Fall:2')
-                    return -rectangle.h-h
-        return 0
-    '''
+                    l.filledRectCs.color=l.colors
+                    
 
     '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
-    def addLayer(self, value, material):
-        h = self.ch * value
-        cur = LayerRectangle(self.cw / 2, self.ch - h / 2., h,
-                             self.cw, next(Design.colorcycler), value)
-        cur.setMaterial(material)
-        y = cur.y
-        h = cur.h
-        filledRectCs = FilledRect(xrange=[0., self.cw],
-                                  yrange=[y - h / 2., y + h / 2.],
-                                  color=cur.colors)
-        filledRectAck = FilledRect(xrange=[0., 0.],
-                                   yrange=[y - h / 2., y + h / 2.],
-                                   color=cur.colors)
+    def addLayer(self, x, y, h, w, material):
+        l = LayerRectangle(x, y, h, w,
+                           next(Design.colorcycler))
+        l.setMaterial(material)
+        l.setMaterial(material)
+        filledRectCs = FilledRect(xrange=[x, x+w],
+                                  yrange=[y, y + h],
+                                  color=l.colors)
+        filledRectAck = FilledRect(xrange=[x, x+w],
+                                  yrange=[y, y + h],
+                                  color=l.colors)
         self.graph.add_plot(filledRectCs)
-        cur.setFilledRectCs(filledRectCs)
-        cur.setFilledRectAck(filledRectAck)
-        self.layers.append(cur)
-        self.updateAllGraph()
+        l.setFilledRectCs(filledRectCs)
+        l.setFilledRectAck(filledRectAck)
+        self.layers.append(l)
         self.csShape.calculateStrength()
         self.updateCrossSectionInformation()
 
@@ -200,23 +125,23 @@ class CSRectangleView(GridLayout, AView):
     '''
 
     def deleteLayer(self):
-        for layer in self.layers:
-            if layer.focus:
-                layer.filledRectCs.yrange = [0, 0]
-                layer.filledRectAck.yrange = [0, 0]
-                self.layers.remove(layer)
-        self.updateAllGraph()
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+        if len(self.layers)>0:
+            for layer in self.layers:
+                if layer.focus:
+                    layer.filledRectCs.yrange = [0, 0]
+                    layer.filledRectAck.yrange = [0, 0]
+                    self.layers.remove(layer)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
 
     '''
     the method updateLayerInformation update the layer information of 
     the view_information
     '''
 
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def updateLayerInformation(self, name, price, density, stiffness, strength):
         self.csShape.setLayerInformation(
-            name, price, density, stiffness, strength, percent)
+            name, price, density, stiffness, strength)
 
     '''
     the method updateCrossSectionInformation update the cross section information of 
@@ -311,11 +236,11 @@ class CSRectangleView(GridLayout, AView):
         self.updateGraph()
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
 
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.csShape = cs
 
     '''

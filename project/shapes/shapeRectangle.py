@@ -25,7 +25,7 @@ class ShapeRectangle(GridLayout, AShape):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = CSRectangleView()
-        self.view.setCrossSection(self)
+        self.view.set_crossSection(self)
 
     def setInformation(self, information):
         self.information = information
@@ -34,7 +34,7 @@ class ShapeRectangle(GridLayout, AShape):
         self.setCrossSectionInformation()
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
 
@@ -45,8 +45,8 @@ class ShapeRectangle(GridLayout, AShape):
     the method addLayer add new materials in the view
     '''
 
-    def addLayer(self, percent, material):
-        self.view.addLayer(percent, material)
+    def addLayer(self, x, y, h, w, material):
+        self.view.addLayer(x, y, h, w, material)
 
     '''
     the method deleteLayer delete the selected materials
@@ -60,9 +60,9 @@ class ShapeRectangle(GridLayout, AShape):
     after a layer get the focus
     '''
 
-    def setLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def setLayerInformation(self, name, price, density, stiffness, strength):
         self.information.updateLayerInformation(
-            name, price, density, stiffness, strength, percent)
+            name, price, density, stiffness, strength)
 
     '''
     the method setLayerInformation update the cross section information

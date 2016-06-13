@@ -109,7 +109,7 @@ class AckLeft(GridLayout):
         # setting the maximum of the graph
         self.graph.xmax = points[-1][0] * 1.2
         self.graph.ymax = points[-1][1] * 1.2
-        self.ack.setMaxStrain(points[-1][0])
+        self.ack.set_maxStrain(points[-1][0])
         self.graph.x_ticks_major = np.round(
             self.graph.xmax / 6., decimals=int(-np.log10(self.graph.xmax / 6)) + 1)
         self.graph.y_ticks_major = np.round(
@@ -127,10 +127,10 @@ class AckLeft(GridLayout):
                 self.graph._clear_buffer()
 
     '''
-    the method setCrossSection was developed to say the view, 
+    the method set_crossSection was developed to say the view, 
     which cross section should it use
     '''
-    def setCrossSection(self, cs):
+    def set_crossSection(self, cs):
         self.csShape = cs
     
     '''
