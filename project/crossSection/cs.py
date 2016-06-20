@@ -9,6 +9,7 @@ from materialEditor.materiallist import MaterialList
 from shapes.shapeDoubleT import ShapeDoubleT
 from shapes.shapeRectangle import ShapeRectangle
 from shapes.shapeT import ShapeT
+from shapes.shapeCircle import ShapeCircle
 
 
 class CrossSection(GridLayout):
@@ -20,11 +21,8 @@ class CrossSection(GridLayout):
         self.csRectangle=ShapeRectangle()
         self.csDoubleT=ShapeDoubleT()
         self.csT=ShapeT()
+        self.csCircle=ShapeCircle()
         self.view=self.csRectangle.view
-        #self.csRectangle.setInformation(self.information)
-        #self.csDoubleT.setInformation(self.information)
-        #circle not finished yet
-    
     
     '''
     return the cs-rectangle-shape
@@ -42,6 +40,13 @@ class CrossSection(GridLayout):
     '''
     def getCST(self):
         return self.csT
+    
+    '''
+    return the csCircle-shape
+    '''
+    def getCSCircle(self):
+        return self.csCircle
+    
     '''
     set the rectangle-view
     '''
@@ -67,6 +72,14 @@ class CrossSection(GridLayout):
         self.reEditor.changeCrossSection(self.view)
     
     '''
+    set the circle-View
+    '''
+    def setCircle(self):
+        self.remove_widget(self.view)
+        self.view=self.csCircle.view
+        self.reEditor.changeCrossSection(self.view)
+    
+    '''
     get the information-component
     '''
     def getInformation(self):
@@ -86,3 +99,4 @@ class CrossSection(GridLayout):
         self.csRectangle.setInformation(reEditor)
         self.csDoubleT.setInformation(reEditor)
         self.csT.setInformation(reEditor)
+        self.csCircle.setInformation(reEditor)

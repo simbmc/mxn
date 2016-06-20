@@ -75,11 +75,10 @@ class TView(AView, GridLayout):
         self.hmax = self.csShape.getHeight()
         self.wmax = self.csShape.getWidth()
         # update graph
-        #self.updateAllGraph()
+        self.updateAllGraph()
 
     '''
     update the graph and the layers
-    '''
     '''
     def updateAllGraph(self):
         # update graph
@@ -93,148 +92,56 @@ class TView(AView, GridLayout):
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.drawT()
         self.graph.add_plot(self.p)
-        # update layers
-        if len(self.layers) > 0:
-            self.updateWidth()
-            self.updateHeight()
-            self.updateCrossSectionInformation()
-    '''
-    '''
-    update the width of the layer
-    '''
-    # not finished yet
-    '''
-    def updateWidth(self):
-        delta = self.wmax / 2. + self.deltaX / 2.
-        for l in self.layers:
-            if not l.w1 == self.obw:
-                l.w1 = self.bw
-                l.r1.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w1 == self.otw:
-                l.w1 = self.tw
-                l.r1.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-            if not l.w2 == self.obw:
-                l.w2 = self.bw
-                l.r2.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w2 == self.otw:
-                l.w2 = self.tw
-                l.r2.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-    '''
-    '''
-    update the height of the layers
-    '''
-    # not finished yet
-    '''
-    def updateHeight(self):
-        delta = self.wmax / 2. + self.deltaX / 2.
-        a = self.hmax / self.ohmax
-        for l in self.layers:
-            l.r1.yrange[0] = a * l.r1.yrange[0]
-            l.r1.yrange[1] = a * l.r1.yrange[1]
-            l.r2.yrange[0] = a * l.r2.yrange[0]
-            l.r2.yrange[1] = a * l.r2.yrange[1]
-            l.h1 = a * l.h1
-            l.h2 = a * l.h2
-            # case 1
-            if l.r1.yrange[1] < self.bh:
-                print('case 1')
-                x = delta - self.bw / 2.
-                l.r1.xrange = [x, x + self.bw]
-                l.r2.xrange = [x, x + self.bw]
-            # case 2
-            elif l.r2.yrange[0] > self.bh:
-                print('case 2')
-                x = delta - self.tw / 2.
-                l.r1.xrange = [x, x + self.tw]
-                l.r2.xrange = [x, x + self.tw]
-            # case 3
-            elif l.r1.yrange[1] > self.bh and l.r2.yrange[0] < self.bh:
-                print('case 4')
-                x1 = delta - self.tw / 2.
-                x2 = delta - self.bw / 2.
-                l.r1.yrange = [
-                    self.bh, self.bh + l.h1 / 2.]
-                l.r1.xrange = [x1, x1 + self.tw]
-                l.r2.xrange = [x2, x2 + self.bw]
-                l.r2.yrange = [
-                    self.bh - l.h2 / 2., self.bh]
-
-    '''
-    '''
-    set the percent of the selected layer
-    '''
-    '''
-    def setPercent(self, value):
-        for l in self.layers:
-            if l.r1.color == Design.focusColor:
-                l.percent = value
-                op = l.getHeight() / (self.hmax)
-                a = value / op
-                delta = self.wmax / 2. + self.deltaX / 2.
-                l.h1 = a * l.h1
-                l.h2 = a * l.h2
-                # case 1
-                if l.r1.yrange[1] < self.bh:
-                    print('case 1')
-                    x = delta - self.bw / 2.
-                    l.r1.xrange = [x, x + self.bw]
-                    l.r2.xrange = [x, x + self.bw]
-                    y1 = l.r1.yrange[0]
-                    l.r1.yrange = [y1, y1 + l.h1]
-                # case 2
-                elif l.r2.yrange[0] > self.bh :
-                    print('case 2')
-                    x = delta - self.tw / 2.
-                    l.r1.xrange = [x, x + self.tw]
-                    l.r2.xrange = [x, x + self.tw]
-                    y1 = l.r1.yrange[0]
-                    l.r1.yrange = [y1, y1 + l.h1]
-                # case 3
-                elif l.r1.yrange[1] > self.bh and l.r2.yrange[0] < self.bh:
-                    print('case 3')
-                    x1 = delta - self.tw / 2.
-                    x2 = delta - self.bw / 2.
-                    l.r1.yrange = [self.bh, self.bh + l.h1 / 2.]
-                    l.r1.xrange = [x1, x1 + self.tw]
-                    l.r2.xrange = [x2, x2 + self.bw]
-                    if l.h2==0:
-                        l.r2.yrange = [self.bh - l.h1 / 2., self.bh]
-                    else:
-                        l.r2.yrange = [self.bh - l.h2 / 2., self.bh]
         self.updateCrossSectionInformation()
-    '''
+    
     '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
     def addLayer(self, x, y, h, w, material):
-        l = LayerRectangle(x, y, h, w,
-                           next(Design.colorcycler))
-        l.setMaterial(material)
-        l.setMaterial(material)
-        filledRectCs = FilledRect(xrange=[x, x+w],
-                                  yrange=[y, y + h],
-                                  color=l.colors)
-        filledRectAck = FilledRect(xrange=[x, x+w],
-                                  yrange=[y, y + h],
-                                  color=l.colors)
-        self.graph.add_plot(filledRectCs)
-        l.setFilledRectCs(filledRectCs)
-        l.setFilledRectAck(filledRectAck)
-        self.layers.append(l)
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+        mid=self.graph.xmax/2.
+        if y+h>self.hmax or x<self.deltaX:
+            print('case 1')
+            self.csShape.showErrorMessage()
+        elif y+h<self.bh and x+w>mid+self.bw/2. and x<mid-self.bw/2.:
+            print('case 2')
+            self.csShape.showErrorMessage()
+        elif y+h>self.bh and x+w>self.tw/2.+mid and x<mid-self.tw/2.:
+            print('case 3')
+            self.csShape.showErrorMessage()
+        else:
+            print('case 4')
+            self.csShape.hideErrorMessage()
+            l = LayerRectangle(x, y, h, w,
+                               next(Design.colorcycler))
+            l.setMaterial(material)
+            l.setMaterial(material)
+            filledRectCs = FilledRect(xrange=[x, x+w],
+                                      yrange=[y, y + h],
+                                      color=l.colors)
+            filledRectAck = FilledRect(xrange=[x, x+w],
+                                      yrange=[y, y + h],
+                                      color=l.colors)
+            self.graph.add_plot(filledRectCs)
+            l.setFilledRectCs(filledRectCs)
+            l.setFilledRectAck(filledRectAck)
+            self.layers.append(l)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
     
     '''
     delete the selected layer
     '''
 
     def deleteLayer(self):
-        for l in self.layers:
-            if l.r1.color == Design.focusColor:
-                l.h1 = l.h2 = 0
-                l.r1.yrange = l.r2.yrange = [0, 0]
-                self.layers.remove(l)
+        if len(self.layers)>0:
+            for layer in self.layers:
+                if layer.focus:
+                    layer.filledRectCs.yrange = [0, 0]
+                    layer.filledRectAck.yrange = [0, 0]
+                    self.layers.remove(layer)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
         
     '''
     update the layer information in the information-area
@@ -252,8 +159,7 @@ class TView(AView, GridLayout):
         self.csShape.calculateStrength()
         self.csShape.setCrossSectionInformation()
     
-                
-                    
+                   
     '''
     return the freePlaces, where is no layer of the cross section
     '''
@@ -345,11 +251,9 @@ class TView(AView, GridLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.wmax
         y = (touch.y - y0) / gh * self.hmax
-        focus = False  # one is alreay focus
         for l in self.layers:
             if l.mouseWithin(x, y):
                 if l.focus == True:
-                    self.updateAllGraph()
                     return
                 if l.focus == False:
                     l.focus = True

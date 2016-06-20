@@ -12,6 +12,7 @@ from crossSectionEditor.rectangleInformation import RectangleInformation
 from crossSectionEditor.shapeSelection import ShapeSelection
 from designClass.design import Design
 from crossSectionEditor.shapeTInformation import TInformation
+from crossSectionEditor.circleInformation import CircleInformation
 
 
 class CrossSectionEditor(GridLayout):
@@ -22,6 +23,7 @@ class CrossSectionEditor(GridLayout):
         self.cols = 2
         self.spacing=20
         self.btnSize = Design.btnSize
+        self.firstTimeCircle = True
         self.firstTimeDoubleT = True
         self.firstTimeT=True
         self.focusInformation = None
@@ -89,7 +91,7 @@ class CrossSectionEditor(GridLayout):
 
     def finishedShapeSelection(self, btn):
         if btn.text == 'circle':
-            # not finished yet
+            self.setCircle(btn)
             pass
         elif btn.text == 'rectangle':
             self.setRectangle(btn)
@@ -132,7 +134,6 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def setDoubleT(self, btn):
-        #self.btnSelection.text = btn.text
         self.csShape = self.crossSection.getCSDoubleT()
         self.crossSection.view = self.csShape
         if self.firstTimeDoubleT:
@@ -153,10 +154,19 @@ class CrossSectionEditor(GridLayout):
     # not finished yet
 
     def setCircle(self, btn):
-        #self.btnSelection.text = btn.text
-        # not finished yet
-        # self.csShape=self.crossSection.getCSCircle()
-        self.shapeSelection.dismiss()
+        self.csShape = self.crossSection.getCSCircle()
+        self.crossSection.view = self.csShape
+        if self.firstTimeCircle:
+            self.circleInformation = CircleInformation()
+            self.circleInformation.set_crossSection(self.csShape)
+            self.firstTimeCircle = False
+        self.remove_widget(self.shape)
+        self.shape = self.circleInformation
+        self.content.remove_widget(self.focusInformation)
+        self.content.add_widget(self.circleInformation, 0)
+        self.focusInformation = self.circleInformation
+        self.crossSection.setCircle()
+        self.updateView()
     
     def setT(self,btn):
         #self.btnSelection.text = btn.text

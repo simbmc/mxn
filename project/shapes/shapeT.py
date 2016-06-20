@@ -125,6 +125,8 @@ class ShapeT(AShape, GridLayout):
         self.information.updateLayerInformation(
             name, price, density, stiffness, strength)
     
+    
+        
     '''
     update the cross section information in the cs-information
     '''

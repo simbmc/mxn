@@ -5,11 +5,13 @@ Created on 01.04.2016
 '''
 
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout 
+from kivy.uix.boxlayout import BoxLayout
 from numpy.random.mtrand import np
 
 from crossSectionView.aview import AView
-from kivy.garden.graph import Graph, MeshLinePlot 
+from designClass.design import Design
+from kivy.garden.graph import Graph, MeshLinePlot
+from plot.circle import Circle
 
 
 class CSCircleView(AView, BoxLayout):
@@ -17,94 +19,101 @@ class CSCircleView(AView, BoxLayout):
     def __init__(self, **kwargs):
         super(CSCircleView, self).__init__(**kwargs)
         self.crossSectionRadius = 0.5
-        self.layers=[1]
-        self.createGraph()
-        self.add_widget(self.updateAllGraph)
-    
+        self.layers = []
+
     '''
     the method updateAllGraph update the graph. the method should be called, when
     something has changed
     '''
-    @property    
+    @property
     def updateAllGraph(self):
-        #list = []
-        '''
-        for plot in self.graph.plots:
-            list.append(plot)
-        for layer in self.layers:
-            if layer.focus:
-                layer.p = MeshLinePlot(color=[1, 0, 0, 1])
-                print(layer.y_coordinate)
-            else:
-                layer.p = MeshLinePlot(color=layer.colors)
-            layer.p._points = self.draw_layer(0.5)
-            self.graph.add_plot(layer.p)
-        for plot in list:
-            self.graph.remove_plot(plot)
-            self.graph._clear_buffer()
-        if len(list)==0:
-            self.graph._clear_buffer()
-        '''
         self.drawCircle()
         self.p = MeshLinePlot(color=[1, 0, 0, 1])
-        self.p._points=self.draw_layer(self.crossSectionRadius)
+        self.p._points = self.draw_layer(self.crossSectionRadius)
         self.graph.add_plot(self.p)
         return self.graph
-    
-    '''
-    the method draw_layer was developed to get the _points of the rectangle
-    the while_loop was create to make the rectangle set a grid.
-    '''
-    @staticmethod
-    def draw_layer(radius):
-        print('Hier')
-        points=[]
-        fi_outline_arr = np.linspace(0, 2 * np.pi, 60)
-        points.append([np.cos(fi_outline_arr) * radius, np.sin(fi_outline_arr) * radius ])
-        print(points)
-        return points
-    
+
     '''
     the method createGraph create the graph, where you can add 
     the rectangles. the method should be called only once at the beginning
     '''
+
     def createGraph(self):
         self.graph = Graph(
-                        x_ticks_major=0.05, y_ticks_major=0.05,
-                        y_grid_label=True, x_grid_label=True, padding=5,
-                        xmin=0, xmax=self.crossSectionRadius, ymin=0, ymax=self.crossSectionRadius)
-    
-    def drawCircle(self):
-        print('Hier')
-        self.p = MeshLinePlot(color=[1, 0, 0, 1])
-        self.p._points = self.draw_layer(0.5)
-        self.graph.add_plot(self.p)
-        
-        
-    def setHeight(self,value):
-        pass
-    
-    def setWidth(self, value):
-        pass
-    
-    def setPercent(self, value):
-        pass
-    
-    def addLayer(self, percent,name):
-        pass
-    
-    def deleteLayer(self):
-        pass
-    
-    def updateLayerInformation(self,name,price,density,stiffness,strength,percent):
-        pass
-    
-    '''
-    Just for testing
-    '''
-class TestApp(App):
-    def build(self):
-        return CSCircleView()
+            x_ticks_major=0.05, y_ticks_major=0.05,
+            y_grid_label=True, x_grid_label=True, padding=5,
+            xmin=0, xmax=self.crossSectionRadius, ymin=0, ymax=self.crossSectionRadius)
+        self.drawCircle()
+        self.add_widget(self.graph)
 
-if __name__ == '__main__':
-    TestApp().run()
+    '''
+    draw the circle
+    '''
+
+    def drawCircle(self):
+        self.circle = Circle()
+        self.circle.r = 0.25
+        self.circle.pos = [self.crossSectionRadius/2., self.crossSectionRadius/2.]
+        self.circle.color = [255, 255, 255, 1]
+        self.graph.add_plot(self.circle)
+    
+    
+    '''
+    the method updateLayerInformation update the layer information of 
+    the view_information
+    '''
+    def updateLayerInformation(self, name, price, density, stiffness, strength):
+        self.csShape.setLayerInformation(
+            name, price, density, stiffness, strength)
+
+    '''
+    the method updateCrossSectionInformation update the cross section information of 
+    the view_information
+    '''
+
+    def updateCrossSectionInformation(self):
+        self.csShape.calculateWeightPrice()
+        self.csShape.setCrossSectionInformation()
+    
+    '''
+    return the freePlaces, where is no layer of the cross section
+    '''
+
+    def getFreePlaces(self):
+        return []
+    
+    '''
+    the method on_touch_down is invoked when the user touch within a rectangle.
+    the rectangle get the focus and if a rectangle exist, which has the focus
+    that lose it.
+    '''
+
+    def on_touch_down(self, touch):
+        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
+        gw, gh = self.graph._plot_area.size  # graph size
+        x = (touch.x - x0) / gw * self.r
+        y = (touch.y - y0) / gh * self.r
+        for l in self.layers:
+            if l.mouseWithin(x, y):
+                if l.focus == True:
+                    self.updateAllGraph()
+                    return
+                if l.focus == False:
+                    l.focus = True
+                    l.filledRectCs.color = Design.focusColor
+                    info = l.getMaterialInformations()
+                    self.csShape.setLayerInformation(info[0], info[1], info[
+                        2], info[3], info[4])
+            else:
+                if l.focus == True:
+                    l.focus = False
+                    l.filledRectCs.color=l.colors
+    
+    '''
+    set the cross section
+    '''
+
+    def set_crossSection(self, cs):
+        self.csShape = cs
+        self.r=self.csShape.getRadius()
+        self.createGraph()

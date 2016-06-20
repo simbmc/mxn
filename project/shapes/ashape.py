@@ -73,3 +73,15 @@ class AShape:
 
     def setPercent(self, value):
         self.view.setPercent(value)
+    
+    '''
+    show the error message
+    '''
+    def showErrorMessage(self):
+        self.information.showErrorMessage()
+    
+    '''
+    hide the errorMessage
+    '''
+    def hideErrorMessage(self):
+        self.information.hideErrorMessage()

@@ -1,6 +1,5 @@
 '''
 Created on 18.04.2016
-
 @author: Yingxiong
 '''
 from math import log10

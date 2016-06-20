@@ -103,22 +103,29 @@ class CSRectangleView(GridLayout, AView):
     '''
 
     def addLayer(self, x, y, h, w, material):
-        l = LayerRectangle(x, y, h, w,
-                           next(Design.colorcycler))
-        l.setMaterial(material)
-        l.setMaterial(material)
-        filledRectCs = FilledRect(xrange=[x, x+w],
-                                  yrange=[y, y + h],
-                                  color=l.colors)
-        filledRectAck = FilledRect(xrange=[x, x+w],
-                                  yrange=[y, y + h],
-                                  color=l.colors)
-        self.graph.add_plot(filledRectCs)
-        l.setFilledRectCs(filledRectCs)
-        l.setFilledRectAck(filledRectAck)
-        self.layers.append(l)
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+        if x+w>self.cw or y+h>self.ch:
+            print('case 1:')
+            self.csShape.showErrorMessage()
+            return
+        else:
+            print('case 2:')
+            self.csShape.hideErrorMessage()
+            l = LayerRectangle(x, y, h, w,
+                               next(Design.colorcycler))
+            l.setMaterial(material)
+            l.setMaterial(material)
+            filledRectCs = FilledRect(xrange=[x, x+w],
+                                      yrange=[y, y + h],
+                                      color=l.colors)
+            filledRectAck = FilledRect(xrange=[x, x+w],
+                                      yrange=[y, y + h],
+                                      color=l.colors)
+            self.graph.add_plot(filledRectCs)
+            l.setFilledRectCs(filledRectCs)
+            l.setFilledRectAck(filledRectAck)
+            self.layers.append(l)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
 
     '''
     the method deleteLayer was developed to delete layer from the cross section
@@ -231,7 +238,6 @@ class CSRectangleView(GridLayout, AView):
         self.graph.xmax = self.cw
         for rectangle in self.layers:
             rectangle.setWidth(value)
-        self.updateAllGraph()
         self.updateCrossSectionInformation()
         self.updateGraph()
 

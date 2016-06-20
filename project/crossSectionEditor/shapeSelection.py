@@ -152,7 +152,7 @@ class ShapeSelection(GridLayout):
         self.circle = Circle()
         self.circle.r = 0.25
         self.circle.pos = [0.25, 0.25]
-        self.circle.color=[1, 1, 1, 1]
+        self.circle.color=[255, 255, 255, 1]
         self.graphCircle.add_plot(self.circle)
 
     '''

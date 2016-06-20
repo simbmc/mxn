@@ -29,6 +29,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.content = GridLayout(cols=1)
         self.containsView = False
         self.add_widget(self.content)
+        self.error=False
 
     '''
     the method set_crossSection was developed to say the view, 
@@ -109,8 +110,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         labelLayout.add_widget(self.materialStiffness)
         labelLayout.add_widget(Label(text='tensile strength:'))
         labelLayout.add_widget(self.materialStrength)
-        labelLayout.add_widget(Label(text='percent:'))
-        labelLayout.add_widget(self.materialPercent)
+        self.errorLbl=Label(text='[color=ff3333]error: wrong parameters[/color]',
+                            markup = True,size_hint_y=None, height=20)
         self.materialArea.add_widget(self.btnArea)
         self.materialArea.add_widget(labelLayout)
         self.content.add_widget(self.materialArea)
@@ -170,6 +171,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.addingMaterialArea.add_widget(self.btnHeight)
         self.addingMaterialArea.add_widget(Label(text='width:'))
         self.addingMaterialArea.add_widget(self.btnWidth)
+        
 
     '''
     the method createMaterialOptions create the popup where you can 
@@ -383,3 +385,18 @@ class ReinforcementEditor(GridLayout, IObserver):
     def finishedNumpad(self):
         self.btnFocus.text = self.numpad.textinput.text
         self.popupNumpad.dismiss()
+    
+    '''
+    show the error message
+    '''
+    def showErrorMessage(self):
+        if not self.error:
+            self.materialArea.add_widget(self.errorLbl, 3)
+            self.error=True
+    '''
+    hide the error message
+    '''
+    def hideErrorMessage(self):
+        if self.error:
+            self.materialArea.remove_widget(self.errorLbl)
+            self.error=False

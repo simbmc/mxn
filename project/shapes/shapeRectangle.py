@@ -171,10 +171,10 @@ class ShapeRectangle(GridLayout, AShape):
                 (1. - percentOfLayers) * self.concreteStiffness
         self.strength = strength
 
+    
     '''
-    calculate the strain of concrete
+    sign in by the cross section
     '''
-
-    def signParent(self, allcrossection):
-        self.allCrossSection = allcrossection
-        self.information = allcrossection.getInformation()
+    def signParent(self, crossSection):
+        self.allCrossSection = crossSection
+        self.information = crossSection.getInformation()

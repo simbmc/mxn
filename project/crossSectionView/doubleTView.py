@@ -84,192 +84,52 @@ class DoubleTView(AView, GridLayout):
         self.updateAllGraph()
 
     '''
-    set the percent of the selected layer
-    '''
-    '''
-    def setPercent(self, value):
-        for l in self.layers:
-            if l.r1.color == Design.focusColor:
-                l.percent = value
-                op = l.getHeight() / (self.hmax)
-                a = value / op
-                delta = self.wmax / 2. + self.deltaX / 2.
-                l.h1 = a * l.h1
-                #l.h2 = a * l.h2
-                l.h3 = a * l.h3
-                # case 1
-                if l.r1.yrange[1] < self.bh:
-                    print('case 1')
-                    x = delta - self.bw / 2.
-                    l.r1.xrange = [x, x + self.bw]
-                    l.r2.xrange = [x, x + self.bw]
-                    l.r3.xrange = [x, x + self.bw]
-                    y1 = l.r1.yrange[0]
-                    l.r1.yrange = [y1, y1 + l.h1]
-                    l.r3.yrange = [0, 0]
-                # case 2
-                elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
-                    print('case 2')
-                    x = delta - self.mw / 2.
-                    l.r1.xrange = [x, x + self.mw]
-                    l.r2.xrange = [x, x + self.mw]
-                    y1 = l.r1.yrange[0]
-                    l.r1.yrange = [y1, y1 + l.h1]
-                    l.r3.yrange = [0, 0]
-                # case 3
-                elif l.r2.yrange[0] > self.bh + self.mh:
-                    print('case 3')
-                    x = delta - self.tw / 2.
-                    l.r1.xrange = [x, x + self.tw]
-                    l.r2.xrange = [x, x + self.tw]
-                    l.r3.xrange = [x, x + self.tw]
-                    y1 = l.r1.yrange[0]
-                    l.r1.yrange = [y1, y1 + l.h1]
-                    l.r3.yrange = [0, 0]
-                # case 4
-                elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] < self.bh:
-                    print('case 4')
-                    x1 = delta - self.mw / 2.
-                    x2 = delta - self.bw / 2.
-                    l.r1.yrange = [self.bh, self.bh + l.h1 / 2.]
-                    l.r1.xrange = [x1, x1 + self.mw]
-                    l.r2.xrange = [x2, x2 + self.bw]
-                    l.r2.yrange = [self.bh - l.h1 / 2., self.bh]
-                    l.r3.yrange = [0, 0]
-                # case 5
-                elif l.r1.yrange[1] > self.bh + self.mh and l.r2.yrange[0] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
-                    print('case 5')
-                    x1 = delta - self.tw / 2.
-                    x2 = delta - self.mw / 2.
-                    l.r1.xrange = [x1, x1 + self.tw]
-                    l.r2.xrange = [x2, x2 + self.mw]
-                    l.r1.yrange = [
-                        self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
-                    l.r2.yrange = [
-                        self.bh + self.mh - l.h1 / 2., self.bh + self.mh]
-                    l.r3.yrange = [0, 0]
-                # case 6
-                else:
-                    print('case 6')
-                    x1 = delta - self.tw / 2.
-                    x2 = delta - self.mw / 2.
-                    x3 = delta - self.bw / 2.
-                    l.r1.yrange = [
-                        self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
-                    l.r2.yrange = [self.bh, self.bh + self.mh]
-                    l.r3.yrange = [self.bh - (l.h1 / 2.), self.bh]
-                    l.r1.xrange = [x1, x1 + self.tw]
-                    l.r2.xrange = [x2, x2 + self.mw]
-                    l.r3.xrange = [x3, x3 + self.bw]
-        self.updateCrossSectionInformation()
-    '''
-    '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
     def addLayer(self, x, y, h, w, material):
-        l = LayerRectangle(x, y, h, w,
-                           next(Design.colorcycler))
-        l.setMaterial(material)
-        filledRectCs = FilledRect(xrange=[x, x + w],
-                                  yrange=[y, y + h],
-                                  color=l.colors)
-        filledRectAck = FilledRect(xrange=[x, x + w],
-                                   yrange=[y, y + h],
-                                   color=l.colors)
-        l.setFilledRectCs(filledRectCs)
-        l.setFilledRectAck(filledRectAck)
-        '''
-        # Case 1
-        # Falls das Layer prozentual gesehen in dem Top-Area passt
-        if h <= self.th:
+        mid=self.graph.xmax/2.
+        #half of the width
+        bwh=self.bh/2.
+        mwh=self.mh/2.
+        twh=self.tw/2.
+        if y+h>self.hmax or x<self.deltaX:
             print('case 1')
-            lx = self.wmax / 2. - self.tw / 2. + self.deltaX
-            l = LayerDoubleT(h, 0, 0,
-                             self.tw, self.tw, 0,
-                             next(Design.colorcycler), value)
-            l.setMaterial(material)
-            y1 = self.hmax - h / 2.
-            h1 = l.h1
-            r1 = FilledRect(xrange=[lx - self.deltaX / 2., self.tw + lx - self.deltaX / 2.],
-                            yrange=[y1 - h1 / 2., y1 + h1 / 2.],
-                            color=l.colors)
-            y2 = self.hmax - h / 2.
-            h2 = l.h2
-            r2 = FilledRect(xrange=[lx - self.deltaX / 2., self.tw + lx - self.deltaX / 2.],
-                            yrange=[
-                                y2 - l.h2 / 2. - self.deltaY, y2 + l.h2 / 2. - self.deltaY],
-                            color=l.colors)
-            r3 = FilledRect(xrange=[0, 0],
-                            yrange=[0, 0],
-                            color=l.colors)
-        # Case 2:
-        # Falls das Layer nicht im toparea, aber im toparea+middlearea passt
-        elif h <= self.th + self.mh:
+            self.csShape.showErrorMessage()
+        elif (y<self.bh and y+h>self.bh) or (y<self.bh+self.mw and y+h>self.bh+self.mw):
             print('case 2')
-            lx1 = self.wmax / 2. - tw / 2. + self.deltaX
-            lx2 = self.wmax / 2. - mw / 2. + self.deltaX
-            ly1 = self.hmax - h1 / 2.
-            h2 = h - h1
-            ly2 = ly1 - self.th / 2. - h2 / 2.
-            l = LayerDoubleT(
-                h1, h2, 0,
-                self.tw, self.mw, 0,
-                next(Design.colorcycler), value)
-            l.setMaterial(material)
-            h1 = l.h1
-            r1 = FilledRect(xrange=[lx1 - self.deltaX / 2.,
-                                    self.tw + lx1 - self.deltaX / 2.],
-                            yrange=[ly1 - h1 / 2.,
-                                    ly1 + h1 / 2.],
-                            color=l.colors)
-            h2 = l.h2
-            r2 = FilledRect(xrange=[lx2 - self.deltaX / 2.,
-                                    self.mw + lx2 - self.deltaX / 2.],
-                            yrange=[ly2 - h2 / 2., ly2 + h2 / 2.],
-                            color=l.colors)
-            r3 = FilledRect(xrange=[0, 0],
-                            yrange=[0, 0],
-                            color=l.colors)
-        # case 3
-        # Falls das Layer nicht im toparea and middlearea passt
-        else:
+            self.csShape.showErrorMessage()
+        elif y+h<self.bh and x+w>mid+bwh and x<mid-bwh:
             print('case 3')
-            lx1 = self.wmax / 2. - self.tw / 2. + self.deltaX
-            lx2 = self.wmax / 2. - self.mw / 2. + self.deltaX
-            lx3 = self.wmax / 2. - self.bw / 2. + self.deltaX / 2.
-            h2 = self.mh
-            h3 = h - h1 - h2
-            ly1 = self.hmax - h1 / 2.
-            ly2 = ly1 - h1 / 2. - h2 / 2.
-            ly3 = ly2 - h2 / 2. - h3
-            l = LayerDoubleT(
-                h1 + h3 / 2., h2 + h3 / 2., 0,
-                self.tw, self.mw, self.bw,
-                next(Design.colorcycler), value)
+            self.csShape.showErrorMessage()
+        elif y+h<self.mw+self.bh and x+w>mid+mwh and x<mid-mwh:
+            print('case 4')
+            self.csShape.showErrorMessage()
+        elif y+h<self.hmax and x+w>mid+twh and x<mid-twh:
+            print('case 5')
+            self.csShape.showErrorMessage()
+        else:
+            print('case 6')
+            self.csShape.hideErrorMessage()
+            l = LayerRectangle(x, y, h, w,
+                               next(Design.colorcycler))
             l.setMaterial(material)
-            r1 = FilledRect(xrange=[lx1 - self.deltaX / 2., self.tw + lx1 - self.deltaX / 2.],
-                            yrange=[ly1 - h1 / 2., ly1 + h1 / 2.], color=l.colors)
-            r2 = FilledRect(xrange=[lx2 - self.deltaX / 2., self.mw + lx2 - self.deltaX / 2.],
-                            yrange=[ly2 - h2 / 2., ly2 + h2 / 2.], color=l.colors)
-            r3 = FilledRect(xrange=[lx3, lx3 + self.bw],
-                            yrange=[ly3, ly3 + h3], color=l.colors)
-        l.setFilledRect1(r1)
-        l.setFilledRect2(r2)
-        l.setFilledRect3(r3)
-        self.graph.add_plot(r1)
-        self.graph.add_plot(r2)
-        self.graph.add_plot(r3)
-        '''
-        self.graph.add_plot(filledRectCs)
-        self.layers.append(l)
-        self.csShape.calculateStrength()
-        self.updateCrossSectionInformation()
+            filledRectCs = FilledRect(xrange=[x, x + w],
+                                      yrange=[y, y + h],
+                                      color=l.colors)
+            filledRectAck = FilledRect(xrange=[x, x + w],
+                                       yrange=[y, y + h],
+                                       color=l.colors)
+            l.setFilledRectCs(filledRectCs)
+            l.setFilledRectAck(filledRectAck)
+            self.graph.add_plot(filledRectCs)
+            self.layers.append(l)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
 
     '''
     update the graph and the layers
     '''
-
     def updateAllGraph(self):
         # update graph
         self.deltaX = self.wmax / 10.
@@ -282,121 +142,9 @@ class DoubleTView(AView, GridLayout):
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.drawDoubleT()
         self.graph.add_plot(self.p)
-        # update layers
-        if len(self.layers) > 0:
-            self.updateWidth()
-            self.updateHeight()
-            self.updateCrossSectionInformation()
+        self.updateCrossSectionInformation()
 
-    '''
-    update the width of the layer
-    '''
-
-    def updateWidth(self):
-        delta = self.wmax / 2. + self.deltaX / 2.
-        for l in self.layers:
-            if not l.w1 == self.obw:
-                l.w1 = self.bw
-                l.r1.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w1 == self.omw:
-                l.w1 = self.mw
-                l.r1.xrange = [delta - self.mw / 2., delta + self.mw / 2.]
-            elif not l.w1 == self.otw:
-                l.w1 = self.tw
-                l.r1.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-            if not l.w2 == self.obw:
-                l.w2 = self.bw
-                l.r2.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w2 == self.omw:
-                l.w2 = self.mw
-                l.r2.xrange = [delta - self.mw / 2., delta + self.mw / 2.]
-            elif not l.w2 == self.otw:
-                l.w2 = self.tw
-                l.r2.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-            if not l.w3 == self.obw:
-                l.w3 = self.bw
-                l.r3.xrange = [delta - self.bw / 2., delta + self.bw / 2.]
-            elif not l.w3 == self.omw:
-                l.w3 = self.mw
-                l.r3.xrange = [delta - self.mw / 2., delta + self.mw / 2.]
-            elif not l.w3 == self.otw:
-                l.w3 = self.tw
-                l.r3.xrange = [delta - self.tw / 2., delta + self.tw / 2.]
-
-    '''
-    update the height of the layers
-    '''
-
-    def updateHeight(self):
-        delta = self.wmax / 2. + self.deltaX / 2.
-        a = self.hmax / self.ohmax
-        for l in self.layers:
-            l.r1.yrange[0] = a * l.r1.yrange[0]
-            l.r1.yrange[1] = a * l.r1.yrange[1]
-            l.r2.yrange[0] = a * l.r2.yrange[0]
-            l.r2.yrange[1] = a * l.r2.yrange[1]
-            l.r3.yrange[0] = a * l.r3.yrange[0]
-            l.r3.yrange[1] = a * l.r3.yrange[1]
-            l.h1 = a * l.h1
-            l.h2 = a * l.h2
-            l.h3 = a * l.h3
-            print('h1: ' + str(l.h1))
-            print('h2: ' + str(l.h1))
-            print('h3: ' + str(l.h1))
-            # case 1
-            if l.r1.yrange[1] < self.bh:
-                print('case 1')
-                x = delta - self.bw / 2.
-                l.r1.xrange = [x, x + self.bw]
-                l.r2.xrange = [x, x + self.bw]
-                l.r3.xrange = [x, x + self.bw]
-            # case 2
-            elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
-                print('case 2')
-                x = delta - self.mw / 2.
-                l.r1.xrange = [x, x + self.mw]
-                l.r2.xrange = [x, x + self.mw]
-            # case 3
-            elif l.r2.yrange[0] > self.bh + self.mh:
-                print('case 3')
-                x = delta - self.tw / 2.
-                l.r1.xrange = [x, x + self.tw]
-                l.r2.xrange = [x, x + self.tw]
-                l.r3.xrange = [x, x + self.tw]
-            # case 4
-            elif l.r1.yrange[1] < self.bh + self.mh and l.r2.yrange[0] < self.bh:
-                print('case 4')
-                x1 = delta - self.mw / 2.
-                x2 = delta - self.bw / 2.
-                l.r1.xrange = [x1, x1 + self.mw]
-                l.r1.yrange = [self.bh, self.bh + l.h1 / 2.]
-                l.r2.xrange = [x2, x2 + self.bw]
-                l.r2.yrange = [self.bh - l.h1 / 2., self.bh]
-            # case 5
-            elif l.r1.yrange[1] > self.bh + self.mh and l.r2.yrange[0] < self.bh + self.mh and l.r2.yrange[0] > self.bh:
-                print('case 5')
-                x1 = delta - self.tw / 2.
-                x2 = delta - self.mw / 2.
-                l.r1.yrange = [
-                    self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
-                l.r1.xrange = [x1, x1 + self.tw]
-                l.r2.xrange = [x2, x2 + self.mw]
-                l.r2.yrange = [
-                    self.bh + self.mh - l.h1 / 2., self.bh + self.mh]
-            # case 6
-            else:
-                print('case 6')
-                x1 = delta - self.tw / 2.
-                x2 = delta - self.mw / 2.
-                x3 = delta - self.bw / 2.
-                l.r1.yrange = [
-                    self.bh + self.mh, self.bh + self.mh + l.h1 / 2.]
-                l.r2.yrange = [self.bh, self.bh + self.mh]
-                l.r3.yrange = [self.bh - (l.h1 / 2.), self.bh]
-                l.r1.xrange = [x1, x1 + self.tw]
-                l.r2.xrange = [x2, x2 + self.mw]
-                l.r3.xrange = [x3, x3 + self.bw]
-
+    
     '''
     return the freePlaces, where is no layer of the cross section
     '''
@@ -522,11 +270,15 @@ class DoubleTView(AView, GridLayout):
     '''
 
     def deleteLayer(self):
-        for l in self.layers:
-            if l.r1.color == Design.focusColor:
-                l.h1 = l.h2 = l.h3 = 0
-                l.r1.yrange = l.r2.yrange = l.r3.yrange = [0, 0]
-                self.layers.remove(l)
+        if len(self.layers)>0:
+            for layer in self.layers:
+                if layer.focus:
+                    layer.filledRectCs.yrange = [0, 0]
+                    layer.filledRectAck.yrange = [0, 0]
+                    self.layers.remove(layer)
+            self.csShape.calculateStrength()
+            self.updateCrossSectionInformation()
+            
     '''
     update the layer information in the information-area
     '''
@@ -546,7 +298,6 @@ class DoubleTView(AView, GridLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         y = (touch.y - y0) / gh * self.hmax
         x = (touch.x - x0) / gw * self.wmax
-        changed = False
         for l in self.layers:
             if l.mouseWithin(x, y):
                 if l.focus:

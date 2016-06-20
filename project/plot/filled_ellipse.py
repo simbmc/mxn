@@ -13,7 +13,7 @@ from math import log10
 class FilledEllipse(Plot):
 
     '''
-    draw a filled rectangular for given color and geometric parameters
+    draw a filled ellipse for given color and geometric parameters
     '''
     _image = ObjectProperty()
     xrange = ListProperty([0, 100])
