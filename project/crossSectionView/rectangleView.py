@@ -18,6 +18,7 @@ from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layer import Layer
 from plot.filled_rect import FilledRect
+from plot.line import LinePlot
 
 
 class CSRectangleView(GridLayout, AView):
@@ -85,7 +86,7 @@ class CSRectangleView(GridLayout, AView):
             #default height 0
             l = Layer(0, y, 0., self.cw,next(Design.colorcycler))
             l.set_Material(material)
-            line = MeshLinePlot(color=[1, 1, 1, 1], points = [(0,y),(self.cw,y)])
+            line = LinePlot(color=[1, 0, 0, 1], points = [(0,y),(self.cw,y)],width=2)
             self.graph.add_plot(line)
             self.layers.append(l)
             self.csShape.calculateStrength()
