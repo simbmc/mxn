@@ -8,7 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layerRectangle import LayerRectangle
+from layers.layer import Layer
 from plot.filled_rect import FilledRect
 
 
@@ -112,7 +112,7 @@ class TView(AView, GridLayout):
         else:
             print('case 4')
             self.csShape.hideErrorMessage()
-            l = LayerRectangle(x, y, h, w,
+            l = Layer(x, y, h, w,
                                next(Design.colorcycler))
             l.setMaterial(material)
             l.setMaterial(material)

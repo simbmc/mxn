@@ -8,9 +8,8 @@ from kivy.uix.gridlayout import GridLayout
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layerDoubleT import LayerDoubleT
 from plot.filled_rect import FilledRect
-from layers.layerRectangle import LayerRectangle
+from layers.layer import Layer
 
 
 class DoubleTView(AView, GridLayout):
@@ -111,7 +110,7 @@ class DoubleTView(AView, GridLayout):
         else:
             print('case 6')
             self.csShape.hideErrorMessage()
-            l = LayerRectangle(x, y, h, w,
+            l = Layer(x, y, h, w,
                                next(Design.colorcycler))
             l.setMaterial(material)
             filledRectCs = FilledRect(xrange=[x, x + w],

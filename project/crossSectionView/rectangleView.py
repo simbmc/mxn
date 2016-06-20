@@ -5,18 +5,19 @@ Created on 14.03.2016
 '''
 
 
-from kivy.garden.graph import Graph, MeshLinePlot
-from crossSectionView.aview import AView
-from layers.layerRectangle import LayerRectangle
-from plot.filled_rect import FilledRect
-from designClass.design import Design
-from kivy.uix.gridlayout import GridLayout
-
-
 '''
 the class CSRectangleView was developed to show the the cross section,
 which has a rectangle shape
 '''
+
+
+from kivy.uix.gridlayout import GridLayout
+
+from crossSectionView.aview import AView
+from designClass.design import Design
+from kivy.garden.graph import Graph, MeshLinePlot
+from layers.layer import Layer
+from plot.filled_rect import FilledRect
 
 
 class CSRectangleView(GridLayout, AView):
@@ -50,6 +51,7 @@ class CSRectangleView(GridLayout, AView):
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.drawRectangle()
         self.graph.add_plot(self.p)
+        
     '''
     update the graph
     '''
@@ -58,6 +60,7 @@ class CSRectangleView(GridLayout, AView):
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.drawRectangle()
         self.graph.add_plot(self.p)
+    
     '''
     draw the rectangle
     '''
@@ -65,64 +68,25 @@ class CSRectangleView(GridLayout, AView):
         h=self.ch/1e3
         w=self.cw/1e3
         return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
-    
-
-    '''
-    the method on_touch_down is invoked when the user touch within a rectangle.
-    the rectangle get the focus and if a rectangle exist, which has the focus
-    that lose it.
-    '''
-
-    def on_touch_down(self, touch):
-        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
-        gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * self.cw
-        y = (touch.y - y0) / gh * self.ch
-        focus = False  # one is alreay focus
-        for l in self.layers:
-            if l.mouseWithin(x, y):
-                if l.focus == True and self.percent_change:
-                    self.percent_change = False
-                    self.updateAllGraph()
-                    return
-                if l.focus == False and focus == False:
-                    l.focus = True
-                    l.filledRectCs.color = Design.focusColor
-                    focus = True
-                    info = l.getMaterialInformations()
-                    self.csShape.setLayerInformation(info[0], info[1], info[
-                        2], info[3], info[4])
-            else:
-                if l.focus == True:
-                    l.focus = False
-                    l.filledRectCs.color=l.colors
-                    
+              
 
     '''
     the method addLayer was developed to add new layer at the cross section
     '''
 
     def addLayer(self, x, y, h, w, material):
-        if x+w>self.cw or y+h>self.ch:
+        if y>self.ch:
             print('case 1:')
             self.csShape.showErrorMessage()
             return
         else:
             print('case 2:')
             self.csShape.hideErrorMessage()
-            l = LayerRectangle(x, y, h, w,
-                               next(Design.colorcycler))
-            l.setMaterial(material)
-            l.setMaterial(material)
-            filledRectCs = FilledRect(xrange=[x, x+w],
-                                      yrange=[y, y + h],
-                                      color=l.colors)
-            filledRectAck = FilledRect(xrange=[x, x+w],
-                                      yrange=[y, y + h],
-                                      color=l.colors)
-            self.graph.add_plot(filledRectCs)
-            l.setFilledRectCs(filledRectCs)
-            l.setFilledRectAck(filledRectAck)
+            #default height 0
+            l = Layer(0, y, 0., self.cw,next(Design.colorcycler))
+            l.set_Material(material)
+            line = MeshLinePlot(color=[1, 1, 1, 1], points = [(0,y),(self.cw,y)])
+            self.graph.add_plot(line)
             self.layers.append(l)
             self.csShape.calculateStrength()
             self.updateCrossSectionInformation()

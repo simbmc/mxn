@@ -10,7 +10,6 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
-from ackModel.ack import Ack
 from crossSection.cs import CrossSection
 from designClass.design import Design
 from materialEditor.editor import MaterialEditor
@@ -42,7 +41,6 @@ class MainWindow(GridLayout):
     '''
 
     def createComponets(self):
-        self.createAckView()
         self.createMaterialEditor()
         self.createReinforcementEditor()
         self.createCrossSectionEditor()
@@ -65,10 +63,6 @@ class MainWindow(GridLayout):
                           size_hint_y=None, height=self.btnSize)
         reEditor.bind(on_press=self.showReinforcementEditor)
         layout.add_widget(reEditor)
-        # ack-view
-        ackView = Button(text='ack', size_hint_y=None, height=self.btnSize)
-        ackView.bind(on_press=self.showAckView)
-        layout.add_widget(ackView)
         # material-editor
         me = Button(
             text='material editor', size_hint_y=None, height=self.btnSize)
@@ -106,16 +100,6 @@ class MainWindow(GridLayout):
         self.add_widget(bar)
 
     '''
-    create the ask_view
-    '''
-
-    def createAckView(self):
-        self.ackView = Ack()
-        self.csShape.setAck(self.ackView)
-        # sign in by the cross section
-        self.ackView.set_crossSection(self.csShape)
-
-    '''
     create the material-editor
     '''
 
@@ -149,18 +133,6 @@ class MainWindow(GridLayout):
     #that actually component is remove from the widget and set                  #
     #the content to the showed component                                        #
     ##########################################################################
-
-    '''
-    show the ack-view
-    '''
-
-    def showAckView(self, button):
-        self.ackView.update()
-        self.remove_widget(self.content)
-        self.add_widget(self.ackView)
-        self.content = self.ackView
-        self.ackView.update()
-        self.popup.dismiss()
 
     '''
     show the material-editor

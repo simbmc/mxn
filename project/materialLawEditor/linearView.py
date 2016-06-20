@@ -3,7 +3,7 @@ Created on 09.05.2016
 
 @author: mkennert
 '''
-from kivy.graphics import Line
+from kivy.graphics import OwnLine
 
 from kivy.uix.gridlayout import GridLayout
 
@@ -45,7 +45,7 @@ class LinearView(GridLayout):
         self.point.yrange = [y-self.epsY,y+self.epsY]
         self.graph.add_plot(self.point)
         #with self.canvas:
-        #        self.line=Line(points=[0, 0, 10, 10], width=1)
+        #        self.line=OwnLine(points=[0, 0, 10, 10], width=1)
         #self.graph.add_plot(self.line)
         self.line=LinePlot(xrange=[0,x],yrange=[0,y])
         self.graph.add_plot(self.line)
