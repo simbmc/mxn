@@ -17,7 +17,7 @@ class LinePlot(Plot):
                 use_parent_projection=True)
         with self._grc:
             self._gcolor = Color(*self.color)
-            self._gline = Line(points=[], width=2,dash_offset=10,dash_length=5)
+            self._gline = Line(points=[], width=1,dash_offset=5,dash_length=10)
         return [self._grc]
     
     def draw(self, *args):

@@ -29,20 +29,20 @@ class ShapeDoubleT(GridLayout, AShape):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = DoubleTView()
-        self.view.set_crossSection(self)
+        self.view.set_cross_section(self)
 
     '''
     return the top-width
     '''
 
-    def getWidthTop(self):
+    def get_width_top(self):
         return self.tw
 
     '''
     set the top-width
     '''
 
-    def setWidthTop(self, value):
+    def set_width_top(self, value):
         self.tw = value
         self.view.update()
 
@@ -50,14 +50,14 @@ class ShapeDoubleT(GridLayout, AShape):
     return the top-height
     '''
 
-    def getHeightTop(self):
+    def get_height_top(self):
         return self.th
 
     '''
     set the top-height
     '''
 
-    def setHeightTop(self, value):
+    def set_height_top(self, value):
         self.th = value
         self.view.update()
 
@@ -65,28 +65,28 @@ class ShapeDoubleT(GridLayout, AShape):
     set the middle-width
     '''
 
-    def setWidthMiddle(self, value):
+    def set_width_middle(self, value):
         self.mw = value
         self.view.update()
     '''
     return the middle-width
     '''
 
-    def getWidthMiddle(self):
+    def get_width_middle(self):
         return self.mw
 
     '''
     return the middle-height
     '''
 
-    def getHeightMiddle(self):
+    def get_height_middle(self):
         return self.mh
 
     '''
     set the middle-height
     '''
 
-    def setHeightMiddle(self, value):
+    def set_height_middle(self, value):
         self.mh = value
         self.view.update()
 
@@ -94,7 +94,7 @@ class ShapeDoubleT(GridLayout, AShape):
     set the bottom-height
     '''
 
-    def setHeightBottom(self, value):
+    def set_height_bottom(self, value):
         self.bh = value
         self.view.update()
 
@@ -102,14 +102,14 @@ class ShapeDoubleT(GridLayout, AShape):
     return the bottom-height
     '''
 
-    def getHeightBottom(self):
+    def get_height_bottom(self):
         return self.bh
 
     '''
     set the bottom-width
     '''
 
-    def setWidthBottom(self, value):
+    def set_width_bottom(self, value):
         self.bw = value
         self.view.update()
 
@@ -117,21 +117,21 @@ class ShapeDoubleT(GridLayout, AShape):
     return the bottom-width
     '''
 
-    def getWidthBottom(self):
+    def get_width_bottom(self):
         return self.bw
 
     '''
     return the cs-height
     '''
 
-    def getHeight(self):
+    def get_height(self):
         return self.th + self.bh + self.mh
 
     '''
     return the max-width
     '''
 
-    def getWidth(self):
+    def get_width(self):
         wmax = self.tw
         if wmax < self.mw:
             wmax = self.mw
@@ -143,72 +143,34 @@ class ShapeDoubleT(GridLayout, AShape):
     set the cs-information
     '''
 
-    def setInformation(self, information):
+    def set_information(self, information):
         self.information = information
 
-    '''
-    set the ack
-    '''
-
-    def setAck(self, ack):
-        self.ack = ack
-
-    '''
-    the method addLayer add new materials in the view
-    '''
-
-    def addLayer(self, x, y, h, w, material):
-        self.view.addLayer(x, y, h, w, material)
-
-    '''
-    delete the selected layer
-    '''
-
-    def deleteLayer(self):
-        self.view.deleteLayer()
-
-    '''
-    update the layerinformation in the cs-information
-    '''
-
-    def setLayerInformation(self, name, price, density, stiffness, strength):
-        self.information.updateLayerInformation(
-            name, price, density, stiffness, strength)
 
     '''
     update the cross section information in the cs-information
     '''
 
-    def setCrossSectionInformation(self):
-        self.information.updateCrossSectionInformation(
+    def set_cross_section_information(self):
+        self.information.update_cross_section_information(
             self.price, self.weight, self.strength)
 
-    '''
-    set the percent
-    '''
-
-    def setPercent(self, value):
-        self.view.setPercent(value)
 
     '''
     calculate the weight and price
     '''
-
-    def calculateWeightPrice(self):
+    #not finished yet
+    def calculate_weight_price(self):
         weight = 0.
         price = 0.
         # go trough all layers and get the weight of them
         for l in self.view.layers:
-            cur = l.getWeight()
+            cur = l.get_weight()
             weight += cur
             price += cur * l.material.price
         # if the percentOfLayers is not 1 there is a matrix
         # with concrete as material
-        freeplaces = self.view.getFreePlaces()
-        for i in freeplaces:
-            cur = (i[1] - i[0]) * i[2] * self.concreteDensity
-            weight += cur
-            price += cur * self.concretePrice
+        
         self.weight = weight
         self.price = price
 
@@ -216,7 +178,7 @@ class ShapeDoubleT(GridLayout, AShape):
     calculate the strength of the cross section
     '''
 
-    def calculateStrength(self):
+    def calculate_strength(self):
         self.strength = 0.
         '''
         strength = 0.

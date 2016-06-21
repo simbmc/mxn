@@ -32,47 +32,47 @@ class CrossSectionEditor(GridLayout):
         self.containsView = True
 
     '''
-    the method set_crossSection was developed to say the view, 
+    the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
 
-    def set_crossSection(self, cs):
+    def set_cross_section(self, cs):
         self.crossSection = cs
         # default cross section rectangle
-        self.csShape = cs.getCSRectangle()
+        self.csShape = cs.get_cs_rectangle()
         self.rectangleInformation = RectangleInformation()
         self.shape = self.rectangleInformation
-        self.rectangleInformation.set_crossSection(self.csShape)
+        self.rectangleInformation.set_cross_section(self.csShape)
         self.focusInformation = self.rectangleInformation
-        self.createGui()
+        self.create_gui()
 
     '''
     create the gui
     '''
 
-    def createGui(self):
-        self.createSelectionMenu()
-        self.createPopUpShape()
+    def create_gui(self):
+        self.create_selection_menu()
+        self.create_pop_up_shape()
         self.content.add_widget(self.rectangleInformation, 0)
 
     '''
     change the current cross section
     '''
 
-    def changeCrossSection(self, shape):
+    def change_cross_section(self, shape):
         self.csShape = shape
 
     '''
     create the layout where you can select the cross-section-shape
     '''
 
-    def createSelectionMenu(self):
+    def create_selection_menu(self):
         selectionContent = GridLayout(cols=1, spacing=10,
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=self.btnSize)
         self.btnSelection = Button(text='choose cross section shape', size_hint_y=None, height=self.btnSize,
                                    size_hint_x=None, width=200)
-        self.btnSelection.bind(on_press=self.showShapeSelection)
+        self.btnSelection.bind(on_press=self.show_shape_selection)
         selectionContent.add_widget(self.btnSelection)
         self.content.add_widget(selectionContent)
 
@@ -80,28 +80,28 @@ class CrossSectionEditor(GridLayout):
     create popup where you can select the shape of the cross section
     '''
 
-    def createPopUpShape(self):
+    def create_pop_up_shape(self):
         shapeContent = ShapeSelection()
-        shapeContent.setInformation(self)
+        shapeContent.set_information(self)
         self.shapeSelection = Popup(title='shape', content=shapeContent)
 
     '''
     look which shape the user has selected
     '''
 
-    def finishedShapeSelection(self, btn):
+    def finished_shape_selection(self, btn):
         if btn.text == 'circle':
-            self.setCircle(btn)
+            self.set_circle(btn)
             pass
         elif btn.text == 'rectangle':
-            self.setRectangle(btn)
+            self.set_rectangle(btn)
         elif btn.text == 'I-shape':
-            self.setDoubleT(btn)
+            self.set_double_t(btn)
         elif btn.text=='T-shape':
-            self.setT(btn)
+            self.set_t(btn)
         self.shapeSelection.dismiss()
     
-    def cancelShapeSelection(self):
+    def cancel_shape_selection(self):
         self.shapeSelection.dismiss()
         
 
@@ -109,86 +109,86 @@ class CrossSectionEditor(GridLayout):
     open the popup where the user can select the shape
     '''
 
-    def showShapeSelection(self, btn):
+    def show_shape_selection(self, btn):
         self.shapeSelection.open()
 
     '''
     show the rectangle shape
     '''
 
-    def setRectangle(self, btn):
+    def set_rectangle(self, btn):
         #self.btnSelection.text = btn.text
-        self.csShape = self.crossSection.getCSRectangle()
+        self.csShape = self.crossSection.get_cs_rectangle()
         self.crossSection.view = self.csShape
         self.remove_widget(self.shape)
         self.shape = self.rectangleInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.rectangleInformation, 0)
         self.focusInformation = self.rectangleInformation
-        self.crossSection.setRectangleView()
-        self.updateView()
-        self.crossSection.setRectangleView()
+        self.crossSection.set_rectangle_view()
+        self.update_view()
+        self.crossSection.set_rectangle_view()
 
     '''
     show the doubleT shape
     '''
 
-    def setDoubleT(self, btn):
-        self.csShape = self.crossSection.getCSDoubleT()
+    def set_double_t(self, btn):
+        self.csShape = self.crossSection.get_cs_double_t()
         self.crossSection.view = self.csShape
         if self.firstTimeDoubleT:
             self.doubleTInformation = DoubleTInformation()
-            self.doubleTInformation.set_crossSection(self.csShape)
+            self.doubleTInformation.set_cross_section(self.csShape)
             self.firstTimeDoubleT = False
         self.remove_widget(self.shape)
         self.shape = self.doubleTInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.doubleTInformation, 0)
         self.focusInformation = self.doubleTInformation
-        self.crossSection.setDoubleTView()
-        self.updateView()
+        self.crossSection.set_doublet_view()
+        self.update_view()
 
     '''
     show the circle shape
     '''
     # not finished yet
 
-    def setCircle(self, btn):
-        self.csShape = self.crossSection.getCSCircle()
+    def set_circle(self, btn):
+        self.csShape = self.crossSection.get_cs_circle()
         self.crossSection.view = self.csShape
         if self.firstTimeCircle:
             self.circleInformation = CircleInformation()
-            self.circleInformation.set_crossSection(self.csShape)
+            self.circleInformation.set_cross_section(self.csShape)
             self.firstTimeCircle = False
         self.remove_widget(self.shape)
         self.shape = self.circleInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.circleInformation, 0)
         self.focusInformation = self.circleInformation
-        self.crossSection.setCircle()
-        self.updateView()
+        self.crossSection.set_circle()
+        self.update_view()
     
-    def setT(self,btn):
+    def set_t(self,btn):
         #self.btnSelection.text = btn.text
-        self.csShape = self.crossSection.getCST()
+        self.csShape = self.crossSection.get_cs_t()
         self.crossSection.view = self.csShape
         if self.firstTimeT:
             self.tInformation = TInformation()
-            self.tInformation.set_crossSection(self.csShape)
+            self.tInformation.set_cross_section(self.csShape)
             self.firstTimeT = False
         self.remove_widget(self.shape)
         self.shape = self.tInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.tInformation, 0)
         self.focusInformation = self.tInformation
-        self.crossSection.setTView()
-        self.updateView()
+        self.crossSection.set_t_view()
+        self.update_view()
 
     '''
     add the view at the left side of the editor
     '''
 
-    def addView(self):
+    def add_view(self):
         self.view = self.crossSection.view
         self.containsView = True
         self.add_widget(self.view, 1)
@@ -197,7 +197,7 @@ class CrossSectionEditor(GridLayout):
     update the view when the shape has changes
     '''
 
-    def updateView(self):
+    def update_view(self):
         if self.containsView:
             self.remove_widget(self.view)
             self.view = self.crossSection.view
@@ -207,7 +207,7 @@ class CrossSectionEditor(GridLayout):
     remove the view of the editor
     '''
 
-    def removeView(self):
+    def remove_view(self):
         if self.containsView:
             self.remove_widget(self.view)
             self.containsView = False

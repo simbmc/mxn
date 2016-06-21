@@ -14,13 +14,13 @@ class MultilinearView(GridLayout):
     def __init__(self, **kwargs):
         super(MultilinearView, self).__init__(**kwargs)
         self.cols = 1
-        self.createGraph()
-        self.createPoints(5)
+        self.create_graph()
+        self.create_points(5)
     
     '''
     create the graph of the view
     '''
-    def createGraph(self):
+    def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=10, y_ticks_major=10,
                            y_grid_label=True, x_grid_label=True,
@@ -30,7 +30,7 @@ class MultilinearView(GridLayout):
     '''
     create the points 
     '''
-    def createPoints(self, n):
+    def create_points(self, n):
         self._points=[]
         self.lines=[]
         d=100.
@@ -46,7 +46,7 @@ class MultilinearView(GridLayout):
             self.graph.add_plot(p)
             c+=i
             n-=1
-        self.drawLines()
+        self.draw_lines()
     
     '''
     reaction when the user move touch on the graph 
@@ -80,7 +80,7 @@ class MultilinearView(GridLayout):
                 p.yrange=[y-self.epsY,y+self.epsY]
     
     #not finished yet
-    def drawLines(self):
+    def draw_lines(self):
         for i in range(len(self._points)):
             if i==0:
                 line=LinePlot(xrange=[0., self._points[i].xrange[0]+self.epsX],
@@ -97,30 +97,30 @@ class MultilinearView(GridLayout):
     '''
     update the width of the graph
     '''
-    def updateWidth(self):
-        self.graph.xmax=self.editor.getWidth()
+    def update_width(self):
+        self.graph.xmax=self.editor.get_width()
     
     '''
     update the height of the graph
     '''
-    def updateHeight(self):
-        self.graph.ymax=self.editor.getHeight()
+    def update_height(self):
+        self.graph.ymax=self.editor.get_height()
     
     '''
     update the number of points
     '''
-    def updatePoints(self):
+    def update_points(self):
         #clear all points and lines
         while len(self.graph.plots)>0:
             for plot in self.graph.plots:
                 self.graph.remove_plot(plot)
                 self.graph._clear_buffer()
         #draw the new points and lines
-        self.createPoints(self.editor.getPoints())
-        self.drawLines()
+        self.create_points(self.editor.get_points())
+        self.draw_lines()
     
     '''
     sign in by the parent
     '''
-    def signIn(self, parent):
+    def sign_in(self, parent):
         self.editor=parent

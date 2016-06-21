@@ -24,15 +24,15 @@ class TInformation(GridLayout):
     '''
     create the gui
     '''
-    def createGui(self):
-        self.topWidth=Button(text=str(self.csShape.getWidthTop()),size_hint_y=None, height=self.btnSize)
-        self.bottomWidth=Button(text=str(self.csShape.getWidthBottom()),size_hint_y=None, height=self.btnSize)
-        self.topHeight=Button(text=str(self.csShape.getHeightTop()),size_hint_y=None, height=self.btnSize)
-        self.bottomHeight=Button(text=str(self.csShape.getHeightBottom()),size_hint_y=None, height=self.btnSize)
-        self.topWidth.bind(on_press=self.showNumpad)
-        self.topHeight.bind(on_press=self.showNumpad)
-        self.bottomWidth.bind(on_press=self.showNumpad)
-        self.bottomHeight.bind(on_press=self.showNumpad)
+    def create_gui(self):
+        self.topWidth=Button(text=str(self.csShape.get_width_top()),size_hint_y=None, height=self.btnSize)
+        self.bottomWidth=Button(text=str(self.csShape.get_width_bottom()),size_hint_y=None, height=self.btnSize)
+        self.topHeight=Button(text=str(self.csShape.get_height_top()),size_hint_y=None, height=self.btnSize)
+        self.bottomHeight=Button(text=str(self.csShape.get_height_bottom()),size_hint_y=None, height=self.btnSize)
+        self.topWidth.bind(on_press=self.show_numpad)
+        self.topHeight.bind(on_press=self.show_numpad)
+        self.bottomWidth.bind(on_press=self.show_numpad)
+        self.bottomHeight.bind(on_press=self.show_numpad)
         self.add_widget(Label(text='top-width'))
         self.add_widget(self.topWidth)
         self.add_widget(Label(text='bottom-width'))
@@ -41,48 +41,48 @@ class TInformation(GridLayout):
         self.add_widget(self.topHeight)
         self.add_widget(Label(text='bottom-height'))
         self.add_widget(self.bottomHeight)
-        self.createPopup()
+        self.create_popup()
     
     '''
     create the popup
     '''
-    def createPopup(self):
+    def create_popup(self):
         self.numpad=Numpad()
-        self.numpad.signInParent(self)
+        self.numpad.sign_in_parent(self)
         self.popup=Popup(content=self.numpad)
     
     '''
     close the numpad
     '''
-    def closeNumpad(self):
+    def close_numpad(self):
         self.popup.dismiss()
         
     '''
     open the popup
     '''
-    def showNumpad(self,btn):
+    def show_numpad(self,btn):
         self.focusBtn=btn
         self.popup.open()
     
     '''
     set the cross section
     '''
-    def set_crossSection(self, cs):
+    def set_cross_section(self, cs):
         self.csShape=cs
-        self.createGui()
+        self.create_gui()
     
     '''
     set the text of the button
     '''
-    def finishedNumpad(self):
+    def finished_numpad(self):
         self.focusBtn.text=self.numpad.textinput.text
         self.popup.dismiss()
         value=float(self.focusBtn.text)
         if self.focusBtn==self.topHeight:
-            self.csShape.setHeightTop(value)
+            self.csShape.set_height_top(value)
         elif self.focusBtn==self.topWidth:
-            self.csShape.setWidthTop(value)
+            self.csShape.set_width_top(value)
         elif self.focusBtn==self.bottomHeight:
-            self.csShape.setHeightBottom(value)
+            self.csShape.set_height_bottom(value)
         elif self.focusBtn==self.bottomWidth:
-            self.csShape.setWidthBottom(value)
+            self.csShape.set_width_bottom(value)

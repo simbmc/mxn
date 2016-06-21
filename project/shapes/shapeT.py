@@ -7,6 +7,7 @@ from shapes.ashape import AShape
 from crossSectionView.tView import TView
 from kivy.uix.gridlayout import GridLayout
 
+
 class ShapeT(AShape, GridLayout):
     # Constructor
 
@@ -24,20 +25,20 @@ class ShapeT(AShape, GridLayout):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = TView()
-        self.view.set_crossSection(self)
-        
+        self.view.set_cross_section(self)
+
     '''
     return the top-width
     '''
 
-    def getWidthTop(self):
+    def get_width_top(self):
         return self.tw
 
     '''
     set the top-width
     '''
 
-    def setWidthTop(self, value):
+    def set_width_top(self, value):
         self.tw = value
         self.view.update()
 
@@ -45,22 +46,22 @@ class ShapeT(AShape, GridLayout):
     return the top-height
     '''
 
-    def getHeightTop(self):
+    def get_height_top(self):
         return self.th
 
     '''
     set the top-height
     '''
 
-    def setHeightTop(self, value):
+    def set_height_top(self, value):
         self.th = value
         self.view.update()
-    
+
     '''
     set the bottom-height
     '''
 
-    def setHeightBottom(self, value):
+    def set_height_bottom(self, value):
         self.bh = value
         self.view.update()
 
@@ -68,14 +69,14 @@ class ShapeT(AShape, GridLayout):
     return the bottom-height
     '''
 
-    def getHeightBottom(self):
+    def get_height_bottom(self):
         return self.bh
 
     '''
     set the bottom-width
     '''
 
-    def setWidthBottom(self, value):
+    def set_width_bottom(self, value):
         self.bw = value
         self.view.update()
 
@@ -83,92 +84,61 @@ class ShapeT(AShape, GridLayout):
     return the bottom-width
     '''
 
-    def getWidthBottom(self):
+    def get_width_bottom(self):
         return self.bw
-    
+
     '''
     return the cs-height
     '''
 
-    def getHeight(self):
+    def get_height(self):
         return self.th + self.bh
-    
+
         '''
     return the max-width
     '''
 
-    def getWidth(self):
+    def get_width(self):
         if self.tw < self.bw:
             return self.bw
         else:
             return self.tw
-    
-    '''
-    the method addLayer add new materials in the view
-    '''
 
-    def addLayer(self, x, y, h, w, material):
-        self.view.addLayer(x, y, h, w, material)
 
-    '''
-    delete the selected layer
-    '''
-
-    def deleteLayer(self):
-        self.view.deleteLayer()
-    
-    '''
-    update the layerinformation in the cs-information
-    '''
-
-    def setLayerInformation(self, name, price, density, stiffness, strength):
-        self.information.updateLayerInformation(
-            name, price, density, stiffness, strength)
-    
-    
-        
     '''
     update the cross section information in the cs-information
     '''
 
-    def setCrossSectionInformation(self):
-        self.information.updateCrossSectionInformation(self.price, self.weight, self.strength)
-    
-    '''
-    set the percent
-    '''
+    def set_cross_section_information(self):
+        self.information.update_cross_section_information(
+            self.price, self.weight, self.strength)
 
-    def setPercent(self, value):
-        self.view.setPercent(value)
-    
     '''
     calculate the weight and price
     '''
+    # not finished yet
 
-    def calculateWeightPrice(self):
-        weight=0.
-        price=0.
-        #go trough all layers and get the weight of them
+    def calculate_weight_price(self):
+        weight = 0.
+        price = 0.
+        # go trough all layers and get the weight of them
         for l in self.view.layers:
-            cur=l.getWeight()
-            weight+=cur
-            price+=cur*l.material.price
-        #if the percentOfLayers is not 1 there is a matrix
-        #with concrete as material
-        freeplaces=self.view.getFreePlaces()
-        for i in freeplaces:
-            cur=(i[1]-i[0])*i[2]*self.concreteDensity
-            weight+=cur
-            price+=cur*self.concretePrice
-        self.weight=weight
-        self.price=price
+            cur = l.get_weight()
+            weight += cur
+            price += cur * l.material.price
+        # if the percentOfLayers is not 1 there is a matrix
+        # with concrete as material
+
+        self.weight = weight
+        self.price = price
 
     '''
     calculate the strength of the cross section
     '''
+    # not finished yet
 
-    def calculateStrength(self):
-        self.strength=0.
+    def calculate_strength(self):
+        self.strength = 0.
         '''
         strength=0.
         #cur supremum

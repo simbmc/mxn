@@ -21,43 +21,43 @@ class CircleInformation(GridLayout):
         self.spacing=10
         self.btnSize=Design.btnSize
     
-    def createGui(self):
-        self.createPopup()
+    def create_gui(self):
+        self.create_popup()
         self.add_widget(Label(text='radius: '))
-        self.btnRadius=Button(text=str(self.csShape.getRadius()), size_hint_y=None, height=self.btnSize)
-        self.btnRadius.bind(on_press=self.showNumpad)
+        self.btnRadius=Button(text=str(self.csShape.get_radius()), size_hint_y=None, height=self.btnSize)
+        self.btnRadius.bind(on_press=self.show_numpad)
         self.add_widget(self.btnRadius)
     '''
     set the cross section
     '''
-    def set_crossSection(self, cs):
+    def set_cross_section(self, cs):
         self.csShape=cs
-        self.createGui()
+        self.create_gui()
     
     '''
     create the popup
     '''
-    def createPopup(self):
+    def create_popup(self):
         self.numpad=Numpad()
-        self.numpad.signInParent(self)
+        self.numpad.sign_in_parent(self)
         self.popup=Popup(content=self.numpad)
     
     '''
     close the numpad
     '''
-    def closeNumpad(self):
+    def close_numpad(self):
         self.popup.dismiss()
         
     '''
     open the popup
     '''
-    def showNumpad(self,btn):
+    def show_numpad(self,btn):
         self.focusBtn=btn
         self.popup.open()
     
     '''
     set the text of the button
     '''
-    def finishedNumpad(self):
+    def finished_numpad(self):
         self.btnRadius.text=self.numpad.textinput.text
         self.popup.dismiss()

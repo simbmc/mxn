@@ -25,41 +25,41 @@ class ShapeSelection(GridLayout):
     create the gui
     '''
 
-    def createGUI(self):
-        self.createGraphs()
-        self.createSelection()
+    def create_gui(self):
+        self.create_graphs()
+        self.create_selection()
     '''
     create all graphs
     '''
 
-    def createGraphs(self):
-        self.createGraphRectangle()
-        self.createGraphDoubleT()
-        self.createGraphT()
-        self.createGraphCircle()
+    def create_graphs(self):
+        self.create_graph_rectangle()
+        self.create_graph_double_t()
+        self.create_graph_t()
+        self.create_graph_circle()
         # default-shape Rectangle
         self.add_widget(self.graphRectangle)
         self.focusGraph = self.graphRectangle
-        self.createGraphDoubleT()
+        self.create_graph_double_t()
 
     '''
     create the rectangle graph
     '''
 
-    def createGraphRectangle(self):
+    def create_graph_rectangle(self):
         self.graphRectangle = Graph(
             #x_ticks_major=0.05, y_ticks_major=0.05,
             #y_grid_label=True, x_grid_label=True, padding=5,
             border_color = [0.5,0.5,0.5,0],
             xmin=0, xmax=0.5, ymin=0, ymax=0.25)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawRectangle()
+        self.p.points = self.draw_rectangle()
         self.graphRectangle.add_plot(self.p)
     
     '''
     draw the rectangle
     '''
-    def drawRectangle(self):
+    def draw_rectangle(self):
         c=1e-2
         h=0.23
         w=0.45
@@ -68,21 +68,21 @@ class ShapeSelection(GridLayout):
     create the doubleT graph
     '''
 
-    def createGraphDoubleT(self):
+    def create_graph_double_t(self):
         self.graphDoubleT = Graph(
             #x_ticks_major=0.05, y_ticks_major=0.05,
             #y_grid_label=True, x_grid_label=True, padding=5,
             border_color = [0.5,0.5,0.5,0],
             xmin=0, xmax=0.27, ymin=0, ymax=0.65)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawDoubleT()
+        self.p.points = self.draw_double_t()
         self.graphDoubleT.add_plot(self.p)
 
     '''
     draw the double_T
     '''
 
-    def drawDoubleT(self):
+    def draw_double_t(self):
         y1 = 1e-3
         bw=tw=0.25
         mw=0.1
@@ -105,21 +105,21 @@ class ShapeSelection(GridLayout):
     create the doubleT graph
     '''
 
-    def createGraphT(self):
+    def create_graph_t(self):
         self.graphT = Graph(
             #x_ticks_major=0.05, y_ticks_major=0.05,
             #y_grid_label=True, x_grid_label=True, padding=5,
             border_color = [0.5,0.5,0.5,0],
             xmin=0, xmax=0.27, ymin=0, ymax=0.5)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawT()
+        self.p.points = self.draw_t()
         self.graphT.add_plot(self.p)
 
     '''
     return the t-coordinates to draw
     '''
 
-    def drawT(self):
+    def draw_t(self):
         bw = 0.1
         bh = 0.3
         tw = 0.25
@@ -142,7 +142,7 @@ class ShapeSelection(GridLayout):
     create the graph circle
     '''
 
-    def createGraphCircle(self):
+    def create_graph_circle(self):
         self.graphCircle = Graph(
             #x_ticks_major=0.05, y_ticks_major=0.05,
             #y_grid_label=True, x_grid_label=True, padding=5,
@@ -160,8 +160,8 @@ class ShapeSelection(GridLayout):
     the shape
     '''
 
-    def createSelection(self):
-        self.createBtns()
+    def create_selection(self):
+        self.create_btns()
         self.contentRight = GridLayout(cols=1)
         #self.contentRight.add_widget(self.focusShape)
         self.btns = GridLayout(cols=1, spacing=10, size_hint_y=None)
@@ -174,7 +174,7 @@ class ShapeSelection(GridLayout):
         self.btns.add_widget(self.circle)
         ###################################################################
         #here you can add more shapes.                                    #
-        #implement the button in the createBtns method                   #
+        #implement the button in the create_btns method                   #
         ###################################################################
         layout = GridLayout(cols=2, spacing=15)
         layout.add_widget(self.btnOK)
@@ -189,7 +189,7 @@ class ShapeSelection(GridLayout):
     create and bind all btns from the gui
     '''
 
-    def createBtns(self):
+    def create_btns(self):
         # finshed button
         self.finishedBtn = Button(
             text='finished', size_hint_y=None, height=self.btnSize)
@@ -203,19 +203,19 @@ class ShapeSelection(GridLayout):
         # default-shape=rectangle
         self.focusShape = Button(
             text='rectangle', size_hint_y=None, height=self.btnSize)
-        self.focusShape.bind(on_press=self.show_shapesBtn)
+        self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
         self.rectangle = Button(
             text='rectangle', size_hint_y=None, height=self.btnSize)
-        self.rectangle.bind(on_press=self.showRectangle)
+        self.rectangle.bind(on_press=self.show_rectangle)
         self.doubleT = Button(
             text='I-shape', size_hint_y=None, height=self.btnSize)
-        self.doubleT.bind(on_press=self.showDoubleT)
+        self.doubleT.bind(on_press=self.show_double_t)
         self.t = Button(text='T-shape', size_hint_y=None, height=self.btnSize)
-        self.t.bind(on_press=self.showT)
+        self.t.bind(on_press=self.show_t)
         self.circle = Button(
             text='circle', size_hint_y=None, height=self.btnSize)
-        self.circle.bind(on_press=self.showCircle)
+        self.circle.bind(on_press=self.show_circle)
         #######################################################################
         #here you can add more shapes                                             #
         #Attention: make sure that the buttons habe the properties                #
@@ -226,7 +226,7 @@ class ShapeSelection(GridLayout):
     show doubleT-View
     '''
 
-    def showDoubleT(self, btn):
+    def show_double_t(self, btn):
         self.remove_widget(self.focusGraph)
         self.add_widget(self.graphDoubleT, 1)
         self.focusGraph = self.graphDoubleT
@@ -236,7 +236,7 @@ class ShapeSelection(GridLayout):
     show T-View
     '''
 
-    def showT(self, btn):
+    def show_t(self, btn):
         self.remove_widget(self.focusGraph)
         self.add_widget(self.graphT, 1)
         self.focusGraph = self.graphT
@@ -246,7 +246,7 @@ class ShapeSelection(GridLayout):
     show Rectangle-Graph
     '''
 
-    def showRectangle(self, btn):
+    def show_rectangle(self, btn):
         self.remove_widget(self.focusGraph)
         self.add_widget(self.graphRectangle, 1)
         self.focusGraph = self.graphRectangle
@@ -256,7 +256,7 @@ class ShapeSelection(GridLayout):
     show circle graph
     '''
 
-    def showCircle(self, btn):
+    def show_circle(self, btn):
         self.remove_widget(self.focusGraph)
         self.add_widget(self.graphCircle, 1)
         self.focusGraph = self.graphCircle
@@ -266,28 +266,28 @@ class ShapeSelection(GridLayout):
     show the btns where you can select the shape
     '''
 
-    def show_shapesBtn(self, btn):
+    def show_shapes_btn(self, btn):
         self.contentRight.remove_widget(self.focusShape)
         self.contentRight.add_widget(self.shapes)
 
     '''
     finished the totally selection and call the 
-    finishedShapeSelection of the information
+    finished_shape_selection of the information
     '''
 
     def finished(self, btn):
-        self.information.finishedShapeSelection(self.focusShape)
+        self.information.finished_shape_selection(self.focusShape)
     '''
     cancel the shape selection 
     '''
 
     def cancel(self, btn):
-        self.information.cancelShapeSelection()
+        self.information.cancel_shape_selection()
 
     '''
     set the information
     '''
 
-    def setInformation(self, information):
+    def set_information(self, information):
         self.information = information
-        self.createGUI()
+        self.create_gui()

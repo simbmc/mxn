@@ -20,73 +20,73 @@ class QuadraticFunctionEditor(GridLayout):
         self.h=10
         self.w=10
         self.view=QuadraticFunctionView()
-        self.view.signIn(self)
+        self.view.sign_in(self)
         self.information=QuadraticFunctionInformation()
-        self.information.signIn(self)
+        self.information.sign_in(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
     
     '''
     set the factor a
     '''
-    def setA(self,value):
+    def set_a(self,value):
         self.a=value
-        self.view.drawLines()
+        self.view.draw_lines()
     
     '''
     return the factor a
     '''
-    def getA(self):
+    def get_a(self):
         return self.a
     
     '''
     set the factor b
     '''
-    def setB(self, value):
+    def set_b(self, value):
         self.b=value
-        self.view.drawLines()
+        self.view.draw_lines()
     
     '''
     return the factor b
     '''
-    def getB(self):
+    def get_b(self):
         return self.b
     
     '''
     set the factor c
     '''
-    def setC(self, value):
+    def set_c(self, value):
         self.c=value
-        self.view.drawLines()
+        self.view.draw_lines()
     
     '''
     return the factor c
     '''
-    def getC(self):
+    def get_c(self):
         return self.c
     
     '''
     set the width
     '''
-    def setWidth(self, value):
+    def set_width(self, value):
         self.w=value
     
     '''
     return the width
     '''
-    def getWidth(self):
+    def get_width(self):
         return self.w
     
     '''
     set the height 
     '''
-    def setHeight(self,value):
+    def set_height(self,value):
         self.h=value
     
     '''
     return the height
     '''
-    def getHeight(self, value):
+    def get_height(self, value):
         return self.h
     
     '''

@@ -8,80 +8,84 @@ from abc import abstractmethod
 
 class AShape:
 
-    def setInformation(self, information):
+    def set_information(self, information):
         self.information = information
-        self.calculateWeightPrice()
-        self.calculateStrength()
-        self.setCrossSectionInformation()
+        self.calculate_weight_price()
+        self.calculate_strength()
+        self.set_cross_section_information()
+
+    '''
+    add a bar
+    '''
+
+    def add_bar(self, x, y, material):
+        self.view.add_bar(x, y, material)
+
+    '''
+    the method add_layer add new materials in the view
+    '''
+
+    def add_layer(self, x, y, material):
+        self.view.add_layer(x, y, material)
+
+    '''
+    delete the selected layer
+    '''
+    
+    def delete_layer(self):
+        self.view.delete_layer()
+    
+    '''
+    update the layerinformation in the cs-information
+    '''
+
+    def set_layer_information(self, name, price, density, stiffness, strength):
+        self.information.update_layer_information(
+            name, price, density, stiffness, strength)
 
     @abstractmethod
-    def setAck(self, ack):
+    def set_cross_section_information(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def addLayer(self, percent, material):
+    def calculate_weight_price(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def deleteLayer(self):
+    def calculate_strength(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def setLayerInformation(self, name, price, density, stiffness, strength, percent):
+    def get_height(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def setCrossSectionInformation(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def calculateWeightPrice(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def calculateStrength(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def getFreePlaces(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def getHeight(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def getWidth(self):
+    def get_width(self):
         raise NotImplemented('not implemented')
     '''
     calculate the strain of concrete
     '''
 
-    def calculateStrainOfConcrete(self):
+    def calculate_strain_of_concrete(self):
         return self.concreteStrength / self.concreteStiffness
 
     '''
     get all the layers
     '''
 
-    def getLayers(self):
-        return self.view.getLayers()
+    def get_layers(self):
+        return self.view.get_layers()
 
-    '''
-    the method setPercent change the percentage share of the selected materials
-    '''
-
-    def setPercent(self, value):
-        self.view.setPercent(value)
-    
     '''
     show the error message
     '''
-    def showErrorMessage(self):
-        self.information.showErrorMessage()
-    
+
+    def show_error_message(self):
+        self.information.show_error_message()
+
     '''
     hide the errorMessage
     '''
-    def hideErrorMessage(self):
-        self.information.hideErrorMessage()
+
+    def hide_error_message(self):
+        self.information.hide_error_message()

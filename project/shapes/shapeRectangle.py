@@ -25,102 +25,68 @@ class ShapeRectangle(GridLayout, AShape):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = CSRectangleView()
-        self.view.set_crossSection(self)
+        self.view.set_cross_section(self)
 
-    def setInformation(self, information):
+    def set_information(self, information):
         self.information = information
-        self.calculateWeightPrice()
-        self.calculateStrength()
-        self.setCrossSectionInformation()
+        self.calculate_weight_price()
+        self.calculate_strength()
+        self.set_cross_section_information()
+
+
 
     '''
-    the method set_crossSection was developed to say the view, 
-    which cross section should it use
+    the method set_layer_information update the cross section information
     '''
 
-    def setAck(self, ack):
-        self.ack = ack
-
-    '''
-    the method addLayer add new materials in the view
-    '''
-
-    def addLayer(self, x, y, h, w, material):
-        self.view.addLayer(x, y, h, w, material)
-
-    '''
-    the method deleteLayer delete the selected materials
-    '''
-
-    def deleteLayer(self):
-        self.view.deleteLayer()
-
-    '''
-    the method setLayerInformation update the layer
-    after a layer get the focus
-    '''
-
-    def setLayerInformation(self, name, price, density, stiffness, strength):
-        self.information.updateLayerInformation(
-            name, price, density, stiffness, strength)
-
-    '''
-    the method setLayerInformation update the cross section information
-    '''
-
-    def setCrossSectionInformation(self):
-        self.information.updateCrossSectionInformation(
+    def set_cross_section_information(self):
+        self.information.update_cross_section_information(
             self.price, self.weight, self.strength)
 
     '''
     get all the layers
     '''
 
-    def getLayers(self):
-        return self.view.getLayers()
+    def get_layers(self):
+        return self.view.get_layers()
 
     '''
-    the method setHeight changes the height of the view
+    the method set_height changes the height of the view
     '''
 
-    def setHeight(self, value):
-        self.view.setHeight(value)
+    def set_height(self, value):
+        self.view.set_height(value)
         self.ch = value
 
     '''
-    the method setWidth change the width of the view
+    the method set_width change the width of the view
     '''
 
-    def setWidth(self, value):
-        self.view.setWidth(value)
+    def set_width(self, value):
+        self.view.set_width(value)
         self.cw = value
     '''
     return the heigth of the shape
     '''
-    def getHeight(self):
+    def get_height(self):
         return self.ch
     '''
     return the width of the shape
     '''
-    def getWidth(self):
+    def get_width(self):
         return self.cw
-    '''
-    the method setPercent change the percentage share of the selected materials
-    '''
-
-    def setPercent(self, value):
-        self.view.setPercent(value)
+   
 
     '''
     calculate the weight and the price of the cross section
     '''
 
-    def calculateWeightPrice(self):
+    def calculate_weight_price(self):
         weight = price = percentOfLayers = 0.
         # go trough all layers and
         # get the weight of them
         for l in self.view.layers:
-            cur = l.getWeight()
+            cur = l.get_weight()
             weight += cur
             price += cur * l.material.price
             percentOfLayers += l.h / self.ch
@@ -133,11 +99,11 @@ class ShapeRectangle(GridLayout, AShape):
         self.price = price
 
     '''
-    the method calculateStrength calculate the strength of 
+    the method calculate_strength calculate the strength of 
     the crossSection
     '''
 
-    def calculateStrength(self):
+    def calculate_strength(self):
         strength = 0.
         # cur supremum
         self.minOfMaxstrain = 1e10
@@ -147,7 +113,7 @@ class ShapeRectangle(GridLayout, AShape):
         # find the minimum max_strain and the maximum max_strain
         for l in self.view.layers:
             percentOfLayers += l.h / self.ch
-            curStrain = l.getStrain()
+            curStrain = l.get_strain()
             # proof whether the curStrain is smaller as the min
             if curStrain < self.minOfMaxstrain:
                 self.minOfMaxstrain = curStrain
@@ -175,6 +141,6 @@ class ShapeRectangle(GridLayout, AShape):
     '''
     sign in by the cross section
     '''
-    def signParent(self, crossSection):
+    def sign_parent(self, crossSection):
         self.allCrossSection = crossSection
-        self.information = crossSection.getInformation()
+        self.information = crossSection.get_information()

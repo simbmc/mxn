@@ -19,7 +19,7 @@ class QuadraticFunctionView(GridLayout):
     '''
     create the graph of the view
     '''
-    def createGraph(self):
+    def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=2, y_ticks_major=2,
                            y_grid_label=True, x_grid_label=True,
@@ -29,7 +29,7 @@ class QuadraticFunctionView(GridLayout):
     '''
     draw the function
     '''
-    def drawLines(self):
+    def draw_lines(self):
         while len(self.graph.plots)>0:
             for plot in self.graph.plots:
                 self.graph.remove_plot(plot)
@@ -41,21 +41,21 @@ class QuadraticFunctionView(GridLayout):
     '''
     sign in by the parent
     '''
-    def signIn(self, parent):
+    def sign_in(self, parent):
         self.editor=parent
-        self.createGraph()
-        self.drawLines()
+        self.create_graph()
+        self.draw_lines()
     
     '''
     update the graphwidth
     '''
-    def updateWidth(self):
+    def update_width(self):
         self.graph.xmax=self.editor.getwidth()
     
     '''
     update the graphheight
     '''
-    def updateHeight(self):
-        self.graph.ymax=self.editor.getHeight()
+    def update_height(self):
+        self.graph.ymax=self.editor.get_height()
     
             

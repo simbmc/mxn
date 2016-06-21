@@ -16,11 +16,11 @@ class QuadraticFunction(IFunction):
     def f(self,x):
         return self.a*x**2+self.b*x+self.c
     
-    def setA(self,value):
+    def set_a(self,value):
         self.a=value
     
-    def setB(self,value):
+    def set_b(self,value):
         self.b=value 
     
-    def setC(self,value):
+    def set_c(self,value):
         self.c=value 

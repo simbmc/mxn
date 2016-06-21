@@ -15,10 +15,10 @@ class LinearFunction(IFunction):
     def f(self,x):
         return self.a*x+self.b
     
-    def setA(self,value):
+    def set_a(self,value):
         self.a=value
     
-    def setB(self,value):
+    def set_b(self,value):
         self.b=value
         
     

@@ -3,16 +3,16 @@ Created on 14.03.2016
 
 @author: mkennert
 '''
-
-
+from plot.filled_ellipse import FilledEllipse
+from plot.circle import Circle
 '''
 the class CSRectangleView was developed to show the the cross section,
 which has a rectangle shape
 '''
 
-
 from kivy.uix.gridlayout import GridLayout
 
+from bars.bar import Bar
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
@@ -32,14 +32,15 @@ class CSRectangleView(GridLayout, AView):
         self.csShape = None
         self.percent_change = False
         self.layers = []
-        self.createGraph()
+        self.bars=[]
+        self.create_graph()
 
     '''
-    the method createGraph create the graph, where you can add 
+    the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
     '''
 
-    def createGraph(self):
+    def create_graph(self):
         self.graph = Graph(
             #background_color = [1, 1, 1, 1],
             border_color = [0,0,0,1],
@@ -50,173 +51,130 @@ class CSRectangleView(GridLayout, AView):
             xmin=0, xmax=self.cw, ymin=0, ymax=self.ch)
         self.add_widget(self.graph)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawRectangle()
+        self.p.points = self.draw_rectangle()
         self.graph.add_plot(self.p)
         
     '''
     update the graph
     '''
-    def updateGraph(self):
+    def update_graph(self):
         self.graph.remove_plot(self.p)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
-        self.p.points = self.drawRectangle()
+        self.p.points = self.draw_rectangle()
         self.graph.add_plot(self.p)
     
     '''
     draw the rectangle
     '''
-    def drawRectangle(self):
+    def draw_rectangle(self):
         h=self.ch/1e3
         w=self.cw/1e3
         return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
               
 
     '''
-    the method addLayer was developed to add new layer at the cross section
+    the method add_layer was developed to add new layer at the cross section
     '''
 
-    def addLayer(self, x, y, h, w, material):
+    def add_layer(self, x, y, material):
         if y>self.ch:
-            print('case 1:')
-            self.csShape.showErrorMessage()
-            return
+            self.csShape.show_error_message()
         else:
-            print('case 2:')
-            self.csShape.hideErrorMessage()
+            self.csShape.hide_error_message()
             #default height 0
-            l = Layer(0, y, 0., self.cw,next(Design.colorcycler))
+            l = Layer(0, y, 0., self.cw)
             l.set_Material(material)
-            line = LinePlot(color=[1, 0, 0, 1], points = [(0,y),(self.cw,y)],width=2)
+            line = LinePlot(color=[1, 0, 0, 1], points = [(0,y),(self.cw,y)])
             self.graph.add_plot(line)
             self.layers.append(l)
-            self.csShape.calculateStrength()
-            self.updateCrossSectionInformation()
-
+            self.csShape.calculate_strength()
+            self.update_cross_section_information()
+    
     '''
-    the method deleteLayer was developed to delete layer from the cross section
+    add a bar
+    '''
+    def add_bar(self,x,y, material):
+        if y>self.ch or x>self.cw:
+            self.csShape.show_error_message()
+        else:
+            self.csShape.hide_error_message()
+            epsY=self.ch/1e2
+            epsX=self.cw/1e2
+            b=Bar(x,y)
+            b.set_Material(material)
+            plot=FilledEllipse(xrange=[x-epsX,x+epsX],yrange=[y-epsY,y+epsY],color=[255,0,0,1])            
+            self.graph.add_plot(plot)
+            self.bars.append(b)
+            
+    '''
+    the method delete_layer was developed to delete layer from the cross section
     '''
 
-    def deleteLayer(self):
+    def delete_layer(self):
         if len(self.layers)>0:
             for layer in self.layers:
                 if layer.focus:
                     layer.filledRectCs.yrange = [0, 0]
                     layer.filledRectAck.yrange = [0, 0]
                     self.layers.remove(layer)
-            self.csShape.calculateStrength()
-            self.updateCrossSectionInformation()
+            self.csShape.calculate_strength()
+            self.update_cross_section_information()
 
     '''
-    the method updateLayerInformation update the layer information of 
+    the method update_layer_information update the layer information of 
     the view_information
     '''
 
-    def updateLayerInformation(self, name, price, density, stiffness, strength):
-        self.csShape.setLayerInformation(
+    def update_layer_information(self, name, price, density, stiffness, strength):
+        self.csShape.set_layer_information(
             name, price, density, stiffness, strength)
 
     '''
-    the method updateCrossSectionInformation update the cross section information of 
+    the method update_cross_section_information update the cross section information of 
     the view_information
     '''
 
-    def updateCrossSectionInformation(self):
-        self.csShape.calculateWeightPrice()
-        self.csShape.setCrossSectionInformation()
-
-    '''
-    the method getFreePlaces return the free-places, 
-    where is no layer
-    '''
-
-    def getFreePlaces(self):
-        self.freePlaces = []
-        # running index
-        y = 0
-        # if the cross section contains layers
-        if not len(self.layers) == 0:
-            while y < self.ch:
-                # layerExist is a switch to proofs whether
-                # a l exist over the runnning index or not
-                layerExist = False
-                minValue = self.ch
-                for l in self.layers:
-                    if l.y >= y and l.y < minValue:
-                        layerExist = True
-                        minValue = l.y - l.h / 2.
-                        nextMinValue = l.y + l.h / 2.
-                        # if the running index is equals the min, means that there's no
-                        # area
-                        if not y == minValue:
-                            self.freePlaces.append((y, minValue))
-                        y = nextMinValue
-                # if no l exist over the running index then that's the last
-                # area which is free.
-                if not layerExist:
-                    self.freePlaces.append((y, self.ch))
-                    return self.freePlaces
-        # if no l exist,all area of the cross section is free
-        else:
-            self.freePlaces.append((0, self.ch))
-        return self.freePlaces
+    def update_cross_section_information(self):
+        self.csShape.calculate_weight_price()
+        self.csShape.set_cross_section_information()
 
     ##########################################################################
     #                                Setter && Getter                        #
     ##########################################################################
-    '''
-    the method setPercent change the percent shape of the selected rectangle
-    '''
-
-    def setPercent(self, value):
-        self.percent_change = True
-        for rectangle in self.layers:
-            if rectangle.focus:
-                rectangle.setHeight(self.ch * value)
-                rectangle.setPercentage(value)
-                self.updateAllGraph()
-                self.csShape.calculateStrength()
-                self.updateCrossSectionInformation()
-                return
 
     '''
-    the method setHeight change the height of the cross section shape
+    the method set_height change the height of the cross section shape
     and update the layers
     '''
 
-    def setHeight(self, value):
-        for l in self.layers:
-            l.setYCoordinate(l.y / self.ch * value)
-            l.setHeight(l.h / self.ch * value)
-            self.updateAllGraph()
+    def set_height(self, value):
         self.ch = value
         self.graph.ymax = self.ch
-        self.updateCrossSectionInformation()
-        self.updateGraph()
+        self.update_cross_section_information()
+        self.update_graph()
 
     '''
-    the method setWidth change the width of the cross section shape
+    the method set_width change the width of the cross section shape
     and update the layers
     '''
 
-    def setWidth(self, value):
+    def set_width(self, value):
         self.cw = value
         self.graph.xmax = self.cw
-        for rectangle in self.layers:
-            rectangle.setWidth(value)
-        self.updateCrossSectionInformation()
-        self.updateGraph()
+        self.update_cross_section_information()
+        self.update_graph()
 
     '''
-    the method set_crossSection was developed to say the view, 
+    the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
 
-    def set_crossSection(self, cs):
+    def set_cross_section(self, cs):
         self.csShape = cs
 
     '''
     return all layers 
     '''
 
-    def getLayers(self):
+    def get_layers(self):
         return self.layers

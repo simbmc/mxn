@@ -18,13 +18,13 @@ class LinearView(GridLayout):
     def __init__(self, **kwargs):
         super(LinearView, self).__init__(**kwargs)
         self.cols = 1
-        self.createGraph()
-        self.createPoint()
+        self.create_graph()
+        self.create_point()
     
     '''
     create the graph of the view
     '''
-    def createGraph(self):
+    def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=1, y_ticks_major=1,
                            y_grid_label=True, x_grid_label=True,
@@ -34,7 +34,7 @@ class LinearView(GridLayout):
     '''
     create the point
     '''
-    def createPoint(self):
+    def create_point(self):
         delta=100.
         self.epsX=self.graph.xmax/delta
         self.epsY=self.graph.ymax/delta
@@ -81,6 +81,6 @@ class LinearView(GridLayout):
     '''
     sign in by the parent
     '''
-    def signIn(self, parent):
+    def sign_in(self, parent):
         self.editor=parent
     

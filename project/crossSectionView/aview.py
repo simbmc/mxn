@@ -7,31 +7,31 @@ from abc import abstractmethod
 
 
 class AView(object):
-    @abstractmethod
-    def setPercent(self, value):
-        raise NotImplemented('not implemented')
 
     @abstractmethod
-    def addLayer(self, percent, material):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def deleteLayer(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def updateLayerInformation(self, name, price, density, stiffness, strength, percent):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def createGraph(self):
+    def add_layer(self,x,y, material):
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def set_crossSection(self, cs):
+    def add_bar(self,x,y, material):
+        raise NotImplemented('not implemented')
+
+    @abstractmethod
+    def delete_layer(self):
+        raise NotImplemented('not implemented')
+
+    @abstractmethod
+    def update_layer_information(self, name, price, density, stiffness, strength, percent):
+        raise NotImplemented('not implemented')
+
+    @abstractmethod
+    def create_graph(self):
         raise NotImplemented('not implemented')
     
+    @abstractmethod
+    def set_cross_section(self, cs):
+        raise NotImplemented('not implemented')
     
     @abstractmethod
-    def updateCrossSectionInformation(self):
+    def update_cross_section_information(self):
         raise NotImplemented('not implemented')

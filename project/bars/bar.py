@@ -1,21 +1,21 @@
 '''
-Created on 14.04.2016
+Created on 21.06.2016
 
 @author: mkennert
 '''
 
 
-class Layer:
+class Bar:
     # Constructor
-    def __init__(self, x, y, h, w):
+
+    def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.h = h
-        self.w = w
-        
+
     '''
     the method set_height change the height of the small_keyboard-rectangle
     '''
+
     def set_height(self, value):
         self.h = value
 
@@ -27,13 +27,14 @@ class Layer:
         v = self.h * self.w
         w = self.material.density * v
         return w
-    
+
     '''
     set the material
     '''
-    def set_Material(self,material):
-        self.material=material
-    
+
+    def set_Material(self, material):
+        self.material = material
+
     '''
     return the strain of the layer
     '''

@@ -20,81 +20,74 @@ class ShapeCircle(GridLayout, AShape):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = CSCircleView()
-        self.view.set_crossSection(self)
+        self.view.set_cross_section(self)
     
     '''
     return the radius
     '''
-    def getRadius(self):
+    def get_radius(self):
         return self.r
     '''
     set the information 
     '''
 
-    def setInformation(self, information):
+    def set_information(self, information):
         self.information = information
-        self.calculateWeightPrice()
-        self.calculateStrength()
-        self.setCrossSectionInformation()
+        self.calculate_weight_price()
+        self.calculate_strength()
+        self.set_cross_section_information()
+
 
     '''
-    the method set_crossSection was developed to say the view, 
-    which cross section should it use
+    the method add_layer add new materials in the view
     '''
 
-    def setAck(self, ack):
-        self.ack = ack
+    def add_layer(self, x, y, material):
+        self.view.add_layer(x, y, material)
 
     '''
-    the method addLayer add new materials in the view
+    the method delete_layer delete the selected materials
     '''
 
-    def addLayer(self, x, y, h, w, material):
-        self.view.addLayer(x, y, h, w, material)
-
-    '''
-    the method deleteLayer delete the selected materials
-    '''
-
-    def deleteLayer(self):
-        self.view.deleteLayer()
+    def delete_layer(self):
+        self.view.delete_layer()
 
     '''
     calculate the strength
     '''
 
-    def calculateStrength(self):
+    def calculate_strength(self):
         self.strength = 0.
 
     '''
-    the method setLayerInformation update the layer
+    the method set_layer_information update the layer
     after a layer get the focus
     '''
 
-    def setLayerInformation(self, name, price, density, stiffness, strength):
-        self.information.updateLayerInformation(
+    def set_layer_information(self, name, price, density, stiffness, strength):
+        self.information.update_layer_information(
             name, price, density, stiffness, strength)
 
     '''
-    the method setLayerInformation update the cross section information
+    the method set_layer_information update the cross section information
     '''
 
-    def setCrossSectionInformation(self):
-        self.information.updateCrossSectionInformation(
+    def set_cross_section_information(self):
+        self.information.update_cross_section_information(
             self.price, self.weight, self.strength)
 
     '''
     get all the layers
     '''
 
-    def getLayers(self):
-        return self.view.getLayers()
+    def get_layers(self):
+        return self.view.get_layers()
 
     '''
     calculate the weight and the price of the cross section
     '''
 
-    def calculateWeightPrice(self):
+    def calculate_weight_price(self):
         '''
         weight = price = percentOfLayers = 0.
         # go trough all layers and

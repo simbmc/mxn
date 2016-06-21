@@ -20,48 +20,48 @@ class Multilinear(GridLayout):
         self._points=5
         self.information=MultilinearInformation()
         self.view=MultilinearView()
-        self.information.signIn(self)
-        self.view.signIn(self)
+        self.information.sign_in(self)
+        self.view.sign_in(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
     
     '''
     set the width of the graph
     '''
-    def setWidth(self, value):
+    def set_width(self, value):
         self.w=value
-        self.view.updateWidth()
+        self.view.update_width()
     
     '''
     set the height of the graph
     '''
-    def setHeight(self,value):
+    def set_height(self,value):
         self.h=value
-        self.view.updateHeight()
+        self.view.update_height()
     
     '''
     return the height of the graph
     '''
-    def getHeight(self):
+    def get_height(self):
         return self.h
     
     '''
     return the width of the graph
     '''
-    def getWidth(self):
+    def get_width(self):
         return self.w
     
     '''
     set the numbers of points which the graph should have
     '''
-    def setPoints(self,value):
+    def set_points(self,value):
         self._points=value
-        self.view.updatePoints()
+        self.view.update_points()
     
     '''
     return the number of points
     '''
-    def getPoints(self):
+    def get_points(self):
         return self._points     
 
 '''

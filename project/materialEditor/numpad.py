@@ -15,16 +15,16 @@ class Numpad(GridLayout):
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
         self.btnSize = Design.btnSize
-        self.createNumfield()
+        self.create_numfield()
         self.cols=1
         self.add_widget(self.layout)
         self._parent=None
     
     '''
-    the method createNumfield create the gui
+    the method create_numfield create the gui
     of the numpad
     '''
-    def createNumfield(self):
+    def create_numfield(self):
         self.textinput=Label(text='')
         self.layout=GridLayout(cols=1)
         self.numfield=GridLayout(cols=3)
@@ -69,18 +69,18 @@ class Numpad(GridLayout):
         self.textinput.text=self.textinput.text[:-1]
     
     '''
-    the method resetText reset the text of the label
+    the method reset_text reset the text of the label
     the method must be called from the developer when
     the text must be deleted
     '''
-    def resetText(self):
+    def reset_text(self):
         self.textinput.text=''
     
     '''
-    the method signInParent to set the parent of 
-    the object. the parent must have the method finishedNumpad
+    the method sign_in_parent to set the parent of 
+    the object. the parent must have the method finished_numpad
     '''
-    def signInParent(self, parent):
+    def sign_in_parent(self, parent):
         self._parent=parent
     
     '''
@@ -89,12 +89,12 @@ class Numpad(GridLayout):
     '''
     def finished(self,button):
         if len(self.textinput.text)>0:
-            self._parent.finishedNumpad()
-        self.resetText()
+            self._parent.finished_numpad()
+        self.reset_text()
     
     '''
     cancel the numpad input
     '''
     def cancel(self,btn):
-        self._parent.closeNumpad()
-        self.resetText()
+        self._parent.close_numpad()
+        self.reset_text()

@@ -22,22 +22,22 @@ class Linear(GridLayout):
         self.m=1
         self.b=0
         self.view=LinearView()
-        self.view.signIn(self)
+        self.view.sign_in(self)
         self.information=LinearInformation()
-        self.information.signIn(self)
+        self.information.sign_in(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
     
-    def setM(self,value):
+    def set_m(self,value):
         self.m=value
     
-    def setB(self,value):
+    def set_b(self,value):
         self.b=value
     
-    def getM(self):
+    def get_m(self):
         return self.m   
     
-    def getB(self):
+    def get_b(self):
         return self.b
     
 '''

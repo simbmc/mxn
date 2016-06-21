@@ -27,76 +27,76 @@ class CrossSection(GridLayout):
     '''
     return the cs-rectangle-shape
     '''
-    def getCSRectangle(self):
+    def get_cs_rectangle(self):
         return self.csRectangle
     
     '''
     return the cs-doubleT-shape
     '''
-    def getCSDoubleT(self):
+    def get_cs_double_t(self):
         return self.csDoubleT
     '''
     return the csT-shape
     '''
-    def getCST(self):
+    def get_cs_t(self):
         return self.csT
     
     '''
     return the csCircle-shape
     '''
-    def getCSCircle(self):
+    def get_cs_circle(self):
         return self.csCircle
     
     '''
     set the rectangle-view
     '''
-    def setRectangleView(self):
+    def set_rectangle_view(self):
         self.remove_widget(self.view)
         self.view=self.csRectangle.view
-        self.reEditor.changeCrossSection(self.view)
+        self.reEditor.change_cross_section(self.view)
     
     '''
     set the doubleT-view
     '''
-    def setDoubleTView(self):
+    def set_doublet_view(self):
         self.remove_widget(self.view)
         self.view=self.csDoubleT.view
-        self.reEditor.changeCrossSection(self.view)
+        self.reEditor.change_cross_section(self.view)
     
     '''
     set the T-view
     '''
-    def setTView(self):
+    def set_t_view(self):
         self.remove_widget(self.view)
         self.view=self.csT.view
-        self.reEditor.changeCrossSection(self.view)
+        self.reEditor.change_cross_section(self.view)
     
     '''
     set the circle-View
     '''
-    def setCircle(self):
+    def set_circle(self):
         self.remove_widget(self.view)
         self.view=self.csCircle.view
-        self.reEditor.changeCrossSection(self.view)
+        self.reEditor.change_cross_section(self.view)
     
     '''
     get the information-component
     '''
-    def getInformation(self):
+    def get_information(self):
         return self.information
     
     '''
     set the cross section editor
     '''
-    def setCrossSectionEditor(self, csEditor):
+    def set_cross_section_editor(self, csEditor):
         self.csEditor=csEditor
     
     '''
     set the reinforcement editor
     '''
-    def setReinforcementEditor(self,reEditor):
+    def set_reinforcement_editor(self,reEditor):
         self.reEditor=reEditor
-        self.csRectangle.setInformation(reEditor)
-        self.csDoubleT.setInformation(reEditor)
-        self.csT.setInformation(reEditor)
-        self.csCircle.setInformation(reEditor)
+        self.csRectangle.set_information(reEditor)
+        self.csDoubleT.set_information(reEditor)
+        self.csT.set_information(reEditor)
+        self.csCircle.set_information(reEditor)
