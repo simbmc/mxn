@@ -31,10 +31,10 @@ class AShape:
     '''
     delete the selected layer
     '''
-    
+
     def delete_layer(self):
         self.view.delete_layer()
-    
+
     '''
     update the layerinformation in the cs-information
     '''
@@ -89,3 +89,20 @@ class AShape:
 
     def hide_error_message(self):
         self.information.hide_error_message()
+
+    # not finished yet
+    def show_edit_area_layer(self):
+        self.information.show_edit_layer_area()
+    # not finished yet
+
+    def show_edit_bar_area(self):
+        self.information.show_edit_bar_area()
+    # not finished yet
+    
+    
+    def edit_layer(self, y, material, csArea):
+        self.view.edit_layer(y, material, csArea)
+    # not finished yet
+
+    def edit_bar(self, x, y, material, csArea):
+        self.view.edit_bar(x, y, material, csArea)

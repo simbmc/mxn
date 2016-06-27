@@ -4,7 +4,7 @@ Created on 14.03.2016
 @author: mkennert
 '''
 from plot.filled_ellipse import FilledEllipse
-from plot.circle import Circle
+from plot.dashedLine import DashedLine
 '''
 the class CSRectangleView was developed to show the the cross section,
 which has a rectangle shape
@@ -17,8 +17,6 @@ from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layer import Layer
-from plot.filled_rect import FilledRect
-from plot.line import LinePlot
 
 
 class CSRectangleView(GridLayout, AView):
@@ -85,7 +83,7 @@ class CSRectangleView(GridLayout, AView):
             # default height 0
             l = Layer(0, y, 0., self.cw)
             l.set_Material(material)
-            line = LinePlot(color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
+            line = DashedLine(color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
             l.set_line(line)
             self.graph.add_plot(line)
             self.layers.append(l)
@@ -193,15 +191,44 @@ class CSRectangleView(GridLayout, AView):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.cw
         y = (touch.y - y0) / gh * self.ch
+        #change_bar is a switch
+        change_bar=False
         for bar in self.bars:
             if bar.mouse_within(x, y):
                 bar.ellipse.color = Design.focusColor
+                self.focusBar=bar
+                
+                self.csShape.show_edit_bar_area()
+                change_bar=True
             else:
                 bar.ellipse.color = [255, 0, 0]
-        if y<self.cw:
+        #make sure that only one reinforcement can be added
+        #at the same time
+        if change_bar:
+            return
+        if x < self.cw:
             for layer in self.layers:
                 if layer.mouse_within(y, self.ch / 1e2):
                     layer.line.color = [0, 0, 0, 1]
-                    print('color')
+                    self.focusLayer = layer
+                    self.csShape.show_edit_area_layer()
                 else:
                     layer.line.color = [1, 0, 0, 1]
+    # not finished yet
+
+    def edit_bar(self, x, y, material, csArea):
+        self.focusBar.x=x
+        self.focusBar.y=y
+        self.focusBar.material=material
+        epsY = self.ch / 1e2
+        epsX = self.cw / 1e2
+        self.focusBar.ellipse.xrange=[x - epsX, x + epsX]
+        self.focusBar.ellipse.yrange=[y - epsY, y + epsY]
+        
+        
+    # not finished yet
+
+    def edit_layer(self, y, material, csArea):
+        self.focusLayer.y = y
+        self.focusLayer.material = material
+        self.focusLayer.line.points = [(0, y), (self.cw, y)]

@@ -45,6 +45,9 @@ class Layer:
     area of the line
     '''
     def mouse_within(self,y,d):
+        print('self.y: '+str(self.y))
+        print('y: '+str(y))
+        print('d: '+str(d))
         if y-d<self.y and y+d>self.y:
             return True
         else:

@@ -30,6 +30,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.containsView = False
         self.add_widget(self.content)
         self.error = False
+        self.barAreaVisible=False
+        self.layerAreaVisible=False
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -62,6 +64,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.create_add_bar_area()
         self.create_confirm_cancel_layer()
         self.create_confirm_cancel_bar()
+        self.create_edit_area_layer()
+        self.create_edit_area_bar()
 
     '''
     change the current cross section
@@ -518,17 +522,91 @@ class ReinforcementEditor(GridLayout, IObserver):
             self.materialArea.remove_widget(self.errorLbl)
             self.error = False
     
-    def edit_layer(self):
-        pass
+    #not finished yet
+    def show_edit_layer_area(self):
+        if not self.layerAreaVisible:
+            self.layerAreaVisible=True
+            self.content.add_widget(self.addingMaterialArea,0)
+            self.content.add_widget(self.editArea,1)
+            self.content.remove_widget(self.materialArea)
+            self.content.remove_widget(self.crossSectionArea)
     
+    '''
+    cancel the editing
+    '''
+    def cancel_editing_layer(self,btn):
+        self.layerAreaVisible=False
+        self.content.remove_widget(self.addingMaterialArea)
+        self.content.remove_widget(self.editArea)
+        self.content.add_widget(self.materialArea,0)
+        self.content.add_widget(self.crossSectionArea,1)
+    
+    #not finished yet
+    def show_edit_bar_area(self):
+        if not self.barAreaVisible:
+            self.barAreaVisible=True
+            self.content.add_widget(self.addingMaterialAreaBar,0)
+            self.content.add_widget(self.editAreaBar,1)
+            self.content.remove_widget(self.materialArea)
+            self.content.remove_widget(self.crossSectionArea)
+    
+    '''
+    cancel the editing
+    '''
+    def cancel_editing_bar(self,btn):
+        self.barAreaVisible=False
+        self.content.remove_widget(self.addingMaterialAreaBar)
+        self.content.remove_widget(self.editAreaBar)
+        self.content.add_widget(self.materialArea,0)
+        self.content.add_widget(self.crossSectionArea,1)
+        
+    #not finished yet
+    def edit_layer(self,btn):
+        self.cancel_editing_layer(btn)
+        for i in range(0, self.allMaterials.get_length()):
+            if self.allMaterials.allMaterials[i].name == self.materialOption.text:
+                self.csShape.edit_layer(float(self.btnY.text),
+                                        self.allMaterials.allMaterials[i],
+                                        0)
+    #not finished yet
+    def edit_bar(self,btn):
+        self.cancel_editing_bar(btn)
+        for i in range(0, self.allMaterials.get_length()):
+            if self.allMaterials.allMaterials[i].name == self.materialOption.text:
+                self.csShape.edit_bar(float(self.barX.text),
+                                      float(self.barY.text),
+                                      self.allMaterials.allMaterials[i],
+                                      0)
+        
+    '''
+    create the edit layer area
+    '''
     def create_edit_area_layer(self):
-        self.edit_delete_area=GridLayout(cols=2, row_force_default=True,
+        self.editArea=GridLayout(cols=2, row_force_default=True,
                                                row_default_height=self.btnSize, size_hint_y=None,
                                                height=self.btnSize)
         cancelBtn = Button(
             text='cancel', size_hint_y=None, height=self.btnSize)
+        cancelBtn.bind(on_press=self.cancel_editing_layer)
         editLayer = Button(
             text='edit', size_hint_y=None, height=self.btnSize)
-        self.confirmCancelAreaBar.add_widget(editLayer)
-        self.confirmCancelAreaBar.add_widget(cancelBtn)
-        
+        editLayer.bind(on_press=self.edit_layer)
+        self.editArea.add_widget(editLayer)
+        self.editArea.add_widget(cancelBtn)
+    
+    '''
+    create the edit bar area
+    '''
+    def create_edit_area_bar(self):
+        self.editAreaBar=GridLayout(cols=2, row_force_default=True,
+                                               row_default_height=self.btnSize, size_hint_y=None,
+                                               height=self.btnSize)
+        cancelBar = Button(
+            text='cancel', size_hint_y=None, height=self.btnSize)
+        cancelBar.bind(on_press=self.cancel_editing_bar)
+        editBar= Button(
+            text='edit', size_hint_y=None, height=self.btnSize)
+        editBar.bind(on_press=self.edit_bar)
+        self.editAreaBar.add_widget(editBar)
+        self.editAreaBar.add_widget(cancelBar)
+    

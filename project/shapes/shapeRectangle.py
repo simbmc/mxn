@@ -34,7 +34,6 @@ class ShapeRectangle(GridLayout, AShape):
         self.set_cross_section_information()
 
 
-
     '''
     the method set_layer_information update the cross section information
     '''
@@ -76,7 +75,6 @@ class ShapeRectangle(GridLayout, AShape):
     def get_width(self):
         return self.cw
    
-
     '''
     calculate the weight and the price of the cross section
     '''

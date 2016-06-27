@@ -12,7 +12,7 @@ from kivy.garden.graph import Plot, Color, Mesh
 
 class DashedLine(Plot):
     def __init__(self, **kwargs):
-        super(LinePlot, self).__init__(**kwargs)
+        super(DashedLine, self).__init__(**kwargs)
     
     def create_drawings(self):
         self._mesh = Mesh(mode='lines')
@@ -25,7 +25,7 @@ class DashedLine(Plot):
         return [self._grc]
     
     def draw(self, *args):
-        super(LinePlot, self).draw(*args)
+        super(DashedLine, self).draw(*args)
         # flatten the list
         points = []
         for x, y in self.iterate_points():

@@ -185,7 +185,6 @@ class DoubleTView(AView, GridLayout):
         self.csShape.set_layer_information(name, price, density,
                                          stiffness, strength)
 
-
     '''
     set the cross section
     '''
