@@ -3,7 +3,7 @@ Created on 09.05.2016
 
 @author: mkennert
 '''
-from kivy.graphics import OwnLine
+from kivy.graphics import Line
 
 from kivy.uix.gridlayout import GridLayout
 
@@ -26,7 +26,7 @@ class LinearView(GridLayout):
     '''
     def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
-                           x_ticks_major=1, y_ticks_major=1,
+                           x_ticks_major=2, y_ticks_major=2,
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=11, ymin=0, ymax=11)
         self.add_widget(self.graph)
@@ -35,7 +35,7 @@ class LinearView(GridLayout):
     create the point
     '''
     def create_point(self):
-        delta=100.
+        delta=50.
         self.epsX=self.graph.xmax/delta
         self.epsY=self.graph.ymax/delta
         x=10
@@ -44,10 +44,7 @@ class LinearView(GridLayout):
         self.point.xrange = [x-self.epsX,x+self.epsX]
         self.point.yrange = [y-self.epsY,y+self.epsY]
         self.graph.add_plot(self.point)
-        #with self.canvas:
-        #        self.line=OwnLine(points=[0, 0, 10, 10], width=1)
-        #self.graph.add_plot(self.line)
-        self.line=LinePlot(xrange=[0,x],yrange=[0,y])
+        self.line=LinePlot(points=[(0,0),(x,y)],width=1.5)
         self.graph.add_plot(self.line)
     
     '''
@@ -77,10 +74,31 @@ class LinearView(GridLayout):
         if self.point.color==Design.focusColor:
             self.point.xrange=[x-self.epsX,x+self.epsX]
             self.point.yrange=[y-self.epsY,y+self.epsY]
+            self.line.points=[(0,0),(x,y)]
+            if x>0:
+                self.editor.update_btn(y/x)
+    
+    '''
+    upgrade the graph when the user 
+    change the slope with the button
+    '''
+    def update_graph(self,value):
+        x=5
+        y=x*value
+        self.graph.xmax=11
+        self.graph.ymax=y+2
+        delta=50.
+        self.epsX=self.graph.xmax/delta
+        self.epsY=self.graph.ymax/delta
+        self.point.xrange=[x-self.epsX,x+self.epsX]
+        self.point.yrange=[y-self.epsY,y+self.epsY]
+        self.graph.y_ticks_major=int(self.graph.ymax/5.)
+        self.point.xrange=[x-self.epsX,x+self.epsX]
+        self.point.yrange=[y-self.epsY,y+self.epsY]
+        self.line.points=[(0,0),(x,y)]
     
     '''
     sign in by the parent
     '''
     def sign_in(self, parent):
         self.editor=parent
-    

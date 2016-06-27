@@ -19,6 +19,8 @@ class LinearInformation(GridLayout):
         self.cols=2
         self.btnSize=Design.btnSize
         self.create_gui()
+        self.row_force_default=True
+        self.row_default_height=self.btnSize
         
     '''
     create the gui
@@ -68,5 +70,12 @@ class LinearInformation(GridLayout):
         if self.focusBtn==self.btnM:
             self.focusBtn=self.btnM
             self.btnM.text=self.numpad.textinput.text
+            self.editor.update_graph(float(self.btnM.text))
         self.numpad.reset_text()
+    
+    '''
+    update the slope
+    '''
+    def update_btn(self,value):
+        self.btnM.text=str(value)
     

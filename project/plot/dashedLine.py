@@ -1,3 +1,8 @@
+'''
+Created on 27.06.2016
+
+@author: mkennert
+'''
 from math import log10
 
 from kivy.graphics.texture import Texture
@@ -5,7 +10,7 @@ from kivy.properties import ListProperty, ObjectProperty, NumericProperty
 from kivy.graphics import Line,RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
-class LinePlot(Plot):
+class DashedLine(Plot):
     def __init__(self, **kwargs):
         super(LinePlot, self).__init__(**kwargs)
     
@@ -16,7 +21,7 @@ class LinePlot(Plot):
                 use_parent_projection=True)
         with self._grc:
             self._gcolor = Color(*self.color)
-            self._gline = Line(points=[], width=1)
+            self._gline = Line(points=[], width=1,dash_offset=5,dash_length=10)
         return [self._grc]
     
     def draw(self, *args):
@@ -54,7 +59,7 @@ if __name__ == '__main__':
                 xmin=0,
                 ymin=0)
 
-            plot = LinePlot(color=[255, 0, 0,1])
+            plot = DashedLine(color=[255, 0, 0,1])
             plot.points = [(0,0),(100, 100)]
             plot.width=1.5
             graph2.add_plot(plot)

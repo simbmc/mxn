@@ -35,8 +35,17 @@ class Layer:
         self.material=material
     
     '''
-    return the strain of the layer
+    set the line
     '''
-
-    def get_strain(self):
-        return self.material.strength / self.material.stiffness
+    def set_line(self,line):
+        self.line=line
+    
+    '''
+    proofs whether the coordinates are in the 
+    area of the line
+    '''
+    def mouse_within(self,y,d):
+        if y-d<self.y and y+d>self.y:
+            return True
+        else:
+            return False

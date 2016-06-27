@@ -40,6 +40,11 @@ class Linear(GridLayout):
     def get_b(self):
         return self.b
     
+    def update_btn(self,value):
+        self.information.update_btn(value)
+    
+    def update_graph(self,value):
+        self.view.update_graph(value)
 '''
 Just for testing
 '''

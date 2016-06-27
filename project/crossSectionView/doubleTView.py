@@ -133,6 +133,7 @@ class DoubleTView(AView, GridLayout):
             b=Bar(x,y)
             b.set_Material(material)
             plot=FilledEllipse(xrange=[x-epsX,x+epsX],yrange=[y-epsY,y+epsY],color=[255,0,0,1])
+            b.set_filled_ellipse(plot)
             self.graph.add_plot(plot)
             self.bars.append(b)
     

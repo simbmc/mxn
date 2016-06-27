@@ -41,7 +41,7 @@ class ShapeRectangle(GridLayout, AShape):
 
     def set_cross_section_information(self):
         self.information.update_cross_section_information(
-            self.price, self.weight, self.strength)
+            0, 0, 0)
 
     '''
     get all the layers
@@ -104,6 +104,8 @@ class ShapeRectangle(GridLayout, AShape):
     '''
 
     def calculate_strength(self):
+        pass
+        '''
         strength = 0.
         # cur supremum
         self.minOfMaxstrain = 1e10
@@ -136,7 +138,7 @@ class ShapeRectangle(GridLayout, AShape):
             strength += self.minOfMaxstrain * \
                 (1. - percentOfLayers) * self.concreteStiffness
         self.strength = strength
-
+        '''
     
     '''
     sign in by the cross section

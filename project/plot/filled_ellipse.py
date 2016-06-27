@@ -86,7 +86,7 @@ if __name__ == '__main__':
             graph2.add_plot(plot)
 
             b.add_widget(graph2)
-            self.rectangle = plot
+            self.plot = plot
 
             Clock.schedule_interval(self.update_color, 1)
             Clock.schedule_interval(self.update_pos, 1)
@@ -94,10 +94,10 @@ if __name__ == '__main__':
             return b
 
         def update_color(self, *args):
-            self.rectangle.color = [random.randint(0, 255) for r in xrange(3)]
+            self.plot.color = [random.randint(0, 255) for r in xrange(3)]
 
         def update_pos(self, *args):
-            self.rectangle.xrange = [100. * random.random() for r in xrange(2)]
-            self.rectangle.yrange = [100. * random.random() for r in xrange(2)]
+            self.plot.xrange = [100. * random.random() for r in xrange(2)]
+            self.plot.yrange = [100. * random.random() for r in xrange(2)]
 
     TestApp().run()

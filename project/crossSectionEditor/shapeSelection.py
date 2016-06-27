@@ -43,7 +43,7 @@ class ShapeSelection(GridLayout):
         self.create_graph_double_t()
 
     '''
-    create the rectangle graph
+    create the plot graph
     '''
 
     def create_graph_rectangle(self):
@@ -57,7 +57,7 @@ class ShapeSelection(GridLayout):
         self.graphRectangle.add_plot(self.p)
     
     '''
-    draw the rectangle
+    draw the plot
     '''
     def draw_rectangle(self):
         c=1e-2
@@ -168,7 +168,7 @@ class ShapeSelection(GridLayout):
         #self.contentRight.add_widget(self.btns)
         # Make sure the height is such that there is something to scroll.
         self.btns.bind(minimum_height=self.btns.setter('height'))
-        self.btns.add_widget(self.rectangle)
+        self.btns.add_widget(self.plot)
         self.btns.add_widget(self.doubleT)
         self.btns.add_widget(self.t)
         self.btns.add_widget(self.circle)
@@ -200,14 +200,14 @@ class ShapeSelection(GridLayout):
             text='cancel', size_hint_y=None, height=self.btnSize)
         self.btnCancel.bind(on_press=self.cancel)
 
-        # default-shape=rectangle
+        # default-shape=plot
         self.focusShape = Button(
-            text='rectangle', size_hint_y=None, height=self.btnSize)
+            text='plot', size_hint_y=None, height=self.btnSize)
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
-        self.rectangle = Button(
-            text='rectangle', size_hint_y=None, height=self.btnSize)
-        self.rectangle.bind(on_press=self.show_rectangle)
+        self.plot = Button(
+            text='plot', size_hint_y=None, height=self.btnSize)
+        self.plot.bind(on_press=self.show_rectangle)
         self.doubleT = Button(
             text='I-shape', size_hint_y=None, height=self.btnSize)
         self.doubleT.bind(on_press=self.show_double_t)

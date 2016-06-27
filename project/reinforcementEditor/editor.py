@@ -140,7 +140,6 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.errorLbl = Label(text='[color=ff3333]error: wrong parameters[/color]',
                               markup=True, size_hint_y=None, height=20)
         self.materialArea.add_widget(self.btnsLayer)
-        # self.materialArea.add_widget(labelLayout)
         self.materialArea.add_widget(self.btnsBars)
         self.content.add_widget(self.materialArea)
 
@@ -193,10 +192,10 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.btnY.bind(on_press=self.show_numpad)
         self.btnHeight.bind(on_press=self.show_numpad)
         self.btnWidth.bind(on_press=self.show_numpad)
-        self.addingMaterialArea.add_widget(Label(text='x-coordinate:'))
-        self.addingMaterialArea.add_widget(self.btnX)
         self.addingMaterialArea.add_widget(Label(text='y-coordinate:'))
         self.addingMaterialArea.add_widget(self.btnY)
+        self.addingMaterialArea.add_widget(Label(text='cross-sectional area:'))
+        self.addingMaterialArea.add_widget(self.btnX)
 
     '''
     the method create_add_layer_area create the area where you can 
@@ -218,6 +217,8 @@ class ReinforcementEditor(GridLayout, IObserver):
             text='0.0', size_hint_y=None, height=self.btnSize)
         self.barWidth = Button(
             text='0.0', size_hint_y=None, height=self.btnSize)
+        self.csArea=Button(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.csArea.bind(on_press=self.show_numpad)
         self.barX.bind(on_press=self.show_numpad)
         self.barY.bind(on_press=self.show_numpad)
         self.barHeight.bind(on_press=self.show_numpad)
@@ -226,6 +227,8 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.addingMaterialAreaBar.add_widget(self.barX)
         self.addingMaterialAreaBar.add_widget(Label(text='y-coordinate:'))
         self.addingMaterialAreaBar.add_widget(self.barY)
+        self.addingMaterialAreaBar.add_widget(Label(text='cross-sectional area:'))
+        self.addingMaterialAreaBar.add_widget(self.csArea)
 
     '''
     the method create_material_options create the popup where you can 
@@ -336,7 +339,7 @@ class ReinforcementEditor(GridLayout, IObserver):
                     float(self.btnX.text), float(self.btnY.text),
                     self.allMaterials.allMaterials[i])
                 return
-
+        
     '''
     the method add_layer add a new layer at the cross section
     it use the choosen percent value
@@ -392,9 +395,9 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_cross_section_information(self, price, weight, strength):
-        self.crossSectionPrice.text = str(price)
-        self.crossSectionWeight.text = str(weight)
-        self.crossSectionStrength.text = str(strength)
+        self.crossSectionPrice.text = str(0)
+        self.crossSectionWeight.text = str(0)
+        self.crossSectionStrength.text = str(0)
 
     '''
     the method cancel_edit_material cancel the editing of the material
@@ -514,3 +517,18 @@ class ReinforcementEditor(GridLayout, IObserver):
         if self.error:
             self.materialArea.remove_widget(self.errorLbl)
             self.error = False
+    
+    def edit_layer(self):
+        pass
+    
+    def create_edit_area_layer(self):
+        self.edit_delete_area=GridLayout(cols=2, row_force_default=True,
+                                               row_default_height=self.btnSize, size_hint_y=None,
+                                               height=self.btnSize)
+        cancelBtn = Button(
+            text='cancel', size_hint_y=None, height=self.btnSize)
+        editLayer = Button(
+            text='edit', size_hint_y=None, height=self.btnSize)
+        self.confirmCancelAreaBar.add_widget(editLayer)
+        self.confirmCancelAreaBar.add_widget(cancelBtn)
+        

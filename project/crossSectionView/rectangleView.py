@@ -26,13 +26,13 @@ class CSRectangleView(GridLayout, AView):
 
     def __init__(self, **kwargs):
         super(CSRectangleView, self).__init__(**kwargs)
-        self.cols=1
+        self.cols = 1
         self.ch = 0.5
         self.cw = 0.25
         self.csShape = None
         self.percent_change = False
         self.layers = []
-        self.bars=[]
+        self.bars = []
         self.create_graph()
 
     '''
@@ -43,7 +43,7 @@ class CSRectangleView(GridLayout, AView):
     def create_graph(self):
         self.graph = Graph(
             #background_color = [1, 1, 1, 1],
-            border_color = [0,0,0,1],
+            border_color=[0, 0, 0, 1],
             #tick_color = [0.25,0.25,0.25,0],
             #_trigger_color = [0,0,0,1],
             x_ticks_major=0.05, y_ticks_major=0.05,
@@ -53,65 +53,70 @@ class CSRectangleView(GridLayout, AView):
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.draw_rectangle()
         self.graph.add_plot(self.p)
-        
+
     '''
     update the graph
     '''
+
     def update_graph(self):
         self.graph.remove_plot(self.p)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.draw_rectangle()
         self.graph.add_plot(self.p)
-    
+
     '''
     draw the rectangle
     '''
+
     def draw_rectangle(self):
-        h=self.ch/1e3
-        w=self.cw/1e3
-        return [(w,h),(w,self.ch),(self.cw,self.ch),(self.cw,h),(w,h)]
-              
+        h = self.ch / 1e3
+        w = self.cw / 1e3
+        return [(w, h), (w, self.ch), (self.cw, self.ch), (self.cw, h), (w, h)]
 
     '''
     the method add_layer was developed to add new layer at the cross section
     '''
 
     def add_layer(self, x, y, material):
-        if y>self.ch:
+        if y > self.ch:
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
-            #default height 0
+            # default height 0
             l = Layer(0, y, 0., self.cw)
             l.set_Material(material)
-            line = LinePlot(color=[1, 0, 0, 1], points = [(0,y),(self.cw,y)])
+            line = LinePlot(color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
+            l.set_line(line)
             self.graph.add_plot(line)
             self.layers.append(l)
             self.csShape.calculate_strength()
             self.update_cross_section_information()
-    
+
     '''
     add a bar
     '''
-    def add_bar(self,x,y, material):
-        if y>self.ch or x>self.cw:
+
+    def add_bar(self, x, y, material):
+        if y > self.ch or x > self.cw:
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
-            epsY=self.ch/1e2
-            epsX=self.cw/1e2
-            b=Bar(x,y)
+            epsY = self.ch / 1e2
+            epsX = self.cw / 1e2
+            b = Bar(x, y)
             b.set_Material(material)
-            plot=FilledEllipse(xrange=[x-epsX,x+epsX],yrange=[y-epsY,y+epsY],color=[255,0,0,1])            
+            plot = FilledEllipse(
+                xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY], color=[255, 0, 0, 1])
+            b.set_filled_ellipse(plot)
             self.graph.add_plot(plot)
             self.bars.append(b)
-            
+
     '''
     the method delete_layer was developed to delete layer from the cross section
     '''
 
     def delete_layer(self):
-        if len(self.layers)>0:
+        if len(self.layers) > 0:
             for layer in self.layers:
                 if layer.focus:
                     layer.filledRectCs.yrange = [0, 0]
@@ -178,3 +183,25 @@ class CSRectangleView(GridLayout, AView):
 
     def get_layers(self):
         return self.layers
+
+    '''
+    when the user touch the app
+    '''
+
+    def on_touch_down(self, touch):
+        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
+        gw, gh = self.graph._plot_area.size  # graph size
+        x = (touch.x - x0) / gw * self.cw
+        y = (touch.y - y0) / gh * self.ch
+        for bar in self.bars:
+            if bar.mouse_within(x, y):
+                bar.ellipse.color = Design.focusColor
+            else:
+                bar.ellipse.color = [255, 0, 0]
+        if y<self.cw:
+            for layer in self.layers:
+                if layer.mouse_within(y, self.ch / 1e2):
+                    layer.line.color = [0, 0, 0, 1]
+                    print('color')
+                else:
+                    layer.line.color = [1, 0, 0, 1]
