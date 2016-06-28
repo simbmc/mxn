@@ -5,6 +5,8 @@ Created on 15.03.2016
 '''
 from abc import abstractmethod
 
+from designClass.design import Design
+
 
 class AView(object):
 
@@ -35,3 +37,5 @@ class AView(object):
     @abstractmethod
     def update_cross_section_information(self):
         raise NotImplemented('not implemented')
+    
+    

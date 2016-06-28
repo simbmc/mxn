@@ -535,11 +535,12 @@ class ReinforcementEditor(GridLayout, IObserver):
     cancel the editing
     '''
     def cancel_editing_layer(self,btn):
-        self.layerAreaVisible=False
-        self.content.remove_widget(self.addingMaterialArea)
-        self.content.remove_widget(self.editArea)
-        self.content.add_widget(self.materialArea,0)
-        self.content.add_widget(self.crossSectionArea,1)
+        if self.layerAreaVisible:
+            self.layerAreaVisible=False
+            self.content.remove_widget(self.addingMaterialArea)
+            self.content.remove_widget(self.editArea)
+            self.content.add_widget(self.materialArea,0)
+            self.content.add_widget(self.crossSectionArea,1)
     
     #not finished yet
     def show_edit_bar_area(self):
@@ -554,11 +555,12 @@ class ReinforcementEditor(GridLayout, IObserver):
     cancel the editing
     '''
     def cancel_editing_bar(self,btn):
-        self.barAreaVisible=False
-        self.content.remove_widget(self.addingMaterialAreaBar)
-        self.content.remove_widget(self.editAreaBar)
-        self.content.add_widget(self.materialArea,0)
-        self.content.add_widget(self.crossSectionArea,1)
+        if self.barAreaVisible:
+            self.barAreaVisible=False
+            self.content.remove_widget(self.addingMaterialAreaBar)
+            self.content.remove_widget(self.editAreaBar)
+            self.content.add_widget(self.materialArea,0)
+            self.content.add_widget(self.crossSectionArea,1)
         
     #not finished yet
     def edit_layer(self,btn):

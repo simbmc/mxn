@@ -97,9 +97,17 @@ class AShape:
 
     def show_edit_bar_area(self):
         self.information.show_edit_bar_area()
+
     # not finished yet
-    
-    
+    def cancel_editing_bar(self):
+        self.information.cancel_editing_bar(None)
+    # not finished yet
+
+    def cancel_editing_layer(self):
+        self.information.cancel_editing_layer(None)
+
+    # not finished yet
+
     def edit_layer(self, y, material, csArea):
         self.view.edit_layer(y, material, csArea)
     # not finished yet

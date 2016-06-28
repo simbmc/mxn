@@ -45,6 +45,10 @@ class Bar:
     proofs whether the mouse in the ellipse
     ''' 
     def mouse_within(self,x,y):
+        print('x: '+str(x))
+        print('xrange: '+str(self.ellipse.xrange))
+        print('y: '+str(x))
+        print('yrange: '+str(self.ellipse.yrange))
         if x>self.ellipse.xrange[0] and x<self.ellipse.xrange[1] and \
             y>self.ellipse.yrange[0] and y<self.ellipse.yrange[1]:
             return True

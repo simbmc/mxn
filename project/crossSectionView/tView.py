@@ -11,8 +11,7 @@ from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layer import Layer
 from plot.filled_ellipse import FilledEllipse
-from plot.filled_rect import FilledRect
-from plot.line import LinePlot
+from plot.dashedLine import DashedLine
 
 
 class TView(AView, GridLayout):
@@ -23,20 +22,20 @@ class TView(AView, GridLayout):
         AView.__init__(self)
         self.cols = 1
         self.layers = []
-        self.bars=[]
+        self.bars = []
     '''
     the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
     '''
 
     def create_graph(self):
-        self.deltaX = self.wmax / 10.
-        self.deltaY = self.hmax / 50.
+        self.deltaX = self.cw / 10.
+        self.deltaY = self.ch / 50.
         self.graph = Graph(
             x_ticks_major=0.05, y_ticks_major=0.05,
             y_grid_label=True, x_grid_label=True, padding=5,
-            xmin=0, xmax=self.wmax + self.deltaX,
-            ymin=0, ymax=self.hmax + self.deltaY)
+            xmin=0, xmax=self.cw + self.deltaX,
+            ymin=0, ymax=self.ch + self.deltaY)
         self.add_widget(self.graph)
         self.p = MeshLinePlot(color=[1, 1, 1, 1])
         self.p.points = self.draw_t()
@@ -48,7 +47,7 @@ class TView(AView, GridLayout):
 
     def draw_t(self):
         x0 = self.graph.xmax / 2.
-        y1 = self.hmax / 1e3
+        y1 = self.ch / 1e3
         x1 = x0 - self.bw / 2.
         y2 = self.bh
         x3 = x1 + self.bw / 2. - self.tw / 2.
@@ -70,14 +69,14 @@ class TView(AView, GridLayout):
         self.obh = self.bh
         self.otw = self.tw
         self.oth = self.th
-        self.ohmax = self.hmax
+        self.ohmax = self.ch
         # get the new values
         self.bh = self.csShape.get_height_bottom()
         self.bw = self.csShape.get_width_bottom()
         self.th = self.csShape.get_height_top()
         self.tw = self.csShape.get_width_top()
-        self.hmax = self.csShape.get_height()
-        self.wmax = self.csShape.get_width()
+        self.ch = self.csShape.get_height()
+        self.cw = self.csShape.get_width()
         # update graph
         self.update_all_graph()
 
@@ -87,10 +86,10 @@ class TView(AView, GridLayout):
 
     def update_all_graph(self):
         # update graph
-        self.deltaX = self.wmax / 10.
-        self.deltaY = self.hmax / 50.
-        self.graph.xmax = self.wmax + self.deltaX
-        self.graph.ymax = self.hmax + self.deltaY
+        self.deltaX = self.cw / 10.
+        self.deltaY = self.ch / 50.
+        self.graph.xmax = self.cw + self.deltaX
+        self.graph.ymax = self.ch + self.deltaY
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
         self.graph.remove_plot(self.p)
@@ -105,7 +104,7 @@ class TView(AView, GridLayout):
 
     def add_layer(self, x, y, material):
         mid = self.graph.xmax / 2.
-        if y > self.hmax:
+        if y > self.ch:
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
@@ -117,7 +116,8 @@ class TView(AView, GridLayout):
                 w2 = mid + self.th / 2.
             l = Layer(0, y, 0., w1)
             l.set_Material(material)
-            line = LinePlot(color=[1, 0, 0, 1], points=[(w1, y), (w2, y)])
+            line = DashedLine(color=[1, 0, 0, 1], points=[(w1, y), (w2, y)])
+            l.set_line(line)
             self.graph.add_plot(line)
             self.layers.append(l)
             self.csShape.calculate_strength()
@@ -125,28 +125,30 @@ class TView(AView, GridLayout):
     '''
     add a bar
     '''
-    def add_bar(self,x,y, material):
-        mid=self.graph.xmax/2.
-        epsY=self.hmax/1e2
-        epsX=self.wmax/1e2
-        if y>self.hmax or x>self.wmax or x<self.deltaX :
+
+    def add_bar(self, x, y, material):
+        mid = self.graph.xmax / 2.
+        epsY = self.ch / Design.barProcent
+        epsX = self.cw / Design.barProcent
+        if y > self.ch or x > self.cw or x < self.deltaX:
             self.csShape.show_error_message()
             print('case 1')
-        elif y<self.bh and (x>mid+self.bw/2. or x<mid-self.bw/2.):
+        elif y < self.bh and (x > mid + self.bw / 2. or x < mid - self.bw / 2.):
             self.csShape.show_error_message()
             print('case 2')
-        elif y<self.bh+self.th and y>self.bh and (x>mid+self.tw/2. or x<mid-self.tw/2.):
+        elif y < self.bh + self.th and y > self.bh and (x > mid + self.tw / 2. or x < mid - self.tw / 2.):
             self.csShape.show_error_message()
             print('case 3')
         else:
             self.csShape.hide_error_message()
-            b=Bar(x,y)
+            b = Bar(x, y)
             b.set_Material(material)
-            plot=FilledEllipse(xrange=[x-epsX,x+epsX],yrange=[y-epsY,y+epsY],color=[255,0,0,1])
+            plot = FilledEllipse(
+                xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY], color=[255, 0, 0, 1])
             b.set_filled_ellipse(plot)
             self.graph.add_plot(plot)
             self.bars.append(b)
-    
+
     '''
     delete the selected layer
     '''
@@ -188,6 +190,65 @@ class TView(AView, GridLayout):
         self.bw = self.csShape.get_width_bottom()
         self.th = self.csShape.get_height_top()
         self.tw = self.csShape.get_width_top()
-        self.hmax = self.csShape.get_height()
-        self.wmax = self.csShape.get_width()
+        self.ch = self.csShape.get_height()
+        self.cw = self.csShape.get_width()
         self.create_graph()
+
+    def on_touch_down(self, touch):
+        x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
+        gw, gh = self.graph._plot_area.size  # graph size
+        x = (touch.x - x0) / gw * (self.cw+self.deltaX)
+        y = (touch.y - y0) / gh * (self.ch+self.deltaY)
+        print('x: ' + str(x))
+        print('y: ' + str(y))
+        # change_bar is a switch
+        change_bar = False
+        for bar in self.bars:
+            if bar.mouse_within(x, y):
+                print('bar')
+                bar.ellipse.color = Design.focusColor
+                self.focusBar = bar
+                self.csShape.cancel_editing_layer()
+                self.csShape.show_edit_bar_area()
+                change_bar = True
+            else:
+                bar.ellipse.color = [255, 0, 0]
+        # make sure that only one reinforcement can be added
+        # at the same time
+        if change_bar:
+            return
+        if x < self.cw:
+            for layer in self.layers:
+                if layer.mouse_within(y, self.ch / 1e2):
+                    layer.line.color = [0, 0, 0, 1]
+                    self.focusLayer = layer
+                    self.csShape.cancel_editing_bar()
+                    self.csShape.show_edit_area_layer()
+                else:
+                    layer.line.color = [1, 0, 0, 1]
+        print('here')
+    # not finished yet
+
+    def edit_bar(self, x, y, material, csArea):
+        self.focusBar.x = x
+        self.focusBar.y = y
+        self.focusBar.material = material
+        epsY = self.ch / Design.barProcent
+        epsX = self.cw / Design.barProcent
+        self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
+        self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
+
+    # not finished yet
+
+    def edit_layer(self, y, material, csArea):
+        mid = self.graph.xmax / 2.
+        self.focusLayer.y = y
+        self.focusLayer.material = material
+        if y < self.bh:
+            self.focusLayer.line.points = [
+                (mid - self.bw / 2., y), (mid - self.bw / 2. + self.bw, y)]
+            self.csShape.hide_error_message()
+        else:
+            self.focusLayer.line.points = [
+                (mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
+            self.csShape.hide_error_message()

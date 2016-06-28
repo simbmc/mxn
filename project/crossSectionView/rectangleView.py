@@ -5,6 +5,8 @@ Created on 14.03.2016
 '''
 from plot.filled_ellipse import FilledEllipse
 from plot.dashedLine import DashedLine
+from plot.circle import Circle
+
 '''
 the class CSRectangleView was developed to show the the cross section,
 which has a rectangle shape
@@ -83,7 +85,8 @@ class CSRectangleView(GridLayout, AView):
             # default height 0
             l = Layer(0, y, 0., self.cw)
             l.set_Material(material)
-            line = DashedLine(color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
+            line = DashedLine(
+                color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
             l.set_line(line)
             self.graph.add_plot(line)
             self.layers.append(l)
@@ -99,12 +102,13 @@ class CSRectangleView(GridLayout, AView):
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
-            epsY = self.ch / 1e2
-            epsX = self.cw / 1e2
+            epsY = self.ch / Design.barProcent
+            epsX = self.cw / Design.barProcent
             b = Bar(x, y)
             b.set_Material(material)
-            plot = FilledEllipse(
-                xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY], color=[255, 0, 0, 1])
+            plot = FilledEllipse(xrange=[x - epsX, x + epsX], 
+                                 yrange=[y - epsY, y + epsY], 
+                                 color=[255, 0, 0, 1])
             b.set_filled_ellipse(plot)
             self.graph.add_plot(plot)
             self.bars.append(b)
@@ -166,6 +170,9 @@ class CSRectangleView(GridLayout, AView):
         self.graph.xmax = self.cw
         self.update_cross_section_information()
         self.update_graph()
+        for layer in self.layers:
+            layer.x = self.cw
+            layer.line.points = [(0, layer.y), (self.cw, layer.y)]
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -191,19 +198,19 @@ class CSRectangleView(GridLayout, AView):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.cw
         y = (touch.y - y0) / gh * self.ch
-        #change_bar is a switch
-        change_bar=False
+        # change_bar is a switch
+        change_bar = False
         for bar in self.bars:
             if bar.mouse_within(x, y):
                 bar.ellipse.color = Design.focusColor
-                self.focusBar=bar
-                
+                self.focusBar = bar
+                self.csShape.cancel_editing_layer()
                 self.csShape.show_edit_bar_area()
-                change_bar=True
+                change_bar = True
             else:
                 bar.ellipse.color = [255, 0, 0]
-        #make sure that only one reinforcement can be added
-        #at the same time
+        # make sure that only one reinforcement can be added
+        # at the same time
         if change_bar:
             return
         if x < self.cw:
@@ -211,21 +218,22 @@ class CSRectangleView(GridLayout, AView):
                 if layer.mouse_within(y, self.ch / 1e2):
                     layer.line.color = [0, 0, 0, 1]
                     self.focusLayer = layer
+                    self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
                 else:
                     layer.line.color = [1, 0, 0, 1]
+                    
     # not finished yet
 
     def edit_bar(self, x, y, material, csArea):
-        self.focusBar.x=x
-        self.focusBar.y=y
-        self.focusBar.material=material
-        epsY = self.ch / 1e2
-        epsX = self.cw / 1e2
-        self.focusBar.ellipse.xrange=[x - epsX, x + epsX]
-        self.focusBar.ellipse.yrange=[y - epsY, y + epsY]
-        
-        
+        self.focusBar.x = x
+        self.focusBar.y = y
+        self.focusBar.material = material
+        epsY = self.ch / Design.barProcent
+        epsX = self.cw / Design.barProcent
+        self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
+        self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
+
     # not finished yet
 
     def edit_layer(self, y, material, csArea):

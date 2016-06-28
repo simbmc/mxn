@@ -206,7 +206,7 @@ class ShapeSelection(GridLayout):
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
         self.plot = Button(
-            text='plot', size_hint_y=None, height=self.btnSize)
+            text='rectangle', size_hint_y=None, height=self.btnSize)
         self.plot.bind(on_press=self.show_rectangle)
         self.doubleT = Button(
             text='I-shape', size_hint_y=None, height=self.btnSize)
