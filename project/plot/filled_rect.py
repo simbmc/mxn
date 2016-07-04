@@ -55,6 +55,7 @@ class FilledRect(Plot):
         w = tr[0] - bl[0]
         h = tr[1] - bl[1]
         image.size = (w, h)
+        
 
 if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout

@@ -23,7 +23,7 @@ class CircleInformation(GridLayout):
     
     def create_gui(self):
         self.create_popup()
-        self.add_widget(Label(text='radius: '))
+        self.add_widget(Label(text='diameter: '))
         self.btnRadius=Button(text=str(self.csShape.get_radius()), size_hint_y=None, height=self.btnSize)
         self.btnRadius.bind(on_press=self.show_numpad)
         self.add_widget(self.btnRadius)
@@ -60,4 +60,5 @@ class CircleInformation(GridLayout):
     '''
     def finished_numpad(self):
         self.btnRadius.text=self.numpad.textinput.text
+        self.csShape.set_radius(float(self.btnRadius.text))
         self.popup.dismiss()

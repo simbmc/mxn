@@ -23,6 +23,13 @@ class ShapeCircle(GridLayout, AShape):
         self.view.set_cross_section(self)
     
     '''
+    set the radius
+    '''
+    def set_radius(self,r):
+        self.r=r
+        self.view.set_radius(r)
+        
+    '''
     return the radius
     '''
     def get_radius(self):
