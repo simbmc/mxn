@@ -45,6 +45,16 @@ class Linear(GridLayout):
     
     def update_graph(self,value):
         self.view.update_graph(value)
+    
+    def update_strain_limit(self,value):
+        self.view.update_strain_limit(value)
+    
+    def update_stress_limit(self,value):
+        self.view.update_stress_limit(value)
+    
+    def update_b(self,value):
+        self.view.update_b(value)
+    
 '''
 Just for testing
 '''

@@ -18,6 +18,7 @@ class LinearView(GridLayout):
     def __init__(self, **kwargs):
         super(LinearView, self).__init__(**kwargs)
         self.cols = 1
+        self.b=0.
         self.create_graph()
         self.create_point()
     
@@ -44,7 +45,7 @@ class LinearView(GridLayout):
         self.point.xrange = [x-self.epsX,x+self.epsX]
         self.point.yrange = [y-self.epsY,y+self.epsY]
         self.graph.add_plot(self.point)
-        self.line=LinePlot(points=[(0,0),(x,y)],width=1.5)
+        self.line=LinePlot(points=[(0,self.b),(x,y)],width=1.5)
         self.graph.add_plot(self.line)
     
     '''
@@ -74,9 +75,9 @@ class LinearView(GridLayout):
         if self.point.color==Design.focusColor:
             self.point.xrange=[x-self.epsX,x+self.epsX]
             self.point.yrange=[y-self.epsY,y+self.epsY]
-            self.line.points=[(0,0),(x,y)]
+            self.line.points=[(0,self.b),(x,y)]
             if x>0:
-                self.editor.update_btn(y/x)
+                self.editor.update_btn((y-self.b)/x)
     
     '''
     upgrade the graph when the user 
@@ -85,20 +86,42 @@ class LinearView(GridLayout):
     def update_graph(self,value):
         x=5
         y=x*value
-        self.graph.xmax=11
-        self.graph.ymax=y+2
         delta=50.
         self.epsX=self.graph.xmax/delta
         self.epsY=self.graph.ymax/delta
         self.point.xrange=[x-self.epsX,x+self.epsX]
         self.point.yrange=[y-self.epsY,y+self.epsY]
-        self.graph.y_ticks_major=int(self.graph.ymax/5.)
         self.point.xrange=[x-self.epsX,x+self.epsX]
         self.point.yrange=[y-self.epsY,y+self.epsY]
-        self.line.points=[(0,0),(x,y)]
+        self.line.points=[(0,self.b),(x,y)]
     
     '''
     sign in by the parent
     '''
     def sign_in(self, parent):
         self.editor=parent
+    
+    #not finished yet
+    def update_strain_limit(self,value):
+        self.graph.ymax=value
+        self.graph.y_ticks_major=value/10.
+        delta=50.
+        x=self.point.yrange[0]+self.epsY
+        self.epsY=self.graph.ymax/delta
+        self.point.yrange=[x-self.epsY,x+self.epsY]
+        
+    
+    #not finished yet
+    def update_stress_limit(self,value):
+        self.graph.xmax=value
+        self.graph.x_ticks_major=value/10.
+        delta=50.
+        x=self.point.xrange[0]+self.epsX
+        self.epsX=self.graph.xmax/delta
+        self.point.xrange=[x-self.epsX,x+self.epsX]
+        
+    #not finished yet
+    def update_b(self,value):
+        self.b=value
+        cur=self.line.points[1]
+        self.line.points=[(0,self.b),cur]
