@@ -72,7 +72,8 @@ class LinearView(GridLayout):
         #11=xmax=ymax
         x = (touch.x - x0) / gw*self.graph.xmax
         y = (touch.y - y0) / gh*self.graph.ymax
-        if self.point.color==Design.focusColor:
+        if self.point.color==Design.focusColor and x<self.graph.xmax and y<self.graph.ymax\
+            and y>0 and x>0:
             self.point.xrange=[x-self.epsX,x+self.epsX]
             self.point.yrange=[y-self.epsY,y+self.epsY]
             self.line.points=[(0,self.b),(x,y)]
