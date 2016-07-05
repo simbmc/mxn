@@ -85,16 +85,27 @@ class LinearView(GridLayout):
     change the slope with the button
     '''
     def update_graph(self,value):
-        x=5
-        y=x*value
-        delta=50.
-        self.epsX=self.graph.xmax/delta
-        self.epsY=self.graph.ymax/delta
-        self.point.xrange=[x-self.epsX,x+self.epsX]
-        self.point.yrange=[y-self.epsY,y+self.epsY]
-        self.point.xrange=[x-self.epsX,x+self.epsX]
-        self.point.yrange=[y-self.epsY,y+self.epsY]
+        curx=self.graph.xmax-self.graph.xmax*0.1
+        cury=self.graph.ymax-self.graph.ymax*0.1
+        if value>1:
+            x=(cury-self.b)/value
+            y=value*x+self.b
+        elif value==1:
+            if curx<cury:
+                x=y=curx
+            else:
+                x=y=cury
+        else:
+            print('case 3')
+            x=curx
+            y=x*value+self.b
+            if y>self.graph.ymax:
+                self.graph.ymax=y+y*0.1
+                self.graph.y_ticks_major=y/5.
+                self.epsY=self.graph.ymax/50.
         self.line.points=[(0,self.b),(x,y)]
+        self.point.xrange=[x-self.epsX,x+self.epsX]
+        self.point.yrange=[y-self.epsY,y+self.epsY]
     
     '''
     sign in by the parent
@@ -104,22 +115,73 @@ class LinearView(GridLayout):
     
     #not finished yet
     def update_strain_limit(self,value):
-        self.graph.ymax=value
+        self.graph.ymax=y=value
+        x=self.graph.xmax
         self.graph.y_ticks_major=value/10.
         delta=50.
-        x=self.point.yrange[0]+self.epsY
         self.epsY=self.graph.ymax/delta
-        self.point.yrange=[x-self.epsY,x+self.epsY]
+        if self.editor.m>1:
+            print('case 1')
+            x=(y-self.b)/self.editor.m
+            self.point.yrange=[y-self.epsY,y+self.epsY]
+            self.point.xrange=[x-self.epsX,x+self.epsX]
+            self.line.points=[(0,self.b),(x,y)]
+        elif self.editor.m==1:
+            print('case 2')    
+            if self.graph.xmax>self.graph.ymax:
+                self.line.points=[(0,self.b),(y,y)]
+                self.point.yrange=[y-self.epsY,y+self.epsY]
+                self.point.xrange=[y-self.epsX,y+self.epsX]
+            else:
+                self.line.points=[(0,self.b),(x,x)]
+                self.point.yrange=[x-self.epsY,x+self.epsY]
+                self.point.xrange=[x-self.epsX,x+self.epsX]
+        else:
+            #m<1
+            print('case 3')
+            x=(self.graph.ymax-self.b)/value
+            y=self.graph.ymax
+            self.epsY=self.graph.ymax/delta
+            self.point.yrange=[y-self.epsY,y+self.epsY]
+            self.point.xrange=[x-self.epsX,x+self.epsX]
+            self.line.points=[(0,self.b),(x,y)]
+        self.graph.xmax+=self.graph.xmax/10.
+        self.graph.ymax+=self.graph.ymax/10.
         
-    
     #not finished yet
     def update_stress_limit(self,value):
-        self.graph.xmax=value
+        self.graph.xmax=y=value
+        x=self.graph.xmax
         self.graph.x_ticks_major=value/10.
         delta=50.
-        x=self.point.xrange[0]+self.epsX
         self.epsX=self.graph.xmax/delta
-        self.point.xrange=[x-self.epsX,x+self.epsX]
+        if self.editor.m>1:
+            print('case 1')
+            x=(y-self.b)/self.editor.m
+            self.point.yrange=[y-self.epsY,y+self.epsY]
+            self.point.xrange=[x-self.epsX,x+self.epsX]
+            self.line.points=[(0,self.b),(x,y)]
+        elif self.editor.m==1:
+            print('case 2')    
+            if self.graph.xmax>self.graph.ymax:
+                self.line.points=[(0,self.b),(y,y)]
+                self.point.yrange=[y-self.epsY,y+self.epsY]
+                self.point.xrange=[y-self.epsX,y+self.epsX]
+            else:
+                self.line.points=[(0,self.b),(x,x)]
+                self.point.yrange=[x-self.epsY,x+self.epsY]
+                self.point.xrange=[x-self.epsX,x+self.epsX]
+        else:
+            #m<1
+            print('case 3')
+            x=(self.graph.ymax-self.b)/value
+            y=self.graph.ymax
+            self.epsY=self.graph.ymax/delta
+            self.point.yrange=[y-self.epsY,y+self.epsY]
+            self.point.xrange=[x-self.epsX,x+self.epsX]
+            self.line.points=[(0,self.b),(x,y)]
+        self.graph.xmax+=self.graph.xmax/10.
+        self.graph.ymax+=self.graph.ymax/10.
         
     #not finished yet
     def update_b(self,value):

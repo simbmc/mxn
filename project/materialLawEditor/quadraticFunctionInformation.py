@@ -10,6 +10,7 @@ from kivy.uix.label import Label
 from kivy.uix.popup import Popup
 
 from materialEditor.numpad import Numpad
+from designClass.design import Design
 
 
 class QuadraticFunctionInformation(GridLayout):
@@ -17,6 +18,7 @@ class QuadraticFunctionInformation(GridLayout):
     def __init__(self, **kwargs):
         super(QuadraticFunctionInformation, self).__init__(**kwargs)
         self.cols = 2
+        self.btnSize=Design.btnSize
         self.focusBtn=None
         self.create_information()
     
@@ -27,19 +29,19 @@ class QuadraticFunctionInformation(GridLayout):
         self.add_widget(Label(text='function:'))
         self.add_widget(Label(text='f(x)=ax^2+bx+c'))
         self.add_widget(Label(text='a'))
-        self.aBtn=Button(text='1:')
+        self.aBtn=Button(text='1:',size_hint_y=None, height=self.btnSize)
         self.aBtn.bind(on_press=self.show_popup)
         self.add_widget(self.aBtn)
-        self.add_widget(Label(text='b'))        
-        self.bBtn=Button(text='0')
+        self.add_widget(Label(text='b',))        
+        self.bBtn=Button(text='0',size_hint_y=None, height=self.btnSize)
         self.bBtn.bind(on_press=self.show_popup)
         self.add_widget(self.bBtn)
         self.add_widget(Label(text='c'))
-        self.cBtn=Button(text='0')
+        self.cBtn=Button(text='0',size_hint_y=None, height=self.btnSize)
         self.add_widget(self.cBtn)
         self.cBtn.bind(on_press=self.show_popup)
-        self.h=Button(text='10')
-        self.w=Button(text='10')
+        self.h=Button(text='10',size_hint_y=None, height=self.btnSize)
+        self.w=Button(text='10',size_hint_y=None, height=self.btnSize)
         self.h.bind(on_press=self.show_popup)
         self.w.bind(on_press=self.show_popup)
         self.add_widget(Label(text='height:'))
@@ -61,7 +63,7 @@ class QuadraticFunctionInformation(GridLayout):
     close the numpad
     '''
     def close_numpad(self):
-        self.popup.dismiss()
+        self.popupNumpad.dismiss()
         
     '''
     the method finished_numpad close the numpad_popup

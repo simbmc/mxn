@@ -4,10 +4,12 @@ Created on 06.05.2016
 @author: mkennert
 '''
 from kivy.uix.gridlayout import GridLayout
+from numpy import arange
 
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-
+from plot.line import LinePlot
+import numpy as np
 
 class QuadraticFunctionView(GridLayout):
     #constructor
@@ -23,21 +25,22 @@ class QuadraticFunctionView(GridLayout):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=2, y_ticks_major=2,
                            y_grid_label=True, x_grid_label=True,
-                           xmin=0, xmax=self.editor.w, ymin=0, ymax=self.editor.h)
+                           xmin=-self.editor.w, xmax=self.editor.w, ymin=0, ymax=self.editor.h)
         self.add_widget(self.graph)
     
     '''
     draw the function
     '''
     def draw_lines(self):
-        while len(self.graph.plots)>0:
-            for plot in self.graph.plots:
-                self.graph.remove_plot(plot)
-                self.graph._clear_buffer()
-        plot = MeshLinePlot(color=[1, 0, 0, 1])
-        plot.points = [(x, self.editor.f(x)) for x in range(-self.graph.xmax, self.graph.xmax+1)]
-        self.graph.add_plot(plot)
+        self.plot = LinePlot(color=[255,255,255])
+        self.plot.points = [(x, self.editor.f(x)) for x in arange(-self.graph.xmax, self.graph.xmax+1,self.graph.xmax/1e2)]
+        print('points: '+str(self.plot.points))
+        self.graph.add_plot(self.plot)
             
+    def update_points(self):
+        self.plot.points=[(x, self.editor.f(x)) for x in arange(-self.graph.xmax, self.graph.xmax+1,self.graph.xmax/1e2)]
+        
+        
     '''
     sign in by the parent
     '''
@@ -50,6 +53,7 @@ class QuadraticFunctionView(GridLayout):
     update the graphwidth
     '''
     def update_width(self):
+        self.graphxmin=-self.editor.getwidth()
         self.graph.xmax=self.editor.getwidth()
     
     '''
