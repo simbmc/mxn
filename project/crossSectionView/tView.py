@@ -10,8 +10,9 @@ from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layer import Layer
-from plot.filled_ellipse import FilledEllipse
 from plot.dashedLine import DashedLine
+from plot.filled_ellipse import FilledEllipse
+from plot.line import LinePlot
 
 
 class TView(AView, GridLayout):
@@ -21,6 +22,8 @@ class TView(AView, GridLayout):
         super(TView, self).__init__(**kwargs)
         AView.__init__(self)
         self.cols = 1
+        self.focusLine=LinePlot(width=1.5,color=Design.focusColor)
+        self.lineIsFocused=False
         self.layers = []
         self.bars = []
     '''
@@ -217,17 +220,22 @@ class TView(AView, GridLayout):
         # at the same time
         if change_bar:
             return
+        else:
+            self.csShape.cancel_editing_bar()
+        oneIsFocused=False
         if x < self.cw:
             for layer in self.layers:
                 if layer.mouse_within(y, self.ch / 1e2):
-                    layer.line.color = [0, 0, 0, 1]
+                    oneIsFocused=True
+                    self.lineIsFocused=True
                     self.focusLayer = layer
                     self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
-                else:
-                    layer.line.color = [1, 0, 0, 1]
-        print('here')
-    # not finished yet
+                    self.focusLine.points=layer.line.points
+                    self.graph.add_plot(self.focusLine)
+        if not oneIsFocused and self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)
+            self.csShape.cancel_editing_layer()
 
     def edit_bar(self, x, y, material, csArea):
         self.focusBar.x = x
@@ -252,3 +260,5 @@ class TView(AView, GridLayout):
             self.focusLayer.line.points = [
                 (mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
             self.csShape.hide_error_message()
+        if self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)

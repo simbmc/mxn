@@ -65,8 +65,8 @@ class QuadraticFunctionEditor(GridLayout):
 
     def set_width(self, value):
         self.w = value
-        self.view.graph.xmax=value
-        self.view.graph.x_ticks_major=value/5.
+        self.view.graph.xmax = value
+        self.view.graph.x_ticks_major = value / 5.
         self.view.update_points()
 
     '''
@@ -75,11 +75,10 @@ class QuadraticFunctionEditor(GridLayout):
 
     def set_height(self, value):
         self.h = value
-        self.view.graph.ymax=value
-        self.view.graph.y_ticks_major=value/5.
+        self.view.graph.ymax = value
+        self.view.graph.y_ticks_major = value / 5.
         self.view.update_points()
 
-  
     '''
     eval the function on the x-value
     '''

@@ -44,9 +44,9 @@ class QuadraticFunctionInformation(GridLayout):
         self.w=Button(text='10',size_hint_y=None, height=self.btnSize)
         self.h.bind(on_press=self.show_popup)
         self.w.bind(on_press=self.show_popup)
-        self.add_widget(Label(text='height:'))
+        self.add_widget(Label(text='strain-limit:'))
         self.add_widget(self.h)
-        self.add_widget(Label(text='width'))
+        self.add_widget(Label(text='stress-limit'))
         self.add_widget(self.w)
         self.create_popup()
     
@@ -57,7 +57,7 @@ class QuadraticFunctionInformation(GridLayout):
     def create_popup(self):
         self.numpad=Numpad()
         self.numpad.sign_in_parent(self)
-        self.popupNumpad=Popup(title='Numpad', content=self.numpad)
+        self.popupNumpad=Popup(title='numpad', content=self.numpad)
     
     '''
     close the numpad

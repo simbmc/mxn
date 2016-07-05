@@ -170,9 +170,7 @@ class MainWindow(GridLayout):
         self.content = self.reEditor
         self.popup.dismiss()
 
-
 class CSIApp(App):
-
     def build(self):
         return MainWindow()
 

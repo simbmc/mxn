@@ -23,6 +23,8 @@ class DoubleTView(AView, GridLayout):
         super(DoubleTView, self).__init__(**kwargs)
         AView.__init__(self)
         self.cols = 1
+        self.focusLine=LinePlot(width=1.5,color=Design.focusColor)
+        self.lineIsFocused=False
         self.layers = []
         self.bars=[]
     '''
@@ -225,17 +227,23 @@ class DoubleTView(AView, GridLayout):
         # make sure that only one reinforcement can be added
         # at the same time
         if change_bar:
-            return
+            return 
+        else:
+            self.csShape.cancel_editing_bar()
+        oneIsFocused=False
         if x < self.cw:
             for layer in self.layers:
                 if layer.mouse_within(y, self.ch / 1e2):
-                    layer.line.color = [0, 0, 0, 1]
+                    oneIsFocused=True
+                    self.lineIsFocused=True
                     self.focusLayer = layer
                     self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
-                else:
-                    layer.line.color = [1, 0, 0, 1]
-        print('here')
+                    self.focusLine.points=layer.line.points
+                    self.graph.add_plot(self.focusLine)
+        if not oneIsFocused and self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)
+            self.csShape.cancel_editing_layer()
     # not finished yet
 
     def edit_bar(self, x, y, material, csArea):
@@ -265,3 +273,5 @@ class DoubleTView(AView, GridLayout):
             self.focusLayer.line.points = [
                 (mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
             self.csShape.hide_error_message()
+        if self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)

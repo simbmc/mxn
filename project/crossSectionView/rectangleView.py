@@ -3,10 +3,6 @@ Created on 14.03.2016
 
 @author: mkennert
 '''
-from plot.filled_ellipse import FilledEllipse
-from plot.dashedLine import DashedLine
-from plot.circle import Circle
-
 '''
 the class CSRectangleView was developed to show the the cross section,
 which has a rectangle shape
@@ -19,6 +15,10 @@ from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
 from layers.layer import Layer
+from plot.circle import Circle
+from plot.dashedLine import DashedLine
+from plot.filled_ellipse import FilledEllipse
+from plot.line import LinePlot
 
 
 class CSRectangleView(GridLayout, AView):
@@ -29,6 +29,8 @@ class CSRectangleView(GridLayout, AView):
         self.cols = 1
         self.ch = 0.5
         self.cw = 0.25
+        self.focusLine=LinePlot(width=1.5,color=Design.focusColor)
+        self.lineIsFocused=False
         self.csShape = None
         self.percent_change = False
         self.layers = []
@@ -213,16 +215,23 @@ class CSRectangleView(GridLayout, AView):
         # at the same time
         if change_bar:
             return
+        else:
+            self.csShape.cancel_editing_bar()
+        oneIsFocused=False
         if x < self.cw:
             for layer in self.layers:
                 if layer.mouse_within(y, self.ch / 1e2):
-                    layer.line.color = [0, 0, 0, 1]
+                    oneIsFocused=True
+                    self.lineIsFocused=True
                     self.focusLayer = layer
                     self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
-                else:
-                    layer.line.color = [1, 0, 0, 1]
-                    
+                    self.focusLine.points=layer.line.points
+                    self.graph.add_plot(self.focusLine)
+        if not oneIsFocused and self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)
+            self.csShape.cancel_editing_layer()
+            
     # not finished yet
 
     def edit_bar(self, x, y, material, csArea):
@@ -240,3 +249,5 @@ class CSRectangleView(GridLayout, AView):
         self.focusLayer.y = y
         self.focusLayer.material = material
         self.focusLayer.line.points = [(0, y), (self.cw, y)]
+        if self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)

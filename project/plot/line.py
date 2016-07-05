@@ -6,6 +6,7 @@ from kivy.graphics import Line,RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
 class LinePlot(Plot):
+    width=1.
     def __init__(self, **kwargs):
         super(LinePlot, self).__init__(**kwargs)
     
@@ -16,7 +17,7 @@ class LinePlot(Plot):
                 use_parent_projection=True)
         with self._grc:
             self._gcolor = Color(*self.color)
-            self._gline = Line(points=[], width=1)
+            self._gline = Line(points=[], width=self.width)
         return [self._grc]
     
     def draw(self, *args):

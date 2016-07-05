@@ -11,64 +11,60 @@ from materialLawEditor.multilinearView import MultilinearView
 
 
 class Multilinear(GridLayout):
-    #constructor
+    # constructor
+
     def __init__(self, **kwargs):
         super(Multilinear, self).__init__(**kwargs)
         self.cols = 2
-        self.h=50.
-        self.w=50.
-        self._points=5
-        self.information=MultilinearInformation()
-        self.view=MultilinearView()
+        self.h = 50.
+        self.w = 50.
+        self._points = 5
+        self.information = MultilinearInformation()
+        self.view = MultilinearView()
         self.information.sign_in(self)
         self.view.sign_in(self)
         self.add_widget(self.view)
         self.add_widget(self.information)
-    
+
     '''
     set the width of the graph
     '''
+
     def set_width(self, value):
-        self.w=value
+        self.w = value
         self.view.update_width()
-    
+
     '''
     set the height of the graph
     '''
-    def set_height(self,value):
-        self.h=value
+
+    def set_height(self, value):
+        self.h = value
         self.view.update_height()
-    
-    '''
-    return the height of the graph
-    '''
-    def get_height(self):
-        return self.h
-    
-    '''
-    return the width of the graph
-    '''
-    def get_width(self):
-        return self.w
-    
+
     '''
     set the numbers of points which the graph should have
     '''
-    def set_points(self,value):
-        self._points=value
+
+    def set_points(self, value):
+        self._points = value
         self.view.update_points()
-    
+
     '''
     return the number of points
     '''
+
     def get_points(self):
-        return self._points     
+        return self._points
 
 '''
 Just for testing
 '''
+
+
 class TestApp(App):
-        def build(self):
-            return Multilinear()
+
+    def build(self):
+        return Multilinear()
 
 TestApp().run()

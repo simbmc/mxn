@@ -15,6 +15,7 @@ import numpy as np
 from plot.dashedLine import DashedLine
 from plot.ellipse import Ellipse
 from plot.filled_ellipse import FilledEllipse
+from plot.line import LinePlot
 
 
 class CSCircleView(AView, BoxLayout):
@@ -23,20 +24,10 @@ class CSCircleView(AView, BoxLayout):
     def __init__(self, **kwargs):
         super(CSCircleView, self).__init__(**kwargs)
         self.crossSectionRadius = 0.25
+        self.focusLine=LinePlot(width=1.5,color=Design.focusColor)
+        self.lineIsFocused=False
         self.layers = []
         self.bars = []
-
-    '''
-    the method update_all_graph update the graph. the method should be called, when
-    something has changed
-    '''
-    @property
-    def update_all_graph(self):
-        self.draw_circle()
-        self.p = MeshLinePlot(color=[1, 0, 0, 1])
-        self.p._points = self.draw_layer(self.crossSectionRadius)
-        self.graph.add_plot(self.p)
-        return self.graph
 
     '''
     the method create_graph create the graph, where you can add 
@@ -136,10 +127,8 @@ class CSCircleView(AView, BoxLayout):
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * (2*self.r)
-        y = (touch.y - y0) / gh * (2*self.r)
-        print('x: ' + str(x))
-        print('y: ' + str(y))
+        x = (touch.x - x0) / gw * (self.r)
+        y = (touch.y - y0) / gh * (self.r)
         # change_bar is a switch
         change_bar = False
         for bar in self.bars:
@@ -155,15 +144,22 @@ class CSCircleView(AView, BoxLayout):
         # at the same time
         if change_bar:
             return
+        else:
+            self.csShape.cancel_editing_bar()
+        oneIsFocused=False
         if x < self.r:
             for layer in self.layers:
-                if layer.mouse_within(y, self.r*2 / 1e2):
-                    layer.line.color = [0, 0, 0, 1]
+                if layer.mouse_within(y, self.graph.ymax / 1e2):
+                    oneIsFocused=True
+                    self.lineIsFocused=True
                     self.focusLayer = layer
                     self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
-                else:
-                    layer.line.color = [1, 0, 0, 1]
+                    self.focusLine.points=layer.line.points
+                    self.graph.add_plot(self.focusLine)
+        if not oneIsFocused and self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)
+            self.csShape.cancel_editing_layer()
     # not finished yet
 
     def edit_bar(self, x, y, material, csArea):
@@ -189,4 +185,5 @@ class CSCircleView(AView, BoxLayout):
             self.focusLayer.line.points = [
                 (mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
             self.csShape.hide_error_message()
-    
+        if self.lineIsFocused:
+            self.graph.remove_plot(self.focusLine)

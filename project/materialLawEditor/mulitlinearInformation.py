@@ -20,6 +20,8 @@ class MultilinearInformation(GridLayout):
         self.cols = 2
         self.btnSize=Design.btnSize
         self.focusBtn=None
+        self.row_force_default=True
+        self.row_default_height=self.btnSize
         self.create_information()
     
     '''
@@ -28,20 +30,17 @@ class MultilinearInformation(GridLayout):
     def create_information(self):
         self.add_widget(Label(text='function:',size_hint_x=None, width=200))
         self.add_widget(Label(text='multilinear',size_hint_x=None, width=200))
-        self.pointsLbl=Label(text='points:',size_hint_x=None, width=200)
         self.pointsBtn=Button(text='5',size_hint_y=None, height=self.btnSize)
         self.pointsBtn.bind(on_press=self.show_popup)
-        self.heightLbl=Label(text='height:',size_hint_x=None, width=200)
         self.heightBtn=Button(text='50',size_hint_y=None, height=self.btnSize)
         self.heightBtn.bind(on_press=self.show_popup)
-        self.widthLbl=Label(text='width:',size_hint_x=None, width=200)
         self.widthBtn=Button(text='50',size_hint_y=None, height=self.btnSize)
         self.widthBtn.bind(on_press=self.show_popup)
-        self.add_widget(self.pointsLbl)
+        self.add_widget(Label(text='points:',size_hint_x=None, width=200))
         self.add_widget(self.pointsBtn)
-        self.add_widget(self.heightLbl)
+        self.add_widget(Label(text='strain-limit:',size_hint_x=None, width=200))
         self.add_widget(self.heightBtn)
-        self.add_widget(self.widthLbl)
+        self.add_widget(Label(text='stress-limit:',size_hint_x=None, width=200))
         self.add_widget(self.widthBtn)
         self.create_popup()
     
@@ -57,7 +56,7 @@ class MultilinearInformation(GridLayout):
     close the numpad
     '''
     def close_numpad(self):
-        self.popup.dismiss()
+        self.popupNumpad.dismiss()
         
     '''
     the method finished_numpad close the numpad_popup
@@ -66,7 +65,6 @@ class MultilinearInformation(GridLayout):
         self.popupNumpad.dismiss()
         if self.focusBtn==self.pointsBtn:
             self.pointsBtn.text=self.numpad.textinput.text
-            print(self.pointsBtn.text)
             self.editor.set_points(float(self.pointsBtn.text))
         elif self.focusBtn==self.widthBtn:
             self.widthBtn.text=self.numpad.textinput.text

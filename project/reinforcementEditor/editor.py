@@ -4,12 +4,10 @@ Created on 02.06.2016
 @author: mkennert
 
 '''
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.popup import Popup
-from kivy.uix.slider import Slider
 
 from crossSectionEditor.rectangleInformation import RectangleInformation
 from designClass.design import Design
@@ -25,6 +23,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols = 2
         self.spacing = 20
+        
         self.btnSize = Design.btnSize
         self.content = GridLayout(cols=1)
         self.containsView = False
@@ -264,7 +263,7 @@ class ReinforcementEditor(GridLayout, IObserver):
                                             row_default_height=self.btnSize, size_hint_y=None,
                                             height=self.btnSize)
         confirmBtn = Button(
-            text='confirm', size_hint_y=None, height=self.btnSize)
+            text='ok', size_hint_y=None, height=self.btnSize)
         confirmBtn.bind(on_press=self.add_layer)
         cancelBtn = Button(
             text='cancel', size_hint_y=None, height=self.btnSize)
@@ -282,7 +281,7 @@ class ReinforcementEditor(GridLayout, IObserver):
                                                row_default_height=self.btnSize, size_hint_y=None,
                                                height=self.btnSize)
         confirmBar = Button(
-            text='confirm', size_hint_y=None, height=self.btnSize)
+            text='ok', size_hint_y=None, height=self.btnSize)
         confirmBar.bind(on_press=self.add_bar)
         cancelBar = Button(
             text='cancel', size_hint_y=None, height=self.btnSize)
@@ -434,7 +433,8 @@ class ReinforcementEditor(GridLayout, IObserver):
     def select_material(self, Button):
         self.popup.dismiss()
         self.materialOption.text = Button.text
-
+        self.materialOptionBar.text=Button.text
+    
     '''
     add the view at the left side of the editor
     '''
@@ -591,7 +591,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             text='cancel', size_hint_y=None, height=self.btnSize)
         cancelBtn.bind(on_press=self.cancel_editing_layer)
         editLayer = Button(
-            text='edit', size_hint_y=None, height=self.btnSize)
+            text='ok', size_hint_y=None, height=self.btnSize)
         editLayer.bind(on_press=self.edit_layer)
         self.editArea.add_widget(editLayer)
         self.editArea.add_widget(cancelBtn)
@@ -607,8 +607,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             text='cancel', size_hint_y=None, height=self.btnSize)
         cancelBar.bind(on_press=self.cancel_editing_bar)
         editBar= Button(
-            text='edit', size_hint_y=None, height=self.btnSize)
+            text='ok', size_hint_y=None, height=self.btnSize)
         editBar.bind(on_press=self.edit_bar)
         self.editAreaBar.add_widget(editBar)
         self.editAreaBar.add_widget(cancelBar)
-    
