@@ -26,8 +26,9 @@ class MultilinearView(GridLayout):
     def create_graph(self):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=10, y_ticks_major=10,
+                           x_grid=True, y_grid=True,
                            y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=50, ymin=0, ymax=50)
+                           xmin=0, xmax=50, ymin=0, ymax=50)
         self.add_widget(self.graph)
 
     '''
@@ -37,15 +38,16 @@ class MultilinearView(GridLayout):
     def create_points(self, n):
         self._points = []
         self.lines = []
-        d = 100.
+        d = 50.
         self.epsX = self.graph.xmax / d
         self.epsY = self.graph.ymax / d
-        c = (self.graph.xmax - 2) / n
+        c = (self.graph.xmax-2) / n
         i = self.graph.xmax / n
         while n > 0:
             p = FilledEllipse(color=[255, 0, 0])
             p.xrange = [c - self.epsX, c + self.epsX]
             p.yrange = [c - self.epsY, c + self.epsY]
+            print(p.xrange,p.yrange)
             self._points.append(p)
             self.graph.add_plot(p)
             c += i
@@ -61,10 +63,19 @@ class MultilinearView(GridLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * self.editor.w
         y = (touch.y - y0) / gh * self.editor.h
+        print('x: '+str(x))
+        print('y: '+str(y))
+        print x0,y0
+        print gw, gh
+        print self.editor.w
+        print self.editor.h
+        print touch.x
+        print touch.y
         for p in self._points:
             if p.xrange[0] <= x and p.xrange[1] >= x \
                     and p.yrange[0] <= y and p.yrange[1] >= y:
                 p.color = Design.focusColor
+                self.editor.update_coordinates(x, y)
             else:
                 if p.color == Design.focusColor:
                     p.color = [255, 0, 0]
@@ -76,33 +87,31 @@ class MultilinearView(GridLayout):
     def on_touch_move(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
-        x = (touch.x - x0) / gw * self.editor.w
-        y = (touch.y - y0) / gh * self.editor.h
+        x = (touch.x - x0) / gw * self.editor.w-1
+        y = (touch.y - y0) / gh * self.editor.h-1
         for i in range(len(self._points)):
             p = self._points[i]
             if p.color == Design.focusColor:
-                l=len(self._points)
-                x1=self._points[i-1].xrange[0]
-                if i<l-1:
-                    x2=self._points[i+1].xrange[0]
-                print('x: '+str(x))
-                print('y: '+str(y))
-                if (x>0 and y>0 and x<self.editor.w and y<self.editor.h) and \
-                   ((x>x1 and i<l-1 and x2>x) or (i==0 and x<x2) or (i==l-1 and x>x1)):
+                l = len(self._points)
+                x1 = self._points[i - 1].xrange[0]
+                if i < l - 1:
+                    x2 = self._points[i + 1].xrange[0]
+                if (x > 0 and y > 0 and x < self.editor.w and y < self.editor.h) and \
+                   ((x > x1 and i < l - 1 and x2 > x) or (i == 0 and x < x2) or (i == l - 1 and x > x1)):
                     p.xrange = [x - self.epsX, x + self.epsX]
                     p.yrange = [y - self.epsY, y + self.epsY]
-                    if i==l-1:
-                        self.lines[i].points[1]=(x,y)
+                    self.editor.update_coordinates(x, y)
+                    if i == l - 1:
+                        self.lines[i].points[1] = (x, y)
                     else:
-                        self.lines[i].points[1]=(x,y)
-                        self.lines[i+1].points[0]=(x,y)
-                
+                        self.lines[i].points[1] = (x, y)
+                        self.lines[i + 1].points[0] = (x, y)
 
     # not finished yet
     def draw_lines(self):
-        counter=0
+        counter = 0
         for i in range(len(self._points)):
-            counter+=1
+            counter += 1
             print(counter)
             if i == 0:
                 line = LinePlot(points=[(0, 0), (self._points[i].xrange[0] + self.epsX, self._points[i].yrange[0] + self.epsY)],
@@ -120,8 +129,8 @@ class MultilinearView(GridLayout):
 
     def update_width(self):
         self.graph.xmax = self.editor.w
-        self.graph.x_ticks_major=self.graph.xmax/5.
-        d = 100.
+        self.graph.x_ticks_major = self.graph.xmax / 5.
+        d = 50.
         curX = self.graph.xmax / d
         for point in self._points:
             x = point.xrange[0] + self.epsX
@@ -133,8 +142,8 @@ class MultilinearView(GridLayout):
 
     def update_height(self):
         self.graph.ymax = self.editor.h
-        self.graph.y_ticks_major=self.graph.ymax/5.
-        d = 100.
+        self.graph.y_ticks_major = self.graph.ymax / 5.
+        d = 50.
         curY = self.graph.ymax / d
         for point in self._points:
             y = point.yrange[0] + self.epsY
@@ -153,6 +162,51 @@ class MultilinearView(GridLayout):
         # draw the new points and lines
         self.create_points(self.editor.get_points())
 
+    # not finished yet
+    def update_point_position_x(self, x):
+        l = len(self._points)
+        for i in range(l):
+            if self._points[i].color == Design.focusColor:
+                y = self._points[i].yrange[0] + self.epsY
+                if i == l - 1 and x > self._points[i - 1].xrange[0] + self.epsX:
+                    self._points[i].xrange = [x - self.epsX, x + self.epsX]
+                    self.lines[i].points[1] = (x, y)
+                elif i == 0 and x < self._points[i + 1].xrange[0] + self.epsX:
+                    self.lines[i].points[1] = (x, y)
+                    self.lines[i + 1].points[0] = (x, y)
+                    self._points[i].xrange = [x - self.epsX, x + self.epsX]
+                elif x < self._points[i + 1].xrange[0] + self.epsX and x > self._points[i - 1].xrange[0] + self.epsX:
+                    self.lines[i].points[1] = (x, y)
+                    self.lines[i + 1].points[0] = (x, y)
+                    self._points[i].xrange = [x - self.epsX, x + self.epsX]
+                else:
+                    print('false input')
+
+    def update_point_position_y(self, y):
+        l = len(self._points)
+        for i in range(l):
+            if self._points[i].color == Design.focusColor:
+                x = self._points[i].xrange[0] + self.epsX
+                if i == l - 1:
+                    self._points[i].yrange = [y - self.epsY, y + self.epsY]
+                    self.lines[i].points[1] = (x, y)
+                elif i == 0:
+                    self.lines[i].points[1] = (x, y)
+                    self.lines[i + 1].points[0] = (x, y)
+                    self._points[i].yrange = [y - self.epsY, y + self.epsY]
+                else:
+                    self.lines[i].points[1] = (x, y)
+                    self.lines[i + 1].points[0] = (x, y)
+                    self._points[i].yrange = [y - self.epsY, y + self.epsY]
+    
+    '''
+    returns the coordinate of the points
+    '''
+    def get_coordinates(self):
+        x=[p.xrange[0] + self.epsX for p in self._points]
+        y=[p.yrange[0] + self.epsY for p in self._points]
+        return x,y
+    
     '''
     sign in by the parent
     '''

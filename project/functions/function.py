@@ -14,3 +14,9 @@ class IFunction:
     def f(self,x):
         raise NotImplemented('not implemented')
     
+    '''
+    return a string, which presents the function
+    '''
+    @abstractmethod
+    def f_toString(self):
+        raise NotImplemented('not implemented')

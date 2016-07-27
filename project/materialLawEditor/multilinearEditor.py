@@ -1,20 +1,21 @@
 '''
 Created on 03.05.2016
-
 @author: mkennert
 '''
+# version 120
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
+
+from functions.multilinear import Multilinear
 from kivy.garden.graph import Graph, MeshLinePlot
 from materialLawEditor.mulitlinearInformation import MultilinearInformation
 from materialLawEditor.multilinearView import MultilinearView
 
 
-class Multilinear(GridLayout):
+class MultilinearEditor(GridLayout):
     # constructor
-
     def __init__(self, **kwargs):
-        super(Multilinear, self).__init__(**kwargs)
+        super(MultilinearEditor, self).__init__(**kwargs)
         self.cols = 2
         self.h = 50.
         self.w = 50.
@@ -57,14 +58,29 @@ class Multilinear(GridLayout):
     def get_points(self):
         return self._points
 
-'''
-Just for testing
-'''
+    # not finished yet
+    def update_coordinates(self, x, y):
+        self.information.update_coordinates(x, y)
 
+    # not finished yet
+    def update_point_position_x(self, x):
+        return self.view.update_point_position_x(x)
 
-class TestApp(App):
+    # not finished yet
+    def update_point_position_y(self, y):
+        self.view.update_point_position_y(y)
 
-    def build(self):
-        return Multilinear()
+    # not finished yet
+    def confirm(self):
+        x, y = self.view.get_coordinates()
+        f = Multilinear(x, y)
+        self.lawEditor.set_f(f)
+        self.lawEditor.cancel_graphicShow()
+        self.lawEditor.creater.cancel(None)
 
-TestApp().run()
+    # not finished yest
+    def cancel(self):
+        self.lawEditor.cancel_graphicShow()
+
+    def sign_in(self, editor):
+        self.lawEditor = editor

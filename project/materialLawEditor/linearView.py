@@ -3,13 +3,10 @@ Created on 09.05.2016
 
 @author: mkennert
 '''
-from kivy.graphics import Line
 
 from kivy.uix.gridlayout import GridLayout
 
-from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
 
 
@@ -20,20 +17,13 @@ class LinearView(GridLayout):
         self.cols = 1
         self.b=0.
         self.create_graph()
-        self.create_point()
+        #self.create_point()
     
     '''
-    create the graph of the view
     '''
-    def create_graph(self):
-        self.graph = Graph(xlabel='strain', ylabel='stress',
-                           x_ticks_major=2, y_ticks_major=2,
-                           y_grid_label=True, x_grid_label=True,
-                           xmin=0.0, xmax=11, ymin=0, ymax=11)
-        self.add_widget(self.graph)
-    
     '''
     create the point
+    '''
     '''
     def create_point(self):
         delta=50.
@@ -49,14 +39,22 @@ class LinearView(GridLayout):
         self.graph.add_plot(self.line)
     
     '''
+    '''
     reaction when the user move touch on the graph 
+    '''
     '''
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
         #11=xmax=ymax
-        x = (touch.x - x0) / gw*self.graph.xmax
-        y = (touch.y - y0) / gh*self.graph.ymax
+        x = (touch.x - x0) / gw*(self.graph.xmax)
+        y = (touch.y - y0) / gh*(self.graph.ymax)
+        print('x: '+str(x))
+        print('y: '+str(y))
+        print('xmax: '+str(self.graph.xmax))
+        print('ymax: '+str(self.graph.ymax))
+        print(self.point.xrange)
+        print(self.point.yrange)
         if self.point.xrange[0]<=x and self.point.xrange[1]>=x \
             and self.point.yrange[0]<=y and self.point.yrange[1]>=y:
             self.point.color=Design.focusColor
@@ -64,14 +62,16 @@ class LinearView(GridLayout):
             self.point.color=[255,0,0]
     
     '''
+    '''
     reaction when the user move over the graph
+    '''
     '''             
     def on_touch_move(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
         #11=xmax=ymax
-        x = (touch.x - x0) / gw*self.graph.xmax
-        y = (touch.y - y0) / gh*self.graph.ymax
+        x = (touch.x - x0) / gw*(self.graph.xmax)
+        y = (touch.y - y0) / gh*(self.graph.ymax)
         if self.point.color==Design.focusColor and x<self.graph.xmax and y<self.graph.ymax\
             and y>0 and x>0:
             self.point.xrange=[x-self.epsX,x+self.epsX]
@@ -81,8 +81,10 @@ class LinearView(GridLayout):
                 self.editor.update_btn((y-self.b)/x)
     
     '''
+    '''
     upgrade the graph when the user 
     change the slope with the button
+    '''
     '''
     def update_graph(self,value):
         curx=self.graph.xmax-self.graph.xmax*0.1
@@ -96,7 +98,6 @@ class LinearView(GridLayout):
             else:
                 x=y=cury
         else:
-            print('case 3')
             x=curx
             y=x*value+self.b
             if y>self.graph.ymax:
@@ -108,25 +109,27 @@ class LinearView(GridLayout):
         self.point.yrange=[y-self.epsY,y+self.epsY]
     
     '''
+    '''
     sign in by the parent
+    '''
     '''
     def sign_in(self, parent):
         self.editor=parent
     
     #not finished yet
-    def update_strain_limit(self,value):
+    def update_strain_upper_limit(self,value):
         self.graph.ymax=y=value
         x=self.graph.xmax
         self.graph.y_ticks_major=value/10.
         delta=50.
         self.epsY=self.graph.ymax/delta
-        if self.editor.m>1:
+        if self.editor.a>1:
             print('case 1')
-            x=(y-self.b)/self.editor.m
+            x=(y-self.b)/self.editor.a
             self.point.yrange=[y-self.epsY,y+self.epsY]
             self.point.xrange=[x-self.epsX,x+self.epsX]
             self.line.points=[(0,self.b),(x,y)]
-        elif self.editor.m==1:
+        elif self.editor.a==1:
             print('case 2')    
             if self.graph.xmax>self.graph.ymax:
                 self.line.points=[(0,self.b),(y,y)]
@@ -137,7 +140,7 @@ class LinearView(GridLayout):
                 self.point.yrange=[x-self.epsY,x+self.epsY]
                 self.point.xrange=[x-self.epsX,x+self.epsX]
         else:
-            #m<1
+            #a<1
             print('case 3')
             x=(self.graph.ymax-self.b)/value
             y=self.graph.ymax
@@ -149,20 +152,18 @@ class LinearView(GridLayout):
         self.graph.ymax+=self.graph.ymax/10.
         
     #not finished yet
-    def update_stress_limit(self,value):
+    def update_stress_upper_limit(self,value):
         self.graph.xmax=y=value
         x=self.graph.xmax
         self.graph.x_ticks_major=value/10.
         delta=50.
         self.epsX=self.graph.xmax/delta
-        if self.editor.m>1:
-            print('case 1')
-            x=(y-self.b)/self.editor.m
+        if self.editor.a>1:
+            x=(y-self.b)/self.editor.a
             self.point.yrange=[y-self.epsY,y+self.epsY]
             self.point.xrange=[x-self.epsX,x+self.epsX]
             self.line.points=[(0,self.b),(x,y)]
-        elif self.editor.m==1:
-            print('case 2')    
+        elif self.editor.a==1:
             if self.graph.xmax>self.graph.ymax:
                 self.line.points=[(0,self.b),(y,y)]
                 self.point.yrange=[y-self.epsY,y+self.epsY]
@@ -172,7 +173,7 @@ class LinearView(GridLayout):
                 self.point.yrange=[x-self.epsY,x+self.epsY]
                 self.point.xrange=[x-self.epsX,x+self.epsX]
         else:
-            #m<1
+            #a<1
             print('case 3')
             x=(self.graph.ymax-self.b)/value
             y=self.graph.ymax
@@ -188,3 +189,45 @@ class LinearView(GridLayout):
         self.b=value
         cur=self.line.points[1]
         self.line.points=[(0,self.b),cur]
+    '''
+    
+    def update_strain_lower_limit(self, value):
+        self.graph.ymin=-value
+        self.graph.y_ticks_major=value/5
+        self.update_graph(self.editor.a)
+
+    def update_stress_lower_limit(self, value):
+        self.graph.xmin=-value
+        self.graph.x_ticks_major=value/5
+        self.update_graph(self.editor.a)
+    
+    def update_stress_upper_limit(self,value):
+        self.graph.xmax=value
+        self.graph.x_ticks_major=value/5
+        self.update_graph(self.editor.a)
+    
+    def update_strain_upper_limit(self,value):
+        self.graph.ymax=value
+        self.graph.y_ticks_major=value/5
+        self.update_graph(self.editor.a)
+    
+    def update_graph(self,value):
+        y1,y2=self.graph.xmin*value,self.graph.xmax*value
+        self.line.points=[(self.graph.xmin,y1),(self.graph.xmax,y2)]
+    
+    def sign_in(self, parent):
+        self.editor=parent
+    
+    '''
+    create the graph of the view
+    '''
+    def create_graph(self):
+        self.graph = Graph(xlabel='strain', ylabel='stress',
+                           x_ticks_major=2, y_ticks_major=2,
+                           y_grid_label=True, x_grid_label=True,
+                           x_grid=True, y_grid=True,
+                           xmin=0, xmax=10, ymin=0, ymax=10)
+        self.line=LinePlot(points=[(0,0),(10,10)],width=1.5)
+        self.graph.add_plot(self.line)
+        self.add_widget(self.graph)
+        

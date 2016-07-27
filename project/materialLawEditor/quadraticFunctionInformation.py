@@ -36,10 +36,6 @@ class QuadraticFunctionInformation(GridLayout):
         self.bBtn=Button(text='0',size_hint_y=None, height=self.btnSize)
         self.bBtn.bind(on_press=self.show_popup)
         self.add_widget(self.bBtn)
-        self.add_widget(Label(text='c'))
-        self.cBtn=Button(text='0',size_hint_y=None, height=self.btnSize)
-        self.add_widget(self.cBtn)
-        self.cBtn.bind(on_press=self.show_popup)
         self.h=Button(text='10',size_hint_y=None, height=self.btnSize)
         self.w=Button(text='10',size_hint_y=None, height=self.btnSize)
         self.h.bind(on_press=self.show_popup)
@@ -48,6 +44,12 @@ class QuadraticFunctionInformation(GridLayout):
         self.add_widget(self.h)
         self.add_widget(Label(text='stress-limit'))
         self.add_widget(self.w)
+        btn_confirm=Button(text='ok',size_hint_y=None, height=self.btnSize)
+        btn_cancel=Button(text='cancel',size_hint_y=None, height=self.btnSize)
+        btn_confirm.bind(on_press=self.confirm)
+        btn_cancel.bind(on_press=self.cancel)
+        self.add_widget(btn_confirm)
+        self.add_widget(btn_cancel)
         self.create_popup()
     
     
@@ -77,9 +79,6 @@ class QuadraticFunctionInformation(GridLayout):
         elif self.focusBtn==self.bBtn:
             self.bBtn.text=self.numpad.textinput.text
             self.editor.set_b(float(self.bBtn.text))
-        elif self.focusBtn==self.cBtn:
-            self.cBtn.text=self.numpad.textinput.text
-            self.editor.set_c(float(self.cBtn.text))
         elif self.focusBtn==self.h:
             self.editor.set_height(float(self.h.text))
         elif self.focusBtn==self.w:
@@ -98,3 +97,9 @@ class QuadraticFunctionInformation(GridLayout):
     '''
     def sign_in(self, parent):
         self.editor=parent
+    
+    def confirm(self,btn):
+        self.editor.confirm()
+    
+    def cancel(self,btn):
+        self.editor.cancel()

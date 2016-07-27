@@ -10,11 +10,11 @@ which has a rectangle shape
 
 from kivy.uix.gridlayout import GridLayout
 
-from bars.bar import Bar
+from reinforcement.bar import Bar
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layer import Layer
+from reinforcement.layer import Layer
 from plot.circle import Circle
 from plot.dashedLine import DashedLine
 from plot.filled_ellipse import FilledEllipse
@@ -35,6 +35,7 @@ class CSRectangleView(GridLayout, AView):
         self.percent_change = False
         self.layers = []
         self.bars = []
+        #self.reinforcement=[]
         self.create_graph()
 
     '''

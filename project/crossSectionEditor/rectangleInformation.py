@@ -29,16 +29,16 @@ class RectangleInformation(GridLayout):
         self.popUp=Popup(content=self.numpad)
         #adding_material_area to manage the height-area
         self.heightValue=Label(text='height: 0.5 m',size_hint_x=None, width=100)
-        self.btnHeight=Button(text='0.5',size_hint_y=None, height=self.btnSize)
-        self.btnHeight.bind(on_press=self.show_numpad)
+        self.btn_strain_upper_limit=Button(text='0.5',size_hint_y=None, height=self.btnSize)
+        self.btn_strain_upper_limit.bind(on_press=self.show_numpad)
         self.add_widget(self.heightValue)
-        self.add_widget(self.btnHeight)
+        self.add_widget(self.btn_strain_upper_limit)
         #adding_material_area to manage the width-area
         self.widthValue=Label(text='width: 0.25 m',size_hint_x=None, width=100)
-        self.btnWidth=Button(text='0.25',size_hint_y=None, height=self.btnSize)
-        self.btnWidth.bind(on_press=self.show_numpad)
+        self.btn_stress_upper_limit=Button(text='0.25',size_hint_y=None, height=self.btnSize)
+        self.btn_stress_upper_limit.bind(on_press=self.show_numpad)
         self.add_widget(self.widthValue)
-        self.add_widget(self.btnWidth)
+        self.add_widget(self.btn_stress_upper_limit)
     
     '''
     close the numpad
@@ -52,7 +52,7 @@ class RectangleInformation(GridLayout):
     
     def finished_numpad(self):
         self.focusbtn.text=self.numpad.textinput.text
-        if self.focusbtn==self.btnHeight:
+        if self.focusbtn==self.btn_strain_upper_limit:
             self.set_height(float(self.focusbtn.text))
         else:
             self.set_width(float(self.focusbtn.text))

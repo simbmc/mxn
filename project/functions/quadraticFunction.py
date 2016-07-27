@@ -5,22 +5,15 @@ Created on 06.05.2016
 '''
 from functions.function import IFunction
 '''
-represents a quadratic function f(x)=ax^2+bx+c
+represents a quadratic function f(x)=ax^2+bx
 '''
 class QuadraticFunction(IFunction):
-    def __init__(self,a,b,c):
+    def __init__(self,a,b):
         self.a=a
         self.b=b
-        self.c=c
     
     def f(self,x):
-        return self.a*x**2+self.b*x+self.c
+        return self.a*x**2+self.b*x
     
-    def set_a(self,value):
-        self.a=value
-    
-    def set_b(self,value):
-        self.b=value 
-    
-    def set_c(self,value):
-        self.c=value 
+    def f_toString(self):
+        return "f(x)="+str(self.a)+"x^2+"+str(self.b)+"x"

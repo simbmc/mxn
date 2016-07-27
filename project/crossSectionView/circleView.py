@@ -6,11 +6,11 @@ Created on 01.04.2016
 
 from kivy.uix.boxlayout import BoxLayout
 
-from bars.bar import Bar
+from reinforcement.bar import Bar
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layer import Layer
+from reinforcement.layer import Layer
 import numpy as np
 from plot.dashedLine import DashedLine
 from plot.ellipse import Ellipse
@@ -110,10 +110,8 @@ class CSCircleView(AView, BoxLayout):
     def add_layer(self, x, y, material):
         print('y: '+str(y))
         print('r: '+str(self.r))
-        x=np.sqrt(np.power(self.r/2.,2)-np.power(y-self.r/2.,2))+self.r/2.
-        #x1=self.r-(x-self.r/2.)
         x1=-np.sqrt(np.power(self.r/2.,2)-np.power(y-self.r/2.,2))+self.r/2.
-        x2=x
+        x2=np.sqrt(np.power(self.r/2.,2)-np.power(y-self.r/2.,2))+self.r/2.
         print('x1: '+str(x))
         print('x2: '+str(x1))
         l = Layer(0, y, 0., 0)
@@ -174,16 +172,12 @@ class CSCircleView(AView, BoxLayout):
     # not finished yet
 
     def edit_layer(self, y, material, csArea):
-        mid = self.graph.xmax / 2.
         self.focusLayer.y = y
         self.focusLayer.material = material
-        if y < self.bh:
-            self.focusLayer.line.points = [
-                (mid - self.bw / 2., y), (mid - self.bw / 2. + self.bw, y)]
-            self.csShape.hide_error_message()
-        else:
-            self.focusLayer.line.points = [
-                (mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
+        if y < self.r*2:
+            x1=-np.sqrt(np.power(self.r/2.,2)-np.power(y-self.r/2.,2))+self.r/2.
+            x2=np.sqrt(np.power(self.r/2.,2)-np.power(y-self.r/2.,2))+self.r/2.
+            self.focusLayer.line.points=[(x1,y),(x2,y)]
             self.csShape.hide_error_message()
         if self.lineIsFocused:
             self.graph.remove_plot(self.focusLine)

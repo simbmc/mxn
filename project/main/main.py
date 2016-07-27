@@ -16,9 +16,8 @@ from materialEditor.editor import MaterialEditor
 from crossSectionEditor.editor import CrossSectionEditor
 from reinforcementEditor.editor import ReinforcementEditor
 
-
 Window.size = (900, 600)
-#Window.clearcolor = (1, 1, 1, 1)
+#Window.clearcolor = (1, 1, 1, 0)
 
 
 class MainWindow(GridLayout):
@@ -129,7 +128,7 @@ class MainWindow(GridLayout):
         # self.reEditor.add_view(self.csShape.view)
 
     ##########################################################################
-    #Attention:When you want write a new show-method than you must make sure    #
+    #Attention:When you want write a new show-method than make sure             #
     #that actually component is remove from the widget and set                  #
     #the content to the showed component                                        #
     ##########################################################################
@@ -170,8 +169,15 @@ class MainWindow(GridLayout):
         self.content = self.reEditor
         self.popup.dismiss()
 
+'''
+start the application
+'''
+
+
 class CSIApp(App):
+
     def build(self):
+        print('main')
         return MainWindow()
 
 if __name__ == '__main__':

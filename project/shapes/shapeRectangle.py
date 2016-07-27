@@ -13,6 +13,7 @@ from shapes.ashape import AShape
 the cross_Section was developed to undock the cs_information from the view
 '''
 
+
 class ShapeRectangle(GridLayout, AShape):
     # Constructor
 
@@ -27,12 +28,15 @@ class ShapeRectangle(GridLayout, AShape):
         self.view = CSRectangleView()
         self.view.set_cross_section(self)
 
+    '''
+    set the information of the cross section
+    '''
+
     def set_information(self, information):
         self.information = information
         self.calculate_weight_price()
         self.calculate_strength()
         self.set_cross_section_information()
-
 
     '''
     the method set_layer_information update the cross section information
@@ -67,14 +71,16 @@ class ShapeRectangle(GridLayout, AShape):
     '''
     return the heigth of the shape
     '''
+
     def get_height(self):
         return self.ch
     '''
     return the width of the shape
     '''
+
     def get_width(self):
         return self.cw
-   
+
     '''
     calculate the weight and the price of the cross section
     '''
@@ -137,10 +143,11 @@ class ShapeRectangle(GridLayout, AShape):
                 (1. - percentOfLayers) * self.concreteStiffness
         self.strength = strength
         '''
-    
+
     '''
     sign in by the cross section
     '''
+
     def sign_parent(self, crossSection):
         self.allCrossSection = crossSection
         self.information = crossSection.get_information()

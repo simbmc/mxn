@@ -25,6 +25,7 @@ class QuadraticFunctionView(GridLayout):
         self.graph = Graph(xlabel='strain', ylabel='stress',
                            x_ticks_major=2, y_ticks_major=2,
                            y_grid_label=True, x_grid_label=True,
+                           x_grid=True, y_grid=True,
                            xmin=-self.editor.w, xmax=self.editor.w, ymin=0, ymax=self.editor.h)
         self.add_widget(self.graph)
     
@@ -53,7 +54,8 @@ class QuadraticFunctionView(GridLayout):
     update the graphwidth
     '''
     def update_width(self):
-        self.graphxmin=-self.editor.getwidth()
+        self.graph.xmin=-self.editor.getwidth()
+        self.graph.x_ticks_major=self.graph.xmax/5.
         self.graph.xmax=self.editor.getwidth()
     
     '''

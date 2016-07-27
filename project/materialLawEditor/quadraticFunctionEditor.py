@@ -5,8 +5,10 @@ Created on 06.05.2016
 '''
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from materialLawEditor.quadraticFunctionView import QuadraticFunctionView
+
+from functions.quadraticFunction import QuadraticFunction
 from materialLawEditor.quadraticFunctionInformation import QuadraticFunctionInformation
+from materialLawEditor.quadraticFunctionView import QuadraticFunctionView
 import numpy as np
 
 
@@ -18,7 +20,6 @@ class QuadraticFunctionEditor(GridLayout):
         self.cols = 2
         self.a = 1.
         self.b = 0.
-        self.c = 0.
         self.h = 10
         self.w = 10
         self.view = QuadraticFunctionView()
@@ -45,21 +46,6 @@ class QuadraticFunctionEditor(GridLayout):
         self.view.update_points()
 
     '''
-    set the factor c
-    '''
-
-    def set_c(self, value):
-        self.c = value
-        self.view.update_points()
-
-    '''
-    return the factor c
-    '''
-
-    def get_c(self):
-        return self.c
-
-    '''
     set the width
     '''
 
@@ -84,17 +70,17 @@ class QuadraticFunctionEditor(GridLayout):
     '''
 
     def f(self, x):
-        return self.a * np.power(x, 2) + self.b * x + self.c
-
-
-'''
-Just for testing
-'''
-
-
-class TestApp(App):
-
-    def build(self):
-        return QuadraticFunctionEditor()
-
-TestApp().run()
+        return self.a * np.power(x, 2) + self.b * x 
+    
+    def confirm(self):
+        self.lawEditor.cancel_graphicShow()
+        f=QuadraticFunction(self.a,self.b)
+        self.lawEditor.set_f(f)
+        self.lawEditor.cancel_graphicShow()
+        self.lawEditor.creater.cancel(None)
+    
+    def cancel(self):
+        self.lawEditor.cancel_graphicShow()
+    
+    def sign_in(self,editor):
+        self.lawEditor=editor

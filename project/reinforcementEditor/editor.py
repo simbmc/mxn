@@ -23,7 +23,6 @@ class ReinforcementEditor(GridLayout, IObserver):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols = 2
         self.spacing = 20
-        
         self.btnSize = Design.btnSize
         self.content = GridLayout(cols=1)
         self.containsView = False
@@ -180,21 +179,21 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.addingMaterialArea = GridLayout(
             cols=2, row_force_default=True,
             row_default_height=self.btnSize, size_hint_y=None, height=3 * self.btnSize)
-        self.addingMaterialArea.add_widget(Label(text='Material:'))
+        self.addingMaterialArea.add_widget(Label(text='material:'))
         self.materialOption = Button(
             text='steel', size_hint_y=None, height=self.btnSize)
         self.materialOption.bind(on_release=self.popup.open)
         self.addingMaterialArea.add_widget(self.materialOption)
         self.btnX = Button(text='0.0', size_hint_y=None, height=self.btnSize)
         self.btnY = Button(text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btnHeight = Button(
+        self.btn_strain_upper_limit = Button(
             text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btnWidth = Button(
+        self.btn_stress_upper_limit = Button(
             text='0.0', size_hint_y=None, height=self.btnSize)
         self.btnX.bind(on_press=self.show_numpad)
         self.btnY.bind(on_press=self.show_numpad)
-        self.btnHeight.bind(on_press=self.show_numpad)
-        self.btnWidth.bind(on_press=self.show_numpad)
+        self.btn_strain_upper_limit.bind(on_press=self.show_numpad)
+        self.btn_stress_upper_limit.bind(on_press=self.show_numpad)
         self.addingMaterialArea.add_widget(Label(text='y-coordinate:'))
         self.addingMaterialArea.add_widget(self.btnY)
         self.addingMaterialArea.add_widget(Label(text='cross-sectional area:'))
@@ -209,7 +208,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.addingMaterialAreaBar = GridLayout(
             cols=2, row_force_default=True,
             row_default_height=self.btnSize, size_hint_y=None, height=3 * self.btnSize)
-        self.addingMaterialAreaBar.add_widget(Label(text='Material:'))
+        self.addingMaterialAreaBar.add_widget(Label(text='material:'))
         self.materialOptionBar = Button(
             text='steel', size_hint_y=None, height=self.btnSize)
         self.materialOptionBar.bind(on_release=self.popup.open)

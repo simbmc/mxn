@@ -3,9 +3,10 @@ Created on 03.05.2016
 
 @author: mkennert
 '''
+from functions.linearFunction import Linear
 
 '''
-f(x)=mx+b
+f(x)=ax+b
 '''
 
 from kivy.app import App
@@ -15,14 +16,13 @@ from materialLawEditor.linearInformation import LinearInformation
 from materialLawEditor.linearView import LinearView
 
 
-class Linear(GridLayout):
+class LinearEditor(GridLayout):
     # constructor
 
     def __init__(self, **kwargs):
-        super(Linear, self).__init__(**kwargs)
+        super(LinearEditor, self).__init__(**kwargs)
         self.cols = 2
-        self.m = 1
-        self.b = 0
+        self.a = 1
         self.view = LinearView()
         self.view.sign_in(self)
         self.information = LinearInformation()
@@ -31,29 +31,35 @@ class Linear(GridLayout):
         self.add_widget(self.information)
 
     def update_btn(self, value):
+        self.a=value
         self.information.update_btn(value)
 
     def update_graph(self, value):
-        self.m = value
+        self.a = value
         self.view.update_graph(value)
 
-    def update_strain_limit(self, value):
-        self.view.update_strain_limit(value)
+    def update_strain_upper_limit(self, value):
+        self.view.update_strain_upper_limit(value)
 
-    def update_stress_limit(self, value):
-        self.view.update_stress_limit(value)
+    def update_stress_upper_limit(self, value):
+        self.view.update_stress_lower_limit(value)
+    
+    def update_strain_lower_limit(self, value):
+        self.view.update_strain_lower_limit(value)
 
-    def update_b(self, value):
-        self.b = value
-        self.view.update_b(value)
-
-'''
-Just for testing
-'''
-
-
-class TestApp(App):
-
-    def build(self):
-        return Linear()
-TestApp().run()
+    def update_stress_lower_limit(self, value):
+        self.view.update_stress_lower_limit(value)
+    
+    def confirm(self):
+        f=Linear(self.a,0)
+        self.lawEditor.set_f(f)
+        self.lawEditor.cancel_graphicShow()
+        self.lawEditor.creater.cancel(None)
+    
+    def cancel(self):
+        print('cancel linear Editor')
+        self.lawEditor.cancel_graphicShow()
+    
+    def sign_in(self,editor):
+        self.lawEditor=editor
+    

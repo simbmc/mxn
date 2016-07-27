@@ -5,11 +5,11 @@ Created on 03.06.2016
 '''
 from kivy.uix.gridlayout import GridLayout
 
-from bars.bar import Bar
+from reinforcement.bar import Bar
 from crossSectionView.aview import AView
 from designClass.design import Design
 from kivy.garden.graph import Graph, MeshLinePlot
-from layers.layer import Layer
+from reinforcement.layer import Layer
 from plot.dashedLine import DashedLine
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot

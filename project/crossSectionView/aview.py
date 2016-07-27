@@ -5,7 +5,6 @@ Created on 15.03.2016
 '''
 from abc import abstractmethod
 
-from designClass.design import Design
 
 
 class AView(object):
