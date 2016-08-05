@@ -19,13 +19,13 @@ class Circle(Plot):
     '''
     _image = ObjectProperty()
     pos = ListProperty([0, 0])  # center
-    r = NumericProperty(0.)  # radius
+    d = NumericProperty(0.)  # radius
     color = ListProperty([255, 255, 255])
 
     def __init__(self, **kwargs):
         super(Circle, self).__init__(**kwargs)
         self.bind(
-            color=self.ask_draw, pos=self.ask_draw, r=self.ask_draw)
+            color=self.ask_draw, pos=self.ask_draw, d=self.ask_draw)
 
     def create_drawings(self):
         self._image = Line(circle=[0., 0., 0.])
@@ -52,55 +52,6 @@ class Circle(Plot):
 
         bl = (funcx(self.pos[0]) - xmin) * ratiox + \
             size[0], (funcy(self.pos[1]) - ymin) * ratioy + size[1]
-        radius = min(self.r * ratiox, self.r * ratioy)
+        radius = min(self.d * ratiox, self.d * ratioy)
         image.circle = [bl[0], bl[1], radius]
-#         w = tr[0] - bl[0]
-#         h = tr[1] - bl[1]
-#         image.size = (w, h)
 
-if __name__ == '__main__':
-    from kivy.uix.boxlayout import BoxLayout
-    from kivy.app import App
-    from kivy.garden.graph import Graph
-    import random
-    from kivy.clock import Clock
-
-    class TestApp(App):
-
-        def build(self):
-            b = BoxLayout(orientation='vertical')
-
-            graph2 = Graph(
-                xlabel='x',
-                ylabel='y',
-                x_ticks_major=10,
-                y_ticks_major=10,
-                y_grid_label=True,
-                x_grid_label=True,
-                padding=5,
-                xlog=False,
-                ylog=False,
-                xmin=0,
-                ymin=0)
-
-            plot = Circle(color=[0, 0, 0])
-            plot.pos = [50, 50]
-            plot.r = 1
-            graph2.add_plot(plot)
-
-            b.add_widget(graph2)
-            self.circle = plot
-
-            Clock.schedule_interval(self.update_color, 1)
-            Clock.schedule_interval(self.update_pos, 1)
-
-            return b
-
-        def update_color(self, *args):
-            self.circle.color = [random.randint(0, 255) for r in xrange(100)]
-
-        def update_pos(self, *args):
-            self.circle.pos = [100. * random.random() for r in xrange(2)]
-            self.circle.r = 100. * random.random()
-
-    TestApp().run()

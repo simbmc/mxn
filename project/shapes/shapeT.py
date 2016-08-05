@@ -25,7 +25,8 @@ class ShapeT(AShape, GridLayout):
         self.concreteStiffness = 30000.
         self.concreteStrength = 3.
         self.view = TView()
-        self.view.set_cross_section(self)
+        self.view.csShape=self
+        self.view.create_graph()
 
     '''
     return the top-width

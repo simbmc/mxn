@@ -3,53 +3,80 @@ Created on 03.06.2016
 
 @author: mkennert
 '''
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 
-from designClass.design import Design
-from materialEditor.numpad import Numpad
-
+from ownComponents.numpad import Numpad
+from ownComponents.design import Design
+from ownComponents.ownButton import OwnButton
+from ownComponents.ownLabel import OwnLabel
+from ownComponents.ownPopup import OwnPopup
+from kivy.properties import ObjectProperty
 
 class TInformation(GridLayout):
-    #Constructor
+    '''
+    create the component, where you can change the size properties
+    of the cross-section-t-shape
+    '''
+    csShape = ObjectProperty()
+    # constructor
     def __init__(self, **kwargs):
         super(TInformation, self).__init__(**kwargs)
-        self.focusBtn=None
-        self.cols=2
-        self.size_hint_y=None
-        self.spacing=10
-        self.btnSize=Design.btnSize
+        self.cols = 2
+        self.size_hint_y = None
+        self.spacing = Design.spacing
+        self.btnSize = Design.btnHeight
+        
     '''
     create the gui
     '''
     def create_gui(self):
-        self.topWidth=Button(text=str(self.csShape.get_width_top()),size_hint_y=None, height=self.btnSize)
-        self.bottomWidth=Button(text=str(self.csShape.get_width_bottom()),size_hint_y=None, height=self.btnSize)
-        self.topHeight=Button(text=str(self.csShape.get_height_top()),size_hint_y=None, height=self.btnSize)
-        self.bottomHeight=Button(text=str(self.csShape.get_height_bottom()),size_hint_y=None, height=self.btnSize)
+        self.create_all_btns()
+        self.add_widget(OwnLabel(text='top-width'))
+        self.add_widget(self.topWidth)
+        self.add_widget(OwnLabel(text='bottom-width'))
+        self.add_widget(self.bottomWidth)
+        self.add_widget(OwnLabel(text='top-height'))
+        self.add_widget(self.topHeight)
+        self.add_widget(OwnLabel(text='bottom-height'))
+        self.add_widget(self.bottomHeight)
+        self.create_popup()
+        
+    '''
+    create all buttons of this component
+    '''
+    def create_all_btns(self):
+        self.topWidth = OwnButton(text=str(self.csShape.get_width_top()))
+        self.bottomWidth = OwnButton(text=str(self.csShape.get_width_bottom()))
+        self.topHeight = OwnButton(text=str(self.csShape.get_height_top()))
+        self.bottomHeight = OwnButton(text=str(self.csShape.get_height_bottom()))
         self.topWidth.bind(on_press=self.show_numpad)
         self.topHeight.bind(on_press=self.show_numpad)
         self.bottomWidth.bind(on_press=self.show_numpad)
         self.bottomHeight.bind(on_press=self.show_numpad)
-        self.add_widget(Label(text='top-width'))
-        self.add_widget(self.topWidth)
-        self.add_widget(Label(text='bottom-width'))
-        self.add_widget(self.bottomWidth)
-        self.add_widget(Label(text='top-height'))
-        self.add_widget(self.topHeight)
-        self.add_widget(Label(text='bottom-height'))
-        self.add_widget(self.bottomHeight)
-        self.create_popup()
-    
+        
     '''
     create the popup
     '''
     def create_popup(self):
-        self.numpad=Numpad()
+        self.numpad = Numpad()
         self.numpad.sign_in_parent(self)
-        self.popup=Popup(content=self.numpad)
+        self.popup = OwnPopup(content=self.numpad)
+    
+    '''
+    set the text of the button
+    '''
+    def finished_numpad(self):
+        self.focusBtn.text = self.numpad.lblTextinput.text
+        self.popup.dismiss()
+        value = float(self.focusBtn.text)
+        if self.focusBtn == self.topHeight:
+            self.csShape.set_height_top(value)
+        elif self.focusBtn == self.topWidth:
+            self.csShape.set_width_top(value)
+        elif self.focusBtn == self.bottomHeight:
+            self.csShape.set_height_bottom(value)
+        elif self.focusBtn == self.bottomWidth:
+            self.csShape.set_width_bottom(value)
     
     '''
     close the numpad
@@ -60,29 +87,6 @@ class TInformation(GridLayout):
     '''
     open the popup
     '''
-    def show_numpad(self,btn):
-        self.focusBtn=btn
+    def show_numpad(self, btn):
+        self.focusBtn = btn
         self.popup.open()
-    
-    '''
-    set the cross section
-    '''
-    def set_cross_section(self, cs):
-        self.csShape=cs
-        self.create_gui()
-    
-    '''
-    set the text of the button
-    '''
-    def finished_numpad(self):
-        self.focusBtn.text=self.numpad.textinput.text
-        self.popup.dismiss()
-        value=float(self.focusBtn.text)
-        if self.focusBtn==self.topHeight:
-            self.csShape.set_height_top(value)
-        elif self.focusBtn==self.topWidth:
-            self.csShape.set_width_top(value)
-        elif self.focusBtn==self.bottomHeight:
-            self.csShape.set_height_bottom(value)
-        elif self.focusBtn==self.bottomWidth:
-            self.csShape.set_width_bottom(value)

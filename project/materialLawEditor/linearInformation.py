@@ -3,13 +3,13 @@ Created on 09.05.2016
 
 @author: mkennert
 '''
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 
-from designClass.design import Design
-from materialEditor.numpad import Numpad
+from ownComponents.design import Design
+from ownComponents.numpad import Numpad
+from ownComponents.ownButton import OwnButton
+from ownComponents.ownLabel import OwnLabel
+from ownComponents.ownPopup import OwnPopup
 
 
 class LinearInformation(GridLayout):
@@ -18,7 +18,8 @@ class LinearInformation(GridLayout):
     def __init__(self, **kwargs):
         super(LinearInformation, self).__init__(**kwargs)
         self.cols = 2
-        self.btnSize = Design.btnSize
+        self.spacing=Design.spacing
+        self.btnSize = Design.btnHeight
         self.create_gui()
         self.row_force_default = True
         self.row_default_height = self.btnSize
@@ -29,48 +30,49 @@ class LinearInformation(GridLayout):
 
     def create_gui(self):
         self.create_popup()
-        self.add_widget(Label(text='function:'))
-        self.add_widget(Label(text='f(x)=ax+b'))
-        self.add_widget(Label(text='a'))
-        self.btnM = Button(text='1', size_hint_y=None, height=self.btnSize)
+        self.create_btns()
+        self.add_widget(OwnLabel(text='function:'))
+        self.add_widget(OwnLabel(text='f(x)=ax+b'))
+        self.add_widget(OwnLabel(text='a'))
         self.add_widget(self.btnM)
-        self.add_widget(Label(text='strain-upper-limit:'))
-        self.btn_strain_upper_limit = Button(
-            text='10', size_hint_y=None, height=self.btnSize)
-        self.btn_strain_lower_limit = Button(
-            text='0', size_hint_y=None, height=self.btnSize)
+        self.add_widget(OwnLabel(text='strain-upper-limit:'))
         self.add_widget(self.btn_strain_upper_limit)
-        self.add_widget(Label(text='stress-upper-limit:'))
-        self.btn_stress_upper_limit = Button(
-            text='10', size_hint_y=None, height=self.btnSize)
-        self.btn_stress_lower_limit = Button(
-            text='0', size_hint_y=None, height=self.btnSize)
+        self.add_widget(OwnLabel(text='stress-upper-limit:'))
         self.add_widget(self.btn_stress_upper_limit)
-        self.add_widget(Label(text='strain-lower-limit: '))
+        self.add_widget(OwnLabel(text='strain-lower-limit: '))
         self.add_widget(self.btn_strain_lower_limit)
-        self.add_widget(Label(text='stress-lower-limit: '))
+        self.add_widget(OwnLabel(text='stress-lower-limit: '))
         self.add_widget(self.btn_stress_lower_limit)
-        btn_confirm=Button(text='ok',size_hint_y=None, height=self.btnSize)
-        btn_cancel=Button(text='cancel',size_hint_y=None, height=self.btnSize)
+        btn_confirm=OwnButton(text='ok')
+        btn_cancel=OwnButton(text='cancel')
         btn_confirm.bind(on_press=self.confirm)
         btn_cancel.bind(on_press=self.cancel)
         self.add_widget(btn_confirm)
         self.add_widget(btn_cancel)
+    
+    '''
+    create the btns
+    '''
+    def create_btns(self):
+        self.btn_stress_upper_limit = OwnButton(text='10')
+        self.btn_stress_lower_limit = OwnButton(text='0')
+        self.btnM = OwnButton(text='1')
+        self.btn_strain_upper_limit = OwnButton(text='10')
+        self.btn_strain_lower_limit = OwnButton(text='0')
         self.btnM.bind(on_press=self.show_popup)
         self.btn_strain_upper_limit.bind(on_press=self.show_popup)
         self.btn_stress_upper_limit.bind(on_press=self.show_popup)
         self.btn_stress_lower_limit.bind(on_press=self.show_popup)
         self.btn_strain_lower_limit.bind(on_press=self.show_popup)
-        
-
     '''
     create the popup with the numpad as content
     '''
 
     def create_popup(self):
         self.numpad = Numpad()
+        self.numpad.sign=True
         self.numpad.sign_in_parent(self)
-        self.popupNumpad = Popup(title='Numpad', content=self.numpad)
+        self.popupNumpad = OwnPopup(title='Numpad', content=self.numpad)
 
     '''
     close the numpad
@@ -99,22 +101,22 @@ class LinearInformation(GridLayout):
     '''
 
     def finished_numpad(self):
-        self.focusBtn.text = self.numpad.textinput.text
+        self.focusBtn.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
         if self.focusBtn == self.btnM:
-            self.btnM.text = self.numpad.textinput.text
+            self.btnM.text = self.numpad.lblTextinput.text
             self.editor.update_graph(float(self.btnM.text))
         elif self.focusBtn == self.btn_strain_upper_limit:
-            self.btn_strain_upper_limit.text = self.numpad.textinput.text
+            self.btn_strain_upper_limit.text = self.numpad.lblTextinput.text
             self.editor.update_strain_upper_limit(float(self.btn_strain_upper_limit.text))
         elif self.focusBtn == self.btn_stress_upper_limit:
-            self.btn_stress_upper_limit.text = self.numpad.textinput.text
+            self.btn_stress_upper_limit.text = self.numpad.lblTextinput.text
             self.editor.update_stress_upper_limit(float(self.btn_stress_upper_limit.text))
         elif self.focusBtn==self.btn_strain_lower_limit:
-            self.btn_strain_lower_limit.text=self.numpad.textinput.text
+            self.btn_strain_lower_limit.text=self.numpad.lblTextinput.text
             self.editor.update_strain_lower_limit(float(self.btn_strain_lower_limit.text))
         elif self.focusBtn==self.btn_stress_lower_limit:
-            self.btn_stress_lower_limit.text=self.numpad.textinput.text
+            self.btn_stress_lower_limit.text=self.numpad.lblTextinput.text
             self.editor.update_stress_lower_limit(float(self.btn_stress_lower_limit.text))
         self.numpad.reset_text()
 

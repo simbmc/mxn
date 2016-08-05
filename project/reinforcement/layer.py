@@ -6,6 +6,7 @@ Created on 14.04.2016
 
 
 class Layer:
+    
     # Constructor
     def __init__(self, x, y, h, w):
         self.x = x
@@ -14,9 +15,9 @@ class Layer:
         self.w = w
         
     '''
-    the method set_height change the height of the small_keyboard-rectangle
+    the method update_height change the height of the small_keyboard-rectangle
     '''
-    def set_height(self, value):
+    def update_height(self, value):
         self.h = value
 
     '''
@@ -45,9 +46,6 @@ class Layer:
     area of the line
     '''
     def mouse_within(self,y,d):
-        print('self.y: '+str(self.y))
-        print('y: '+str(y))
-        print('d: '+str(d))
         if y-d<self.y and y+d>self.y:
             return True
         else:

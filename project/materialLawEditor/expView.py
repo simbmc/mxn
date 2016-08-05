@@ -3,15 +3,14 @@ Created on 28.06.2016
 
 @author: mkennert
 '''
-from kivy.graphics import Line
-
 from kivy.uix.gridlayout import GridLayout
 
-from designClass.design import Design
-from kivy.garden.graph import Graph, MeshLinePlot
+from ownComponents.design import Design
+import numpy as np
+from ownComponents.ownGraph import OwnGraph
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
-import numpy as np
+
 
 class ExpView(GridLayout):
     # Constructor
@@ -25,7 +24,7 @@ class ExpView(GridLayout):
     create the graph of the view
     '''
     def create_graph(self):
-        self.graph = Graph(xlabel='strain', ylabel='stress',
+        self.graph = OwnGraph(xlabel='strain', ylabel='stress',
                            x_ticks_major=2, y_ticks_major=.2,
                            y_grid_label=True, x_grid_label=True,
                            xmin=0.0, xmax=11, ymin=0, ymax=1)
@@ -40,7 +39,7 @@ class ExpView(GridLayout):
         self.epsY=self.graph.ymax/delta
         x=10
         y=(1-1*np.exp(-10))
-        self.point=FilledEllipse(color=[255,0,0])
+        self.point=FilledEllipse(color=[0,0,0])
         self.point.xrange = [x-self.epsX,x+self.epsX]
         self.point.yrange = [y-self.epsY,y+self.epsY]
         self.graph.add_plot(self.point)

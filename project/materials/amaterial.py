@@ -6,7 +6,11 @@ Created on 16.03.2016
 from kivy.properties import ObjectProperty
 
 class AMaterial(object):
-    #Constructor
+    '''
+    baseclass for the materials. when you add more materials, 
+    make sure that you call the constructor of this base-class
+    '''
+    #constructor
     def __init__(self, name, price, density,f):
         self.name=str(name)
         self.price=float(price)

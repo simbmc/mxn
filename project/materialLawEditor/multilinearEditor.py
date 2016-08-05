@@ -3,13 +3,12 @@ Created on 03.05.2016
 @author: mkennert
 '''
 # version 120
-from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 
 from functions.multilinear import Multilinear
-from kivy.garden.graph import Graph, MeshLinePlot
 from materialLawEditor.mulitlinearInformation import MultilinearInformation
 from materialLawEditor.multilinearView import MultilinearView
+from ownComponents.design import Design
 
 
 class MultilinearEditor(GridLayout):
@@ -17,8 +16,11 @@ class MultilinearEditor(GridLayout):
     def __init__(self, **kwargs):
         super(MultilinearEditor, self).__init__(**kwargs)
         self.cols = 2
+        self.spacing=Design.spacing
         self.h = 50.
         self.w = 50.
+        self.lowerStrain=0.
+        self.lowerStress=0.
         self._points = 5
         self.information = MultilinearInformation()
         self.view = MultilinearView()
@@ -31,7 +33,7 @@ class MultilinearEditor(GridLayout):
     set the width of the graph
     '''
 
-    def set_width(self, value):
+    def update_width(self, value):
         self.w = value
         self.view.update_width()
 
@@ -39,10 +41,24 @@ class MultilinearEditor(GridLayout):
     set the height of the graph
     '''
 
-    def set_height(self, value):
+    def update_height(self, value):
         self.h = value
         self.view.update_height()
-
+        
+    '''
+    update the lower stress in the view
+    '''
+    def update_lower_stress(self,value):
+        self.lowerStress=value
+        self.view.update_lower_stress(value)
+    
+    '''
+    update the lower strain in the view
+    '''
+    def update_lower_strain(self,value):
+        self.lowerStrain=value
+        self.view.update_lower_strain(value)
+        
     '''
     set the numbers of points which the graph should have
     '''
@@ -73,7 +89,7 @@ class MultilinearEditor(GridLayout):
     # not finished yet
     def confirm(self):
         x, y = self.view.get_coordinates()
-        f = Multilinear(x, y)
+        f = Multilinear(x, y,self.lowerStrain,self.h,self.lowerStress,self.w)
         self.lawEditor.set_f(f)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.cancel(None)

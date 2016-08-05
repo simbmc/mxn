@@ -10,93 +10,71 @@ from shapes.shapeDoubleT import ShapeDoubleT
 from shapes.shapeRectangle import ShapeRectangle
 from shapes.shapeT import ShapeT
 from shapes.shapeCircle import ShapeCircle
-
+from ownComponents.design import Design
+from kivy.properties import ObjectProperty
 
 class CrossSection(GridLayout):
-    #Constructor
+    '''
+    cross section contains all shapes. it manage which shape-should
+    will be show
+    '''
+    csEditor, information = ObjectProperty(), ObjectProperty()
+    reEditor, view = ObjectProperty(), ObjectProperty()
+    ###################################
+    # here you can add more shapes    #
+    ###################################
+    csRectangle, csDoubleT = ObjectProperty(ShapeRectangle()), ObjectProperty(ShapeDoubleT())
+    csT, csCircle = ObjectProperty(ShapeT()), ObjectProperty(ShapeCircle())
+    
+    # constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
-        self.cols=2
-        self.allMaterials=MaterialList()
-        self.csRectangle=ShapeRectangle()
-        self.csDoubleT=ShapeDoubleT()
-        self.csT=ShapeT()
-        self.csCircle=ShapeCircle()
-        self.view=self.csRectangle.view
+        self.cols, self.spacing = 2, Design.spacing
+        self.allMaterials = MaterialList.Instance()
+        self.view = self.csRectangle.view
     
+    ######################################################
+    # When you add more shapes, make sure that the shapes#
+    # has a show-method like show_rectangle_view         #
+    ######################################################
     '''
-    return the cs-rectangle-shape
+    show the rectangle-view
     '''
-    def get_cs_rectangle(self):
-        return self.csRectangle
-    
-    '''
-    return the cs-doubleT-shape
-    '''
-    def get_cs_double_t(self):
-        return self.csDoubleT
-    '''
-    return the csT-shape
-    '''
-    def get_cs_t(self):
-        return self.csT
-    
-    '''
-    return the csCircle-shape
-    '''
-    def get_cs_circle(self):
-        return self.csCircle
-    
-    '''
-    set the rectangle-view
-    '''
-    def set_rectangle_view(self):
+    def show_rectangle_shape(self):
         self.remove_widget(self.view)
-        self.view=self.csRectangle.view
+        self.view = self.csRectangle.view
         self.reEditor.change_cross_section(self.view)
     
     '''
-    set the doubleT-view
+    show the doubleT-view
     '''
-    def set_doublet_view(self):
+    def show_doublet_shape(self):
         self.remove_widget(self.view)
-        self.view=self.csDoubleT.view
+        self.view = self.csDoubleT.view
         self.reEditor.change_cross_section(self.view)
     
     '''
-    set the T-view
+    show the T-view
     '''
-    def set_t_view(self):
+    def show_tshape(self):
         self.remove_widget(self.view)
-        self.view=self.csT.view
+        self.view = self.csT.view
         self.reEditor.change_cross_section(self.view)
     
     '''
-    set the circle-View
+    show the circle-View
     '''
-    def set_circle(self):
+    def show_circle_shape(self):
         self.remove_widget(self.view)
-        self.view=self.csCircle.view
+        self.view = self.csCircle.view
         self.reEditor.change_cross_section(self.view)
-    
-    '''
-    get the information-component
-    '''
-    def get_information(self):
-        return self.information
-    
-    '''
-    set the cross section editor
-    '''
-    def set_cross_section_editor(self, csEditor):
-        self.csEditor=csEditor
-    
+
     '''
     set the reinforcement editor
     '''
-    def set_reinforcement_editor(self,reEditor):
-        self.reEditor=reEditor
+    def set_reinforcement_editor(self, reEditor):
+        self.reEditor = reEditor
         self.csRectangle.set_information(reEditor)
         self.csDoubleT.set_information(reEditor)
-        self.csT.set_information(reEditor)
+        self.csT.information = reEditor
         self.csCircle.set_information(reEditor)

@@ -3,7 +3,6 @@ Created on 06.05.2016
 
 @author: mkennert
 '''
-from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 
 from functions.quadraticFunction import QuadraticFunction
@@ -22,6 +21,8 @@ class QuadraticFunctionEditor(GridLayout):
         self.b = 0.
         self.h = 10
         self.w = 10
+        self.lowerStress=0
+        self.lowerStrain=0
         self.view = QuadraticFunctionView()
         self.view.sign_in(self)
         self.information = QuadraticFunctionInformation()
@@ -49,7 +50,7 @@ class QuadraticFunctionEditor(GridLayout):
     set the width
     '''
 
-    def set_width(self, value):
+    def update_width(self, value):
         self.w = value
         self.view.graph.xmax = value
         self.view.graph.x_ticks_major = value / 5.
@@ -59,12 +60,20 @@ class QuadraticFunctionEditor(GridLayout):
     set the height 
     '''
 
-    def set_height(self, value):
+    def update_height(self, value):
         self.h = value
         self.view.graph.ymax = value
         self.view.graph.y_ticks_major = value / 5.
         self.view.update_points()
-
+    
+    def update_lower_stress(self,value):
+        self.lowerStress=value
+        self.view.update_lower_stress(value)
+    
+    def update_lower_strain(self,value):
+        self.lowerStrain=value
+        self.view.update_lower_stress(value)
+    
     '''
     eval the function on the x-value
     '''
@@ -74,7 +83,7 @@ class QuadraticFunctionEditor(GridLayout):
     
     def confirm(self):
         self.lawEditor.cancel_graphicShow()
-        f=QuadraticFunction(self.a,self.b)
+        f=QuadraticFunction(self.a,self.b,self.lowerStrain,self.h,self.lowerStress,self.w)
         self.lawEditor.set_f(f)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.cancel(None)

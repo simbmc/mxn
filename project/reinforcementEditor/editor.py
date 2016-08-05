@@ -4,16 +4,16 @@ Created on 02.06.2016
 @author: mkennert
 
 '''
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 
 from crossSectionEditor.rectangleInformation import RectangleInformation
-from designClass.design import Design
 from materialEditor.creater import MaterialCreater
 from materialEditor.iobserver import IObserver
-from materialEditor.numpad import Numpad
+from ownComponents.numpad import Numpad
+from ownComponents.design import Design
+from ownComponents.ownButton import OwnButton
+from ownComponents.ownLabel import OwnLabel
+from ownComponents.ownPopup import OwnPopup
 
 
 class ReinforcementEditor(GridLayout, IObserver):
@@ -22,9 +22,9 @@ class ReinforcementEditor(GridLayout, IObserver):
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols = 2
-        self.spacing = 20
-        self.btnSize = Design.btnSize
-        self.content = GridLayout(cols=1)
+        self.spacing = Design.spacing
+        self.btnSize = Design.btnHeight
+        self.content = GridLayout(cols=1,spacing=Design.spacing)
         self.containsView = False
         self.add_widget(self.content)
         self.error = False
@@ -32,28 +32,11 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.layerAreaVisible=False
 
     '''
-    the method set_cross_section was developed to say the view, 
-    which cross section should it use
-    '''
-
-    def set_cross_section(self, cs):
-        self.crossSection = cs
-        self.allMaterials = self.crossSection.allMaterials
-        self.allMaterials.add_listener(self)
-        # default cross section rectangle
-        self.csShape = cs.get_cs_rectangle()
-        self.rectangleInformation = RectangleInformation()
-        self.shape = self.rectangleInformation
-        self.rectangleInformation.set_cross_section(self.csShape)
-        self.create_gui()
-        self.sign_in()
-
-    '''
     create the gui
     '''
 
     def create_gui(self):
-        self.create_cross_section_area()
+        #self.create_cross_section_area()
         self.create_numpad()
         self.create_add_delete_layer()
         self.create_add_delete_bar()
@@ -80,12 +63,11 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_add_delete_layer(self):
         self.btnsLayer = GridLayout(cols=2, row_force_default=True,
                                     row_default_height=self.btnSize,
-                                    size_hint_y=None, height=self.btnSize)
-        addBtn = Button(
-            text='add layer', size_hint_y=None, height=self.btnSize)
+                                    size_hint_y=None, height=self.btnSize,
+                                    spacing=Design.spacing)
+        addBtn = OwnButton(text='add layer')
+        deleteBtn = OwnButton(text='delete layer')
         addBtn.bind(on_press=self.show_add_layer_area)
-        deleteBtn = Button(
-            text='delete layer', size_hint_y=None, height=self.btnSize)
         deleteBtn.bind(on_press=self.delete_layer)
         self.btnsLayer.add_widget(addBtn)
         self.btnsLayer.add_widget(deleteBtn)
@@ -98,12 +80,11 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_add_delete_bar(self):
         self.btnsBars = GridLayout(cols=2, row_force_default=True,
                                    row_default_height=self.btnSize,
-                                   size_hint_y=None, height=self.btnSize)
-        addBtn = Button(
-            text='add bar', size_hint_y=None, height=self.btnSize)
+                                   size_hint_y=None, height=self.btnSize,
+                                   spacing=Design.spacing)
+        addBtn = OwnButton(text='add bar')
+        deleteBtn = OwnButton(text='delete bar')
         addBtn.bind(on_press=self.show_add_bar_area)
-        deleteBtn = Button(
-            text='delete bar', size_hint_y=None, height=self.btnSize)
         deleteBtn.bind(on_press=self.delete_layer)
         self.btnsBars.add_widget(addBtn)
         self.btnsBars.add_widget(deleteBtn)
@@ -115,31 +96,27 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_material_information(self):
         h = 20
-        self.materialArea = GridLayout(cols=1)
-        self.materialName = Label(text='-')
-        self.materialPrice = Label(text='-')
-        self.materialDensity = Label(text='-')
-        self.materialStiffness = Label(text='-')
-        self.materialStrength = Label(text='-')
-        self.materialPercent = Label(text='10 %')
-        labelLayout = GridLayout(
-            cols=2, row_force_default=True,
-            row_default_height=h, size_hint_y=None, height=3 * h)
-        labelLayout.add_widget(Label(text='name:', size_hint_y=None, height=h))
+        self.materialArea = GridLayout(cols=1,spacing=Design.spacing)
+        self.materialName = OwnLabel(text='-')
+        self.materialPrice = OwnLabel(text='-')
+        self.materialDensity = OwnLabel(text='-')
+        self.materialStiffness = OwnLabel(text='-')
+        self.materialStrength = OwnLabel(text='-')
+        self.materialPercent = OwnLabel(text='10 %')
+        labelLayout = GridLayout(cols=2, row_force_default=True,
+                                 row_default_height=h, size_hint_y=None, 
+                                 height=3 * h,spacing=Design.spacing)
+        labelLayout.add_widget(OwnLabel(text='name:'))
         labelLayout.add_widget(self.materialName)
-        labelLayout.add_widget(
-            Label(text='price:', size_hint_y=None, height=h))
+        labelLayout.add_widget(OwnLabel(text='price:'))
         labelLayout.add_widget(self.materialPrice)
-        labelLayout.add_widget(
-            Label(text='density:', size_hint_y=None, height=h))
+        labelLayout.add_widget(OwnLabel(text='density:'))
         labelLayout.add_widget(self.materialDensity)
-        labelLayout.add_widget(
-            Label(text='stiffness:', size_hint_y=None, height=h))
+        labelLayout.add_widget(OwnLabel(text='stiffness:'))
         labelLayout.add_widget(self.materialStiffness)
-        labelLayout.add_widget(
-            Label(text='tensile strength:', size_hint_y=None, height=h))
+        labelLayout.add_widget(OwnLabel(text='tensile strength:'))
         labelLayout.add_widget(self.materialStrength)
-        self.errorLbl = Label(text='[color=ff3333]error: wrong parameters[/color]',
+        self.errorLbl = OwnLabel(text='[color=ff3333]error: wrong parameters[/color]',
                               markup=True, size_hint_y=None, height=20)
         self.materialArea.add_widget(self.btnsLayer)
         self.materialArea.add_widget(self.btnsBars)
@@ -152,20 +129,17 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_cross_section_area(self):
         h = 20
-        self.crossSectionPrice = Label(text='-', size_hint_y=None, height=h)
-        self.crossSectionWeight = Label(text='-', size_hint_y=None, height=h)
-        self.crossSectionStrength = Label(text='-', size_hint_y=None, height=h)
-        self.crossSectionArea = GridLayout(
-            cols=2, row_force_default=True,
-            row_default_height=h, size_hint_y=None, height=3 * h)
-        self.crossSectionArea.add_widget(
-            Label(text='price [Euro/m]:', size_hint_y=None, height=h))
+        self.crossSectionPrice = OwnLabel(text='-')
+        self.crossSectionWeight = OwnLabel(text='-')
+        self.crossSectionStrength = OwnLabel(text='-')
+        self.crossSectionArea = GridLayout(cols=2, row_force_default=True,
+                                           row_default_height=h, size_hint_y=None, 
+                                           height=3 * h,spacing=Design.spacing)
+        self.crossSectionArea.add_widget(OwnLabel(text='price [Euro/m]:'))
         self.crossSectionArea.add_widget(self.crossSectionPrice)
-        self.crossSectionArea.add_widget(
-            Label(text='weight [kg]:', size_hint_y=None, height=h))
+        self.crossSectionArea.add_widget(OwnLabel(text='weight [kg]:'))
         self.crossSectionArea.add_widget(self.crossSectionWeight)
-        self.crossSectionArea.add_widget(
-            Label(text='tensile strength [MPa]:', size_hint_y=None, height=h))
+        self.crossSectionArea.add_widget(OwnLabel(text='tensile strength [MPa]:'))
         self.crossSectionArea.add_widget(self.crossSectionStrength)
         self.content.add_widget(self.crossSectionArea)
 
@@ -176,28 +150,26 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def create_add_layer_area(self):
         self.create_material_options()
-        self.addingMaterialArea = GridLayout(
-            cols=2, row_force_default=True,
-            row_default_height=self.btnSize, size_hint_y=None, height=3 * self.btnSize)
-        self.addingMaterialArea.add_widget(Label(text='material:'))
-        self.materialOption = Button(
-            text='steel', size_hint_y=None, height=self.btnSize)
+        self.addingMaterialArea = GridLayout(cols=2, row_force_default=True,
+                                             row_default_height=self.btnSize, 
+                                             size_hint_y=None, height=3 * self.btnSize,
+                                             spacing=Design.spacing)
+        self.addingMaterialArea.add_widget(OwnLabel(text='material:'))
+        self.materialOption = OwnButton(text='steel')
         self.materialOption.bind(on_release=self.popup.open)
         self.addingMaterialArea.add_widget(self.materialOption)
-        self.btnX = Button(text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btnY = Button(text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btn_strain_upper_limit = Button(
-            text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btn_stress_upper_limit = Button(
-            text='0.0', size_hint_y=None, height=self.btnSize)
-        self.btnX.bind(on_press=self.show_numpad)
-        self.btnY.bind(on_press=self.show_numpad)
+        self.stressUpperLimit = OwnButton(text='0.0')
+        self.strainUpperLimit = OwnButton(text='0.0')
+        self.btn_strain_upper_limit = OwnButton(text='0.0')
+        self.btn_stress_upper_limit = OwnButton(text='0.0')
+        self.stressUpperLimit.bind(on_press=self.show_numpad)
+        self.strainUpperLimit.bind(on_press=self.show_numpad)
         self.btn_strain_upper_limit.bind(on_press=self.show_numpad)
         self.btn_stress_upper_limit.bind(on_press=self.show_numpad)
-        self.addingMaterialArea.add_widget(Label(text='y-coordinate:'))
-        self.addingMaterialArea.add_widget(self.btnY)
-        self.addingMaterialArea.add_widget(Label(text='cross-sectional area:'))
-        self.addingMaterialArea.add_widget(self.btnX)
+        self.addingMaterialArea.add_widget(OwnLabel(text='y-coordinate:'))
+        self.addingMaterialArea.add_widget(self.strainUpperLimit)
+        self.addingMaterialArea.add_widget(OwnLabel(text='cross-sectional area:'))
+        self.addingMaterialArea.add_widget(self.stressUpperLimit)
 
     '''
     the method create_add_layer_area create the area where you can 
@@ -205,31 +177,32 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def create_add_bar_area(self):
-        self.addingMaterialAreaBar = GridLayout(
-            cols=2, row_force_default=True,
-            row_default_height=self.btnSize, size_hint_y=None, height=3 * self.btnSize)
-        self.addingMaterialAreaBar.add_widget(Label(text='material:'))
-        self.materialOptionBar = Button(
+        self.addingMaterialAreaBar = GridLayout(cols=2, row_force_default=True,
+                                                row_default_height=self.btnSize, 
+                                                size_hint_y=None, height=3 * self.btnSize,
+                                                spacing=Design.spacing)
+        self.addingMaterialAreaBar.add_widget(OwnLabel(text='material:'))
+        self.materialOptionBar = OwnButton(
             text='steel', size_hint_y=None, height=self.btnSize)
         self.materialOptionBar.bind(on_release=self.popup.open)
         self.addingMaterialAreaBar.add_widget(self.materialOptionBar)
-        self.barX = Button(text='0.0', size_hint_y=None, height=self.btnSize)
-        self.barY = Button(text='0.0', size_hint_y=None, height=self.btnSize)
-        self.barHeight = Button(
+        self.barX = OwnButton(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.barY = OwnButton(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.barHeight = OwnButton(
             text='0.0', size_hint_y=None, height=self.btnSize)
-        self.barWidth = Button(
+        self.barWidth = OwnButton(
             text='0.0', size_hint_y=None, height=self.btnSize)
-        self.csArea=Button(text='0.0', size_hint_y=None, height=self.btnSize)
+        self.csArea=OwnButton(text='0.0', size_hint_y=None, height=self.btnSize)
         self.csArea.bind(on_press=self.show_numpad)
         self.barX.bind(on_press=self.show_numpad)
         self.barY.bind(on_press=self.show_numpad)
         self.barHeight.bind(on_press=self.show_numpad)
         self.barWidth.bind(on_press=self.show_numpad)
-        self.addingMaterialAreaBar.add_widget(Label(text='x-coordinate:'))
+        self.addingMaterialAreaBar.add_widget(OwnLabel(text='x-coordinate:'))
         self.addingMaterialAreaBar.add_widget(self.barX)
-        self.addingMaterialAreaBar.add_widget(Label(text='y-coordinate:'))
+        self.addingMaterialAreaBar.add_widget(OwnLabel(text='y-coordinate:'))
         self.addingMaterialAreaBar.add_widget(self.barY)
-        self.addingMaterialAreaBar.add_widget(Label(text='cross-sectional area:'))
+        self.addingMaterialAreaBar.add_widget(OwnLabel(text='cross-sectional area:'))
         self.addingMaterialAreaBar.add_widget(self.csArea)
 
     '''
@@ -238,19 +211,19 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def create_material_options(self):
-        self.layoutMaterials = GridLayout(cols=3)
+        self.layoutMaterials = GridLayout(cols=3,spacing=Design.spacing)
         self.materialEditor = MaterialCreater()
-        self.materialEditor.sign_in_parent(self)
-        self.popupMaterialEditor = Popup(
+        self.materialEditor._parent=self#sign_in_parent(self)
+        self.popupMaterialEditor = OwnPopup(
             title='editor', content=self.materialEditor)
         for i in range(0, self.allMaterials.get_length()):
-            btnMaterialA = Button(text=self.allMaterials.allMaterials[i].name)
+            btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[i].name)
             btnMaterialA.bind(on_press=self.select_material)
             self.layoutMaterials.add_widget(btnMaterialA)
-        self.btnMaterialEditor = Button(text='create material')
+        self.btnMaterialEditor = OwnButton(text='create material')
         self.btnMaterialEditor.bind(on_press=self.popupMaterialEditor.open)
         self.layoutMaterials.add_widget(self.btnMaterialEditor)
-        self.popup = Popup(title='materials', content=self.layoutMaterials)
+        self.popup = OwnPopup(title='materials', content=self.layoutMaterials)
 
     '''
     the method create_confirm_cancel_layer create the area where you can 
@@ -260,12 +233,10 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_confirm_cancel_layer(self):
         self.confirmCancelArea = GridLayout(cols=2, row_force_default=True,
                                             row_default_height=self.btnSize, size_hint_y=None,
-                                            height=self.btnSize)
-        confirmBtn = Button(
-            text='ok', size_hint_y=None, height=self.btnSize)
+                                            height=self.btnSize,spacing=Design.spacing)
+        confirmBtn = OwnButton(text='ok')
         confirmBtn.bind(on_press=self.add_layer)
-        cancelBtn = Button(
-            text='cancel', size_hint_y=None, height=self.btnSize)
+        cancelBtn = OwnButton(text='cancel')
         cancelBtn.bind(on_press=self.cancel_adding)
         self.confirmCancelArea.add_widget(confirmBtn)
         self.confirmCancelArea.add_widget(cancelBtn)
@@ -278,12 +249,10 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_confirm_cancel_bar(self):
         self.confirmCancelAreaBar = GridLayout(cols=2, row_force_default=True,
                                                row_default_height=self.btnSize, size_hint_y=None,
-                                               height=self.btnSize)
-        confirmBar = Button(
-            text='ok', size_hint_y=None, height=self.btnSize)
+                                               height=self.btnSize, spacing=Design.spacing)
+        confirmBar = OwnButton(text='ok')
         confirmBar.bind(on_press=self.add_bar)
-        cancelBar = Button(
-            text='cancel', size_hint_y=None, height=self.btnSize)
+        cancelBar = OwnButton(text='cancel')
         cancelBar.bind(on_press=self.cancel_adding_bar)
         self.confirmCancelAreaBar.add_widget(confirmBar)
         self.confirmCancelAreaBar.add_widget(cancelBar)
@@ -294,7 +263,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def show_add_layer_area(self, button):
-        self.content.remove_widget(self.crossSectionArea)
+        #self.content.remove_widget(self.crossSectionArea)
         self.content.remove_widget(self.materialArea)
         self.content.remove_widget(self.btnsLayer)
         self.content.add_widget(self.addingMaterialArea, 0)
@@ -306,7 +275,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def show_add_bar_area(self, button):
-        self.content.remove_widget(self.crossSectionArea)
+        #self.content.remove_widget(self.crossSectionArea)
         self.content.remove_widget(self.materialArea)
         self.content.remove_widget(self.btnsLayer)
         self.content.add_widget(self.addingMaterialAreaBar, 0)
@@ -321,13 +290,14 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.content.remove_widget(self.addingMaterialArea)
         self.content.remove_widget(self.confirmCancelArea)
         self.content.add_widget(self.materialArea, 0)
-        self.content.add_widget(self.crossSectionArea, 1)
+        #self.content.add_widget(self.crossSectionArea, 1)
 
     def finished_adding_bar(self):
         self.content.remove_widget(self.addingMaterialAreaBar)
         self.content.remove_widget(self.confirmCancelAreaBar)
         self.content.add_widget(self.materialArea, 0)
-        self.content.add_widget(self.crossSectionArea, 1)
+        #self.content.add_widget(self.crossSectionArea, 1)
+        
     '''
     the method add_layer add a new layer at the cross section
     it use the choosen percent value
@@ -338,7 +308,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         for i in range(0, self.allMaterials.get_length()):
             if self.allMaterials.allMaterials[i].name == self.materialOption.text:
                 self.csShape.add_layer(
-                    float(self.btnX.text), float(self.btnY.text),
+                    float(self.stressUpperLimit.text), float(self.strainUpperLimit.text),
                     self.allMaterials.allMaterials[i])
                 return
         
@@ -397,9 +367,10 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def update_cross_section_information(self, price, weight, strength):
-        self.crossSectionPrice.text = str(0)
-        self.crossSectionWeight.text = str(0)
-        self.crossSectionStrength.text = str(0)
+        pass
+#         self.crossSectionPrice.text = str(0)
+#         self.crossSectionWeight.text = str(0)
+#         self.crossSectionStrength.text = str(0)
 
     '''
     the method cancel_edit_material cancel the editing of the material
@@ -418,7 +389,7 @@ class ReinforcementEditor(GridLayout, IObserver):
 
     def update(self):
         self.layoutMaterials.remove_widget(self.btnMaterialEditor)
-        btnMaterialA = Button(text=self.allMaterials.allMaterials[-1].name)
+        btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[-1].name)
         btnMaterialA.bind(on_press=self.select_material)
         self.layoutMaterials.add_widget(btnMaterialA)
         self.layoutMaterials.add_widget(self.btnMaterialEditor)
@@ -478,7 +449,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_numpad(self):
         self.numpad = Numpad()
         self.numpad.sign_in_parent(self)
-        self.popupNumpad = Popup(content=self.numpad)
+        self.popupNumpad = OwnPopup(content=self.numpad)
 
     '''
     open the numpad popup
@@ -501,7 +472,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def finished_numpad(self):
-        self.btnFocus.text = self.numpad.textinput.text
+        self.btnFocus.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
 
     '''
@@ -528,7 +499,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             self.content.add_widget(self.addingMaterialArea,0)
             self.content.add_widget(self.editArea,1)
             self.content.remove_widget(self.materialArea)
-            self.content.remove_widget(self.crossSectionArea)
+            #self.content.remove_widget(self.crossSectionArea)
     
     '''
     cancel the editing
@@ -539,7 +510,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             self.content.remove_widget(self.addingMaterialArea)
             self.content.remove_widget(self.editArea)
             self.content.add_widget(self.materialArea,0)
-            self.content.add_widget(self.crossSectionArea,1)
+            #self.content.add_widget(self.crossSectionArea,1)
     
     #not finished yet
     def show_edit_bar_area(self):
@@ -548,7 +519,7 @@ class ReinforcementEditor(GridLayout, IObserver):
             self.content.add_widget(self.addingMaterialAreaBar,0)
             self.content.add_widget(self.editAreaBar,1)
             self.content.remove_widget(self.materialArea)
-            self.content.remove_widget(self.crossSectionArea)
+            #self.content.remove_widget(self.crossSectionArea)
     
     '''
     cancel the editing
@@ -559,14 +530,14 @@ class ReinforcementEditor(GridLayout, IObserver):
             self.content.remove_widget(self.addingMaterialAreaBar)
             self.content.remove_widget(self.editAreaBar)
             self.content.add_widget(self.materialArea,0)
-            self.content.add_widget(self.crossSectionArea,1)
+            #self.content.add_widget(self.crossSectionArea,1)
         
     #not finished yet
     def edit_layer(self,btn):
         self.cancel_editing_layer(btn)
         for i in range(0, self.allMaterials.get_length()):
             if self.allMaterials.allMaterials[i].name == self.materialOption.text:
-                self.csShape.edit_layer(float(self.btnY.text),
+                self.csShape.edit_layer(float(self.strainUpperLimit.text),
                                         self.allMaterials.allMaterials[i],
                                         0)
     #not finished yet
@@ -585,11 +556,11 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_edit_area_layer(self):
         self.editArea=GridLayout(cols=2, row_force_default=True,
                                                row_default_height=self.btnSize, size_hint_y=None,
-                                               height=self.btnSize)
-        cancelBtn = Button(
+                                               height=self.btnSize,spacing=Design.spacing)
+        cancelBtn = OwnButton(
             text='cancel', size_hint_y=None, height=self.btnSize)
         cancelBtn.bind(on_press=self.cancel_editing_layer)
-        editLayer = Button(
+        editLayer = OwnButton(
             text='ok', size_hint_y=None, height=self.btnSize)
         editLayer.bind(on_press=self.edit_layer)
         self.editArea.add_widget(editLayer)
@@ -601,12 +572,29 @@ class ReinforcementEditor(GridLayout, IObserver):
     def create_edit_area_bar(self):
         self.editAreaBar=GridLayout(cols=2, row_force_default=True,
                                                row_default_height=self.btnSize, size_hint_y=None,
-                                               height=self.btnSize)
-        cancelBar = Button(
-            text='cancel', size_hint_y=None, height=self.btnSize)
+                                               height=self.btnSize,spacing=Design.spacing)
+        cancelBar = OwnButton(text='cancel')
         cancelBar.bind(on_press=self.cancel_editing_bar)
-        editBar= Button(
-            text='ok', size_hint_y=None, height=self.btnSize)
+        editBar= OwnButton(text='ok')
         editBar.bind(on_press=self.edit_bar)
         self.editAreaBar.add_widget(editBar)
         self.editAreaBar.add_widget(cancelBar)
+    
+    '''
+    the method set_cross_section was developed to say the view, 
+    which cross section should it use
+    '''
+
+    def set_cross_section(self, cs):
+        self.crossSection = cs
+        self.allMaterials = self.crossSection.allMaterials
+        self.allMaterials.add_listener(self)
+        # default cross section rectangle
+        self.csShape = cs.csRectangle
+        self.rectangleInformation = RectangleInformation()
+        self.shape = self.rectangleInformation
+        self.rectangleInformation.csShape=self.csShape#set_cross_section(self.csShape)
+        self.rectangleInformation.create_gui()
+        self.create_gui()
+        self.sign_in()
+    

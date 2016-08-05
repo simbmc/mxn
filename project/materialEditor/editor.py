@@ -3,15 +3,17 @@ Created on 11.04.2016
 
 @author: mkennert
 '''
-from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.label import Label
-from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
 
 from materialEditor.creater import MaterialCreater
-from designClass.design import Design
 from materialEditor.iobserver import IObserver
+from ownComponents.design import Design
+from ownComponents.ownButton import OwnButton
+from ownComponents.ownGraph import OwnGraph
+from ownComponents.ownLabel import OwnLabel
+from ownComponents.ownPopup import OwnPopup
+from plot.line import LinePlot
 
 
 class MaterialEditor(ScrollView, IObserver):
@@ -19,7 +21,7 @@ class MaterialEditor(ScrollView, IObserver):
 
     def __init__(self, **kwargs):
         super(MaterialEditor, self).__init__(**kwargs)
-        self.btnSize = Design.btnSize
+        self.btnSize = Design.btnHeight
     '''
     the method create gui create the gui of 
     the materialEditor and create the popups
@@ -32,14 +34,14 @@ class MaterialEditor(ScrollView, IObserver):
         self.materialLayout.bind(
             minimum_height=self.materialLayout.setter('height'))
         for i in self.allMaterials.allMaterials:
-            btn = Button(text=i.name, size_hint_y=None, height=self.btnSize)
+            btn = OwnButton(text=i.name)
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
-        self.btnMaterialEditor = Button(
-            text='create material', size_hint_y=None, height=self.btnSize)
+        self.btnMaterialEditor = OwnButton(text='create material')
         self.btnMaterialEditor.bind(on_press=self.create_material)
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
+        
 
     '''
     create the popups: 
@@ -49,9 +51,9 @@ class MaterialEditor(ScrollView, IObserver):
 
     def create_popups(self):
         creater = MaterialCreater()
-        creater.sign_in_parent(self)
-        self.popupInfo = Popup(title='material', content=self.content)
-        self.popupCreate = Popup(title='create new material', content=creater)
+        creater._parent = self  # sign_in_parent(self)
+        self.popupInfo = OwnPopup(title='material', content=self.content)
+        self.popupCreate = OwnPopup(title='create new material', content=creater)
 
     '''
     create the gui which is necessary for the show of the 
@@ -59,21 +61,27 @@ class MaterialEditor(ScrollView, IObserver):
     '''
 
     def create_material_information(self):
-        self.name = Label()
-        self.price = Label()
-        self.density = Label()
-        self.material_law = Label()
-        self.content = GridLayout(cols=2)
-        self.content.add_widget(Label(text='name:'))
-        self.content.add_widget(self.name)
-        self.content.add_widget(Label(text='price[euro/kg]:'))
-        self.content.add_widget(self.price)
-        self.content.add_widget(Label(text='density[kg/m^3]:'))
-        self.content.add_widget(self.density)
-        self.content.add_widget(Label(text='material-law:'))
-        self.content.add_widget(self.material_law)
-        btnBack = Button(text='back', size_hint_y=None, height=self.btnSize)
+        self.name = OwnLabel()
+        self.price = OwnLabel()
+        self.density = OwnLabel()
+        self.material_law = OwnLabel()
+        self.content = GridLayout(cols=2,spacing=Design.spacing)
+        self.information=GridLayout(cols=2)
+        self.information.add_widget(OwnLabel(text='name:'))
+        self.information.add_widget(self.name)
+        self.information.add_widget(OwnLabel(text='price[euro/kg]:'))
+        self.information.add_widget(self.price)
+        self.information.add_widget(OwnLabel(text='density[kg/m^3]:'))
+        self.information.add_widget(self.density)
+        self.information.add_widget(OwnLabel(text='material-law:'))
+        self.information.add_widget(self.material_law)
+        btnBack = OwnButton(text='back')
         btnBack.bind(on_press=self.cancel_show)
+        self.graph = OwnGraph(y_grid_label=True, x_grid_label=True)
+        self.p=LinePlot()
+        self.graph.add_plot(self.p)
+        self.content.add_widget(self.information)
+        self.content.add_widget(self.graph)
         self.content.add_widget(btnBack)
         self.create_popups()
 
@@ -84,12 +92,21 @@ class MaterialEditor(ScrollView, IObserver):
     def show_material_information(self, button):
         for i in range(0, self.csShape.allMaterials.get_length()):
             if self.allMaterials.allMaterials[i].name == button.text:
-                self.name.text = self.allMaterials.allMaterials[i].name
-                self.price.text = str(self.allMaterials.allMaterials[i].price)
-                self.density.text = str(
-                    self.allMaterials.allMaterials[i].density)
-                self.material_law.text = self.allMaterials.allMaterials[
-                    i].material_law.f_toString()
+                material = self.allMaterials.allMaterials[i]
+                self.name.text = material.name
+                self.price.text = str(material.price)
+                self.density.text = str(material.density)
+                self.material_law.text = material.material_law.f_toString()
+                self.graph.remove_plot(self.p)
+                self.p=LinePlot(points=material.material_law.points,color=[0,0,0,1])
+                print(str(self.p.points))
+                self.graph.add_plot(self.p)
+                self.graph.xmin = material.material_law.minStress
+                self.graph.xmax = material.material_law.maxStress
+                self.graph.ymin = material.material_law.minStrain
+                self.graph.ymax = material.material_law.maxStrain
+                self.graph.x_ticks_major=self.graph.xmax/5.
+                self.graph.y_ticks_major=self.graph.ymax/5.
                 self.popupInfo.open()
 
     '''
@@ -105,7 +122,6 @@ class MaterialEditor(ScrollView, IObserver):
     '''
 
     def create_material(self, button):
-        print('create new material')
         self.popupCreate.open()
 
     '''
@@ -116,8 +132,7 @@ class MaterialEditor(ScrollView, IObserver):
 
     def update(self):
         self.materialLayout.remove_widget(self.btnMaterialEditor)
-        btnMaterialA = Button(
-            text=self.allMaterials.allMaterials[-1].name, size_hint_y=None, height=40)
+        btnMaterialA = OwnButton(text=self.allMaterials.allMaterials[-1].name)
         btnMaterialA.bind(on_press=self.show_material_information)
         self.materialLayout.add_widget(btnMaterialA)
         self.materialLayout.add_widget(self.btnMaterialEditor)
@@ -130,7 +145,6 @@ class MaterialEditor(ScrollView, IObserver):
     '''
 
     def cancel_edit_material(self):
-        print('cancel editor-class')
         self.popupCreate.dismiss()
 
     '''

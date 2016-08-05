@@ -5,14 +5,10 @@ Created on 12.05.2016
 '''
 from abc import abstractmethod
 
-
 class AShape:
-
+    
     def set_information(self, information):
         self.information = information
-        self.calculate_weight_price()
-        self.calculate_strength()
-        self.set_cross_section_information()
 
     '''
     add a bar
@@ -45,14 +41,6 @@ class AShape:
 
     @abstractmethod
     def set_cross_section_information(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def calculate_weight_price(self):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def calculate_strength(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod

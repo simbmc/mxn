@@ -6,17 +6,17 @@ Created on 21.06.2016
 
 
 class Bar:
-    # Constructor
+    #constructor
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     '''
-    the method set_height change the height of the small_keyboard-rectangle
+    the method update_height change the height of the small_keyboard-rectangle
     '''
 
-    def set_height(self, value):
+    def update_height(self, value):
         self.h = value
 
     '''
@@ -45,10 +45,6 @@ class Bar:
     proofs whether the mouse in the ellipse
     ''' 
     def mouse_within(self,x,y):
-        print('x: '+str(x))
-        print('xrange: '+str(self.ellipse.xrange))
-        print('y: '+str(x))
-        print('yrange: '+str(self.ellipse.yrange))
         if x>self.ellipse.xrange[0] and x<self.ellipse.xrange[1] and \
             y>self.ellipse.yrange[0] and y<self.ellipse.yrange[1]:
             return True

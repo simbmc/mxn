@@ -1,0 +1,18 @@
+<AppActionBar>:
+    pos_hint: {'top':1}
+    size_hint: (1., 0.1)
+    ActionView:
+        use_separator: True
+        ActionMenu:
+            title: 'mxnix'
+            with_previous: False
+        ActionOverflow:
+        ActionButton:
+            text: 'cross section editor'
+            on_press:app.show_cross_section_editor()
+        ActionButton:
+            text: 'reinforcement editor'
+            on_press:app.show_reinforcement_editor()
+        ActionButton:
+            text: 'material editor'
+            on_press:app.show_material_editor()

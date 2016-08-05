@@ -5,16 +5,12 @@ Created on 28.06.2016
 '''
 from materialLawEditor.expView import ExpView
 from materialLawEditor.expInformation import ExpInformation
+from ownComponents.design import Design
 '''
 f(x)=1-c*exp(-x)
 '''
 
-from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-
-from materialLawEditor.linearInformation import LinearInformation
-from materialLawEditor.linearView import LinearView
-
 
 class ExpEditor(GridLayout):
     # constructor
@@ -22,6 +18,7 @@ class ExpEditor(GridLayout):
     def __init__(self, **kwargs):
         super(ExpEditor, self).__init__(**kwargs)
         self.cols = 2
+        self.spacing=Design.spacing
         self.c = 1
         self.view = ExpView()
         self.view.sign_in(self)
@@ -41,13 +38,3 @@ class ExpEditor(GridLayout):
 
     def update_graph(self, value):
         self.view.update_graph(value)
-'''
-Just for testing
-'''
-
-
-class TestApp(App):
-
-    def build(self):
-        return ExpEditor()
-TestApp().run()

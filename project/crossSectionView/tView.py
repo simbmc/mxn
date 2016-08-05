@@ -3,19 +3,22 @@ Created on 03.06.2016
 
 @author: mkennert
 '''
+from kivy.properties import ListProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
-from reinforcement.bar import Bar
 from crossSectionView.aview import AView
-from designClass.design import Design
-from kivy.garden.graph import Graph, MeshLinePlot
-from reinforcement.layer import Layer
+from ownComponents.design import Design
+from ownComponents.ownGraph import OwnGraph
 from plot.dashedLine import DashedLine
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
+from reinforcement.bar import Bar
+from reinforcement.layer import Layer
 
 
 class TView(AView, GridLayout):
+    layers, bars = ListProperty([]), ListProperty([])
+    csShape = ObjectProperty()
     # Constructor
 
     def __init__(self, **kwargs):
@@ -24,23 +27,21 @@ class TView(AView, GridLayout):
         self.cols = 1
         self.focusLine=LinePlot(width=1.5,color=Design.focusColor)
         self.lineIsFocused=False
-        self.layers = []
-        self.bars = []
     '''
     the method create_graph create the graph, where you can add 
     the layers. the method should be called only once at the beginning
     '''
 
     def create_graph(self):
+        self.update_values()
         self.deltaX = self.cw / 10.
         self.deltaY = self.ch / 50.
-        self.graph = Graph(
-            x_ticks_major=0.05, y_ticks_major=0.05,
-            y_grid_label=True, x_grid_label=True, padding=5,
-            xmin=0, xmax=self.cw + self.deltaX,
-            ymin=0, ymax=self.ch + self.deltaY)
+        self.graph = OwnGraph(x_ticks_major=0.05, y_ticks_major=0.05,
+                              y_grid_label=True, x_grid_label=True, padding=5,
+                              xmin=0, xmax=self.cw + self.deltaX,
+                              ymin=0, ymax=self.ch + self.deltaY)
         self.add_widget(self.graph)
-        self.p = MeshLinePlot(color=[1, 1, 1, 1])
+        self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_t()
         self.graph.add_plot(self.p)
 
@@ -67,22 +68,17 @@ class TView(AView, GridLayout):
     '''
 
     def update(self):
-        # save old values for the update
-        self.obw = self.bw
-        self.obh = self.bh
-        self.otw = self.tw
-        self.oth = self.th
-        self.ohmax = self.ch
-        # get the new values
+        self.update_values()
+        self.update_all_graph()
+    
+    def update_values(self):
         self.bh = self.csShape.get_height_bottom()
         self.bw = self.csShape.get_width_bottom()
         self.th = self.csShape.get_height_top()
         self.tw = self.csShape.get_width_top()
         self.ch = self.csShape.get_height()
         self.cw = self.csShape.get_width()
-        # update graph
-        self.update_all_graph()
-
+    
     '''
     update the graph and the layers
     '''
@@ -96,7 +92,7 @@ class TView(AView, GridLayout):
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
         self.graph.remove_plot(self.p)
-        self.p = MeshLinePlot(color=[1, 1, 1, 1])
+        self.p = LinePlot(color=[1, 1, 1, 1])
         self.p.points = self.draw_t()
         self.graph.add_plot(self.p)
         self.update_cross_section_information()
@@ -165,38 +161,10 @@ class TView(AView, GridLayout):
                     self.layers.remove(layer)
             self.csShape.calculate_strength()
             self.update_cross_section_information()
-
+    
     '''
-    update the layer information in the information-area
+    give the user the possibility to focus a layer or a bar
     '''
-
-    def update_layer_information(self, name, price, density, stiffness, strength):
-        self.csShape.set_layer_information(name, price, density,
-                                           stiffness, strength)
-
-    '''
-    update the cross section information
-    '''
-
-    def update_cross_section_information(self):
-        self.csShape.calculate_weight_price()
-        self.csShape.calculate_strength()
-        self.csShape.set_cross_section_information()
-
-    '''
-    set the cross section
-    '''
-
-    def set_cross_section(self, cs):
-        self.csShape = cs
-        self.bh = self.csShape.get_height_bottom()
-        self.bw = self.csShape.get_width_bottom()
-        self.th = self.csShape.get_height_top()
-        self.tw = self.csShape.get_width_top()
-        self.ch = self.csShape.get_height()
-        self.cw = self.csShape.get_width()
-        self.create_graph()
-
     def on_touch_down(self, touch):
         x0, y0 = self.graph._plot_area.pos  # position of the lowerleft
         gw, gh = self.graph._plot_area.size  # graph size
@@ -237,6 +205,9 @@ class TView(AView, GridLayout):
             self.graph.remove_plot(self.focusLine)
             self.csShape.cancel_editing_layer()
 
+    '''
+    edit a bar which is already exist
+    '''
     def edit_bar(self, x, y, material, csArea):
         self.focusBar.x = x
         self.focusBar.y = y
@@ -246,8 +217,9 @@ class TView(AView, GridLayout):
         self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
         self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
 
-    # not finished yet
-
+    '''
+    edit a layer which is already exist
+    '''
     def edit_layer(self, y, material, csArea):
         mid = self.graph.xmax / 2.
         self.focusLayer.y = y

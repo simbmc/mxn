@@ -3,24 +3,26 @@ Created on 18.04.2016
 
 @author: mkennert
 '''
-from materials.steel import Steel
+from materialEditor.singleton import Singleton
 from materials.carbonFiber import CarbonFiber
 from materials.concrete import Concrete
 from materials.glassFiber import GlassFiber
+from materials.steel import Steel
 
-'''
-the class MaterialList was developed to make it possible
-to use only one materiallist and update the observerclasses
-when something has changed. the class implements the observer-pattern.
-Attention: if you add a new observer, make sure that the observer
-implements a update-method.
-'''
 
+@Singleton
 class MaterialList:
-    #constuctor
+    '''
+    the class MaterialList was developed to make it possible
+    to use only one materiallist and update the observerclasses
+    when something has changed. the class implements the observer-pattern.
+    Attention: if you add a new observer, make sure that the observer
+    implements a update-method.
+    '''
+    # constuctor
     def __init__(self):
-        self.allMaterials=[Steel(),CarbonFiber(),Concrete(),GlassFiber()]
-        self.listeners=[]
+        self.allMaterials = [Steel(), CarbonFiber(), Concrete(), GlassFiber()]
+        self.listeners = []
      
     '''
     update all listeners when a new material was added
@@ -32,7 +34,7 @@ class MaterialList:
     '''
     add observer to the listeners-list.
     '''
-    def add_listener(self,listener):
+    def add_listener(self, listener):
         self.listeners.append(listener)
     
     '''

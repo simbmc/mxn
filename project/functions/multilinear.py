@@ -8,11 +8,14 @@ from numpy import interp
 
 
 class Multilinear(IFunction):
+    
     # constructor
-
-    def __init__(self, x, y):
+    def __init__(self, x, y,minStrain, maxStrain, minStress, maxStress):
         # x=x-coordinates, y=y-coordinates
         self.x, self.y = x, y
+        self.points=[(x[i],y[i]) for i in range(len(x))]
+        self.minStrain, self.maxStrain = minStrain, maxStrain
+        self.minStress, self.maxStress = minStrain, maxStress
     
     def f(self, val):
         return interp(val, self.x, self.y)

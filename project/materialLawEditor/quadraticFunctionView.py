@@ -6,10 +6,9 @@ Created on 06.05.2016
 from kivy.uix.gridlayout import GridLayout
 from numpy import arange
 
-from designClass.design import Design
-from kivy.garden.graph import Graph, MeshLinePlot
+from ownComponents.ownGraph import OwnGraph
 from plot.line import LinePlot
-import numpy as np
+
 
 class QuadraticFunctionView(GridLayout):
     #constructor
@@ -22,18 +21,19 @@ class QuadraticFunctionView(GridLayout):
     create the graph of the view
     '''
     def create_graph(self):
-        self.graph = Graph(xlabel='strain', ylabel='stress',
-                           x_ticks_major=2, y_ticks_major=2,
+        self.graph = OwnGraph(xlabel='strain', ylabel='stress',
+                           x_ticks_major=2.5, y_ticks_major=2.5,
                            y_grid_label=True, x_grid_label=True,
                            x_grid=True, y_grid=True,
-                           xmin=-self.editor.w, xmax=self.editor.w, ymin=0, ymax=self.editor.h)
+                           xmin=-self.editor.w, xmax=self.editor.w,
+                           ymin=-self.editor.h, ymax=self.editor.h)
         self.add_widget(self.graph)
     
     '''
     draw the function
     '''
     def draw_lines(self):
-        self.plot = LinePlot(color=[255,255,255])
+        self.plot = LinePlot(color=[255,0,0])
         self.plot.points = [(x, self.editor.f(x)) for x in arange(-self.graph.xmax, self.graph.xmax+1,self.graph.xmax/1e2)]
         print('points: '+str(self.plot.points))
         self.graph.add_plot(self.plot)
@@ -41,6 +41,11 @@ class QuadraticFunctionView(GridLayout):
     def update_points(self):
         self.plot.points=[(x, self.editor.f(x)) for x in arange(-self.graph.xmax, self.graph.xmax+1,self.graph.xmax/1e2)]
         
+    def update_lower_stress(self,value):
+        self.graph.ymin=value
+    
+    def update_lower_strain(self,value):
+        self.graph.xmin=value
         
     '''
     sign in by the parent
