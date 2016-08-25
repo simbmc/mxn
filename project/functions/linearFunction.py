@@ -7,19 +7,20 @@ from functions.function import IFunction
 
 
 class Linear(IFunction):
+    
     '''
-    represents a linear function f(x)=ax+b
+    represents a linear function f(x)=ax
     '''
+    
     # constructor
-    def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
+    def __init__(self, a, minStrain, maxStrain, minStress, maxStress):
         self.a = a
-        self.b = b
         self.minStrain, self.maxStrain = minStrain, maxStrain
-        self.minStress, self.maxStress = minStrain, maxStress
+        self.minStress, self.maxStress = minStress, maxStress
         self.points=[(minStress,self.f(minStress)),(maxStress,self.f(maxStress))]
         
     def f(self, x):
-        return self.a * x + self.b
-        
+        return self.a*x
+    
     def f_toString(self):
         return "f(x)=" + str(self.a) + "x"

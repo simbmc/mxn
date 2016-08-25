@@ -7,8 +7,11 @@ from abc import abstractmethod
 
 class AShape:
     
-    def set_information(self, information):
-        self.information = information
+    '''
+    AShape is the interface which the shapes must implement. it makes sure,
+    that the shapes has the necessary methods, which the other components
+    are uses
+    '''
 
     '''
     add a bar
@@ -23,32 +26,27 @@ class AShape:
 
     def add_layer(self, x, y, material):
         self.view.add_layer(x, y, material)
-
-    '''
-    delete the selected layer
-    '''
-
-    def delete_layer(self):
-        self.view.delete_layer()
-
-    '''
-    update the layerinformation in the cs-information
-    '''
-
-    def set_layer_information(self, name, price, density, stiffness, strength):
-        self.information.update_layer_information(
-            name, price, density, stiffness, strength)
-
+    
+    
+    def delete_bar(self):
+        self.view.delete_bar()
+        
+    def update_layer_information(self, y, material, csArea):
+        self.information.update_layer_information(y, material, csArea)
+    
+    def update_bar_information(self, x, y, material, csArea):
+        self.information.update_bar_information(x, y, material, csArea)
+        
     @abstractmethod
     def set_cross_section_information(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def get_height(self):
+    def get_total_height(self):
         raise NotImplemented('not implemented')
 
     @abstractmethod
-    def get_width(self):
+    def get_max_width(self):
         raise NotImplemented('not implemented')
     '''
     calculate the strain of concrete

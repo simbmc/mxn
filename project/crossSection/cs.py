@@ -3,28 +3,34 @@ Created on 12.05.2016
 
 @author: mkennert
 '''
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialEditor.materiallist import MaterialList
+from ownComponents.design import Design
+from shapes.shapeCircle import ShapeCircle
 from shapes.shapeDoubleT import ShapeDoubleT
 from shapes.shapeRectangle import ShapeRectangle
 from shapes.shapeT import ShapeT
-from shapes.shapeCircle import ShapeCircle
-from ownComponents.design import Design
-from kivy.properties import ObjectProperty
+
 
 class CrossSection(GridLayout):
+    
     '''
-    cross section contains all shapes. it manage which shape-should
+    the cross-section-object contains all shapes. the object manage which shape-should
     will be show
     '''
+    
+    #important components
     csEditor, information = ObjectProperty(), ObjectProperty()
     reEditor, view = ObjectProperty(), ObjectProperty()
+    
+    #shapes
+    csRectangle, csDoubleT = ObjectProperty(ShapeRectangle()), ObjectProperty(ShapeDoubleT())
+    csT, csCircle = ObjectProperty(ShapeT()), ObjectProperty(ShapeCircle())
     ###################################
     # here you can add more shapes    #
     ###################################
-    csRectangle, csDoubleT = ObjectProperty(ShapeRectangle()), ObjectProperty(ShapeDoubleT())
-    csT, csCircle = ObjectProperty(ShapeT()), ObjectProperty(ShapeCircle())
     
     # constructor
     def __init__(self, **kwargs):
@@ -51,7 +57,7 @@ class CrossSection(GridLayout):
     def show_doublet_shape(self):
         self.remove_widget(self.view)
         self.view = self.csDoubleT.view
-        self.reEditor.change_cross_section(self.view)
+        self.reEditor.change_cross_section(self.csDoubleT)
     
     '''
     show the T-view
@@ -74,7 +80,7 @@ class CrossSection(GridLayout):
     '''
     def set_reinforcement_editor(self, reEditor):
         self.reEditor = reEditor
-        self.csRectangle.set_information(reEditor)
-        self.csDoubleT.set_information(reEditor)
+        self.csRectangle.information=reEditor
+        self.csDoubleT.information=reEditor
         self.csT.information = reEditor
-        self.csCircle.set_information(reEditor)
+        self.csCircle.information=reEditor

@@ -6,68 +6,53 @@ Created on 03.05.2016
 from functions.linearFunction import Linear
 from ownComponents.design import Design
 
-'''
-f(x)=ax+b
-'''
+
 
 from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.linearInformation import LinearInformation
 from materialLawEditor.linearView import LinearView
-
+from kivy.properties import  ObjectProperty, NumericProperty
 
 class LinearEditor(GridLayout):
-    # constructor
     
+    # important components
+    view = ObjectProperty()
+    information = ObjectProperty()
+    lawEditor = ObjectProperty()
+    f = ObjectProperty()
+    
+    # important values
+    upperStrain, upperStress = NumericProperty(10.), NumericProperty(10.)
+    lowerStrain, lowerStress = NumericProperty(0.), NumericProperty(0.)
+    a = NumericProperty(1.)
+    
+    # constructor
     def __init__(self, **kwargs):
         super(LinearEditor, self).__init__(**kwargs)
-        self.cols = 2
-        self.spacing=Design.spacing
-        self.a = 1
-        self.upperStrain=10
-        self.upperStress=10
-        self.lowerStrain=0
-        self.lowerStress=0
-        self.view = LinearView()
-        self.view.sign_in(self)
-        self.information = LinearInformation()
-        self.information.sign_in(self)
+        self.cols , self.spacing = 2, Design.spacing
+        self.view = LinearView(editor=self)
+        self.information = LinearInformation(editor=self)
         self.add_widget(self.view)
         self.add_widget(self.information)
-
-    def update_btn(self, value):
-        self.a=value
-        self.information.update_btn(value)
-
-    def update_graph(self, value):
-        self.a = value
-        self.view.update_graph(value)
-
-    def update_strain_upper_limit(self, value):
-        self.upperStrain=value
-        self.view.update_strain_upper_limit(value)
-
-    def update_stress_upper_limit(self, value):
-        self.upperStress=value
-        self.view.update_stress_lower_limit(value)
     
-    def update_strain_lower_limit(self, value):
-        self.lowerStrain=value
-        self.view.update_strain_lower_limit(value)
-
-    def update_stress_lower_limit(self, value):
-        self.lowerStress=value
-        self.view.update_stress_lower_limit(value)
-    
-    def confirm(self):
-        f=Linear(self.a,0,self.lowerStrain,self.upperStrain,self.lowerStress,self.upperStress)
-        self.lawEditor.set_f(f)
+    def confirm(self, btn):
+        print('confirm (linearEditor)')
+        f = Linear(self.a, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
+        self.lawEditor.f = f
+        self.lawEditor.creater.materialLaw.text = f.f_toString()
+        self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
+                                            self.upperStrain, f.points)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.cancel(None)
-    
-    def cancel(self):
+    def cancel(self, btn):
         self.lawEditor.cancel_graphicShow()
     
-    def sign_in(self,editor):
-        self.lawEditor=editor
+    '''
+    update the complete information and graph by the given function-properties
+    '''
+    def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
+        print('update_function (linearEditor)')
+        self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
+        self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
     

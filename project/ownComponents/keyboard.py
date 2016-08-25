@@ -6,21 +6,28 @@ Created on 07.04.2016
 
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
-
+from kivy.properties import ObjectProperty
 from ownComponents.ownLabel import OwnLabel
 
 
 class Keyboard(GridLayout):
+    
     '''
     The class Keyboard was developed to give the user the possibility
     to write words with a keyboard. 
     the keyboard-object is a popup
     '''    
+    
+    # important components
+    # parent-component of the keyboard
+    p = ObjectProperty()
+    
     # constructor
-
     def __init__(self, **kwargs):
         super(Keyboard, self).__init__(**kwargs)
-        self.cols, self.p = 1, None
+        self.cols = 1
+        # lbl, which shows the string-input
+        self.lblTextinput = OwnLabel(text='')
         self.alphabet = 'qwertzuiopasdfghjkl_.yxcvbnm'
         self.createKeyboard()
         self.add_widget(self.layout)
@@ -31,7 +38,6 @@ class Keyboard(GridLayout):
     '''
 
     def createKeyboard(self):
-        self.lblTextinput = OwnLabel(text='')
         self.layout = GridLayout(cols=1)
         self.layout.add_widget(self.lblTextinput)
         self.smallKeyboard = GridLayout(cols=10)
@@ -68,7 +74,7 @@ class Keyboard(GridLayout):
     '''
 
     def finished(self, button):
-        if len(self.lblTextinput.text)>0:
+        if len(self.lblTextinput.text) > 0:
             self.p.finished_keyboard()
 
     '''
@@ -79,11 +85,3 @@ class Keyboard(GridLayout):
 
     def reset_text(self):
         self.lblTextinput.text = ''
-
-    '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finishedKeyboard
-    '''
-
-    def sign_in_parent(self, parent):
-        self.p = parent

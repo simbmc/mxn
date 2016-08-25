@@ -3,7 +3,7 @@ Created on 13.05.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty,StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -15,17 +15,24 @@ from plot.line import LinePlot
 
 
 class ShapeSelection(GridLayout):
+    
     '''
     create the component, where you can select
     the currently cross-section-shape 
     '''
+    
+    # important components
     information = ObjectProperty()
+    
+    # strings
+    circleStr, rectangleStr = StringProperty('circle'), StringProperty('rectangle')
+    ishapeStr, tshapeStr = StringProperty('I-shape'), StringProperty('T-shape')
+    shapeStr = StringProperty('shape')
+    
     # constructor
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
-        self.cols = 2
-        self.spacing = Design.spacing
-        self.btnSize = Design.btnHeight
+        self.cols, self.spacing = 2, Design.spacing
 
     '''
     create the gui
@@ -103,11 +110,8 @@ class ShapeSelection(GridLayout):
     '''
 
     def create_graph_t(self):
-        self.graphT = OwnGraph(
-            # x_ticks_major=0.05, y_ticks_major=0.05,
-            # y_grid_label=True, x_grid_label=True, padding=5,
-            border_color=[0.5, 0.5, 0.5, 0],
-            xmin=0, xmax=0.27, ymin=0, ymax=0.5)
+        self.graphT = OwnGraph(border_color=[0.5, 0.5, 0.5, 0],
+                               xmin=0, xmax=0.27, ymin=0, ymax=0.5)  
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_t()
         self.graphT.add_plot(self.p)
@@ -183,23 +187,22 @@ class ShapeSelection(GridLayout):
         self.btnOK.bind(on_press=self.finished)
         self.btnCancel = OwnButton(text='cancel')
         self.btnCancel.bind(on_press=self.cancel)
-
         # default-shape=rectangle
-        self.focusShape = OwnButton(text='rectangle')
+        self.focusShape = OwnButton(text=self.rectangleStr)
         self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
-        self.plot = OwnButton(text='rectangle')
+        self.plot = OwnButton(text=self.rectangleStr)
         self.plot.bind(on_press=self.show_rectangle)
-        self.doubleT = OwnButton(text='I-shape')
+        self.doubleT = OwnButton(text=self.ishapeStr)
         self.doubleT.bind(on_press=self.show_double_t)
-        self.t = OwnButton(text='T-shape')
+        self.t = OwnButton(text=self.tshapeStr)
         self.t.bind(on_press=self.show_t)
-        self.circle = OwnButton(text='circle')
+        self.circle = OwnButton(text=self.circleStr)
         self.circle.bind(on_press=self.show_circle_shape)
         #######################################################################
         # here you can add more shapes                                             #
         # Attention: make sure that the buttons habe the properties                #
-        # size_hint_y=None, height=self.btnSize and a bind-method                  #
+        # size_hint_y=None, height=Design.btnHeight and a bind-method                  #
         #######################################################################
 
     '''

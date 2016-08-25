@@ -10,125 +10,138 @@ from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-
+from kivy.properties import  ObjectProperty, StringProperty
 
 class LinearInformation(GridLayout):
+    
+    # important components
+    editor = ObjectProperty()
+    
+    # strings
+    functionStr, linearStr = StringProperty('function:'), StringProperty('linear')
+    aStr, strainULStr = StringProperty('a:'), StringProperty('strain-upper-limit [MPa]:')
+    strainLLStr, stressULStr = StringProperty('strain-lower-limit [MPa]:'), StringProperty('stress-upper-limit:')
+    stressLLStr = StringProperty('stress-lower-limit:')
+    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    
     # constructor
-
     def __init__(self, **kwargs):
         super(LinearInformation, self).__init__(**kwargs)
-        self.cols = 2
-        self.spacing=Design.spacing
-        self.btnSize = Design.btnHeight
+        self.cols, self.spacing = 2, Design.spacing
+        self.row_force_default, self.row_default_height = True, Design.btnHeight
         self.create_gui()
-        self.row_force_default = True
-        self.row_default_height = self.btnSize
 
     '''
-    create the gui
+    create the gui of the linear-information, 
+    where you can change the properties of the linear-function
     '''
-
     def create_gui(self):
-        self.create_popup()
         self.create_btns()
-        self.add_widget(OwnLabel(text='function:'))
-        self.add_widget(OwnLabel(text='f(x)=ax+b'))
-        self.add_widget(OwnLabel(text='a'))
-        self.add_widget(self.btnM)
-        self.add_widget(OwnLabel(text='strain-upper-limit:'))
-        self.add_widget(self.btn_strain_upper_limit)
-        self.add_widget(OwnLabel(text='stress-upper-limit:'))
-        self.add_widget(self.btn_stress_upper_limit)
-        self.add_widget(OwnLabel(text='strain-lower-limit: '))
-        self.add_widget(self.btn_strain_lower_limit)
-        self.add_widget(OwnLabel(text='stress-lower-limit: '))
-        self.add_widget(self.btn_stress_lower_limit)
-        btn_confirm=OwnButton(text='ok')
-        btn_cancel=OwnButton(text='cancel')
-        btn_confirm.bind(on_press=self.confirm)
-        btn_cancel.bind(on_press=self.cancel)
-        self.add_widget(btn_confirm)
-        self.add_widget(btn_cancel)
+        self.add_widget(OwnLabel(text=self.functionStr))
+        self.add_widget(self.btnLinear)
+        self.add_widget(OwnLabel(text=self.aStr))
+        self.add_widget(self.btnA)
+        self.add_widget(OwnLabel(text=self.strainULStr))
+        self.add_widget(self.btnStrainUL)
+        self.add_widget(OwnLabel(text=self.stressULStr))
+        self.add_widget(self.btnStressUL)
+        self.add_widget(OwnLabel(text=self.strainLLStr))
+        self.add_widget(self.btnStrainLL)
+        self.add_widget(OwnLabel(text=self.stressLLStr))
+        self.add_widget(self.btnStressLL)
+        self.add_widget(self.btnConfirm)
+        self.add_widget(self.btnCancel)
+        # create the numpad for the input
+        self.numpad = Numpad(sign=True, p=self)
+        self.popupNumpad = OwnPopup(content=self.numpad)
     
     '''
-    create the btns
+    create all btns of the gui. this method to improve the code-overview
     '''
     def create_btns(self):
-        self.btn_stress_upper_limit = OwnButton(text='10')
-        self.btn_stress_lower_limit = OwnButton(text='0')
-        self.btnM = OwnButton(text='1')
-        self.btn_strain_upper_limit = OwnButton(text='10')
-        self.btn_strain_lower_limit = OwnButton(text='0')
-        self.btnM.bind(on_press=self.show_popup)
-        self.btn_strain_upper_limit.bind(on_press=self.show_popup)
-        self.btn_stress_upper_limit.bind(on_press=self.show_popup)
-        self.btn_stress_lower_limit.bind(on_press=self.show_popup)
-        self.btn_strain_lower_limit.bind(on_press=self.show_popup)
-    '''
-    create the popup with the numpad as content
-    '''
-
-    def create_popup(self):
-        self.numpad = Numpad()
-        self.numpad.sign=True
-        self.numpad.sign_in_parent(self)
-        self.popupNumpad = OwnPopup(title='Numpad', content=self.numpad)
+        self.btnStressUL = OwnButton(text=str(self.editor.upperStress))
+        self.btnStressLL = OwnButton(text=str(self.editor.lowerStress))
+        self.btnStrainUL = OwnButton(text=str(self.editor.upperStrain))
+        self.btnStrainLL = OwnButton(text=str(self.editor.lowerStrain))
+        self.btnA = OwnButton(text=str(self.editor.a))
+        self.btnConfirm = OwnButton(text=self.okStr)
+        self.btnCancel = OwnButton(text=self.cancelStr)
+        self.btnLinear = OwnButton(text=self.linearStr)
+        self.btnLinear.bind(on_press=self.show_type_selection)
+        self.btnConfirm.bind(on_press=self.editor.confirm)
+        self.btnStrainUL.bind(on_press=self.show_popup)
+        self.btnStressUL.bind(on_press=self.show_popup)
+        self.btnStressLL.bind(on_press=self.show_popup)
+        self.btnStrainLL.bind(on_press=self.show_popup)
+        self.btnCancel.bind(on_press=self.editor.cancel)
+        self.btnA.bind(on_press=self.show_popup)
+        
 
     '''
-    close the numpad
+    close the numpad when the user cancel the input
     '''
-
     def close_numpad(self):
         self.popupNumpad.dismiss()
 
     '''
     open the numpad popup
     '''
-
     def show_popup(self, btn):
+        print('show popup')
+        print(self.btnA)
+        print(self.btnA.text)
+        print(btn.text)
+        print(btn.text == self.btnA.text)
         self.focusBtn = btn
+        if self.focusBtn == self.btnA:
+            self.popupNumpad.title = self.aStr
+        elif self.focusBtn == self.btnStrainUL:
+            self.popupNumpad.title = self.strainULStr
+        elif self.focusBtn == self.btnStressUL:
+            self.popupNumpad.title = self.stressULStr
+        elif self.focusBtn == self.btnStrainLL:
+            self.popupNumpad.title = self.strainLLStr
+        elif self.focusBtn == self.btnStressLL:
+            self.popupNumpad.title = self.stressLLStr
         self.popupNumpad.open()
-
+    
+    def show_type_selection(self, btn):
+        self.editor.lawEditor.editor.open()
+    
     '''
-    sign in by the parent
+    when the user confirm his input
     '''
-
-    def sign_in(self, parent):
-        self.editor = parent
-
-    '''
-    the method finished_numpad close the numpad_popup
-    '''
-
     def finished_numpad(self):
+        print('finished_numpad (linearinformation)')
+        print(self.focusBtn == self.btnA)
         self.focusBtn.text = self.numpad.lblTextinput.text
+        # close and reset the numpad
         self.popupNumpad.dismiss()
-        if self.focusBtn == self.btnM:
-            self.btnM.text = self.numpad.lblTextinput.text
-            self.editor.update_graph(float(self.btnM.text))
-        elif self.focusBtn == self.btn_strain_upper_limit:
-            self.btn_strain_upper_limit.text = self.numpad.lblTextinput.text
-            self.editor.update_strain_upper_limit(float(self.btn_strain_upper_limit.text))
-        elif self.focusBtn == self.btn_stress_upper_limit:
-            self.btn_stress_upper_limit.text = self.numpad.lblTextinput.text
-            self.editor.update_stress_upper_limit(float(self.btn_stress_upper_limit.text))
-        elif self.focusBtn==self.btn_strain_lower_limit:
-            self.btn_strain_lower_limit.text=self.numpad.lblTextinput.text
-            self.editor.update_strain_lower_limit(float(self.btn_strain_lower_limit.text))
-        elif self.focusBtn==self.btn_stress_lower_limit:
-            self.btn_stress_lower_limit.text=self.numpad.lblTextinput.text
-            self.editor.update_stress_lower_limit(float(self.btn_stress_lower_limit.text))
         self.numpad.reset_text()
-
-    '''
-    update the slope
-    '''
-
-    def update_btn(self, value):
-        self.btnM.text = str(value)
+        v = float(self.focusBtn.text)
+        if self.focusBtn == self.btnA:
+            self.editor.a = v
+            self.editor.view.update_graph(v)
+            print('update view')
+        elif self.focusBtn == self.btnStrainUL:
+            self.editor.upperStrain = v
+            self.editor.view.update_strain_upper_limit(v)
+        elif self.focusBtn == self.btnStressUL:
+            self.editor.upperStress = v
+            self.editor.view.update_stress_upper_limit(v)
+        elif self.focusBtn == self.btnStrainLL:
+            self.editor.lowerStrain = v
+            self.editor.view.update_strain_lower_limit(v)
+        elif self.focusBtn == self.btnStressLL:
+            self.editor.lowerStress = v
+            self.editor.view.update_stress_lower_limit(v)
     
-    def confirm(self,btn):
-        self.editor.confirm()
-    
-    def cancel(self,btn):
-        self.editor.cancel()
+    '''
+    update the complete information by the given function-properties
+    '''
+    def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
+        self.btnStrainLL.text = str(minStrain)
+        self.btnStrainUL.text = str(maxStrain)
+        self.btnStressLL.text = str(minStress)
+        self.btnStressUL.text = str(maxStress)
+        self.btnA.text = str(a)

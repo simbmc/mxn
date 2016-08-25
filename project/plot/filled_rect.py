@@ -14,6 +14,7 @@ class FilledRect(Plot):
     '''
     draw a filled rectangular for given color and geometric parameters
     '''
+    
     _image = ObjectProperty()
     xrange = ListProperty([0, 100])
     yrange = ListProperty([0, 100])
@@ -56,50 +57,3 @@ class FilledRect(Plot):
         h = tr[1] - bl[1]
         image.size = (w, h)
         
-
-if __name__ == '__main__':
-    from kivy.uix.boxlayout import BoxLayout
-    from kivy.app import App
-    from kivy.garden.graph import Graph
-    import random
-    from kivy.clock import Clock
-
-    class TestApp(App):
-
-        def build(self):
-            b = BoxLayout(orientation='vertical')
-
-            graph2 = Graph(
-                xlabel='x',
-                ylabel='y',
-                x_ticks_major=10,
-                y_ticks_major=10,
-                y_grid_label=True,
-                x_grid_label=True,
-                padding=5,
-                xlog=False,
-                ylog=False,
-                xmin=0,
-                ymin=0)
-
-            plot = FilledRect(color=[255, 255, 255])
-            plot.xrange = [40, 70]
-            plot.yrange = [30, 50]
-            graph2.add_plot(plot)
-
-            b.add_widget(graph2)
-            self.plot = plot
-
-            Clock.schedule_interval(self.update_color, 1)
-            Clock.schedule_interval(self.update_pos, 1)
-
-            return b
-
-        def update_color(self, *args):
-            self.plot.color = [random.randint(0, 255) for r in xrange(3)]
-
-        def update_pos(self, *args):
-            self.plot.xrange = [100. * random.random() for r in xrange(2)]
-            self.plot.yrange = [100. * random.random() for r in xrange(2)]
-
-    TestApp().run()

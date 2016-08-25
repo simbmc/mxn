@@ -4,6 +4,7 @@ Created on 06.05.2016
 
 @author: mkennert
 '''
+from kivy.properties import  ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 
 from ownComponents.design import Design
@@ -14,61 +15,70 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class QuadraticFunctionInformation(GridLayout):
-    #constructor
+    
+    # important components
+    editor = ObjectProperty()
+    
+    # strings
+    functionStr, quadraticStr = StringProperty('function:'), StringProperty('quadratic')
+    aStr, bStr = StringProperty('a:'), StringProperty('b:')
+    strainULStr = StringProperty('strain-upper-limit [MPa]:')
+    strainLLStr, stressULStr = StringProperty('strain-lower-limit [MPa]:'), StringProperty('stress-upper-limit:')
+    stressLLStr = StringProperty('stress-lower-limit:')
+    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    
+    # constructor
     def __init__(self, **kwargs):
         super(QuadraticFunctionInformation, self).__init__(**kwargs)
-        self.cols = 2
-        self.spacing=Design.spacing
-        self.btnSize=Design.btnHeight
-        self.focusBtn=None
+        self.cols, self.spacing = 2, Design.spacing
         self.create_information()
     
     '''
-    create the gui
+    create the gui of the information, 
+    where you can change the properties of the quadratic-function
     '''
     def create_information(self):
         self.create_btns()
-        self.add_widget(OwnLabel(text='function:'))
-        self.add_widget(OwnLabel(text='f(x)=ax^2+bx+c'))
-        self.add_widget(OwnLabel(text='a'))
+        self.add_widget(OwnLabel(text=self.functionStr))
+        self.add_widget(self.btnQuadratic)
+        self.add_widget(OwnLabel(text=self.aStr))
         self.add_widget(self.aBtn)
-        self.add_widget(OwnLabel(text='b',))        
+        self.add_widget(OwnLabel(text=self.bStr))        
         self.add_widget(self.bBtn)
-        self.add_widget(OwnLabel(text='strain-upper-limit:'))
-        self.add_widget(self.h)
-        self.add_widget(OwnLabel(text='stress-upper-limit'))
-        self.add_widget(self.w)
-        btn_confirm=OwnButton(text='ok')
-        btn_cancel=OwnButton(text='cancel')
-        btn_confirm.bind(on_press=self.confirm)
-        btn_cancel.bind(on_press=self.cancel)
-        self.add_widget(btn_confirm)
-        self.add_widget(btn_cancel)
-        self.create_popup()
+        self.add_widget(OwnLabel(text=self.strainULStr))
+        self.add_widget(self.upperStrainBtn)
+        self.add_widget(OwnLabel(text=self.stressULStr))
+        self.add_widget(self.upperStressBtn)
+        self.add_widget(OwnLabel(text=self.strainLLStr))
+        self.add_widget(self.lowerStrain)
+        self.add_widget(OwnLabel(text=self.stressLLStr))
+        self.add_widget(self.lowerStress)
+        self.add_widget(self.btn_confirm)
+        self.add_widget(self.btn_cancel)
+        # create the numpad
+        self.numpad = Numpad(sign=True, p=self)
+        self.popupNumpad = OwnPopup(content=self.numpad)
     
-    #not finished yet
+    # not finished yet
     def create_btns(self):
-        self.bBtn=OwnButton(text='0')
+        self.aBtn = OwnButton(text=str(self.editor.a))
+        self.aBtn.bind(on_press=self.show_popup)
+        self.bBtn = OwnButton(text=str(self.editor.b))
         self.bBtn.bind(on_press=self.show_popup)
-        self.lowerStress=OwnButton(text='0')
-        self.lowerStrain=OwnButton(text='0')
-        self.h=OwnButton(text='10')
-        self.w=OwnButton(text='10')
+        self.lowerStress = OwnButton(text=str(self.editor.lowerStress))
+        self.lowerStrain = OwnButton(text=str(self.editor.lowerStrain))
+        self.upperStrainBtn = OwnButton(text=str(self.editor.upperStrain))
+        self.upperStressBtn = OwnButton(text=str(self.editor.upperStress))
+        self.btn_confirm = OwnButton(text=self.okStr)
+        self.btn_cancel = OwnButton(text=self.cancelStr)
+        self.btnQuadratic = OwnButton(text=self.quadraticStr)
+        self.btnQuadratic.bind(on_press=self.show_type_selection)
+        self.btn_confirm.bind(on_press=self.editor.confirm)
+        self.btn_cancel.bind(on_press=self.editor.cancel)
         self.lowerStrain.bind(on_press=self.show_popup)
         self.lowerStress.bind(on_press=self.show_popup)
-        self.h.bind(on_press=self.show_popup)
-        self.w.bind(on_press=self.show_popup)
-        self.aBtn=OwnButton(text='1:')
-        self.aBtn.bind(on_press=self.show_popup)
-    
-    '''
-    create the popup with the numpad as content
-    '''
-    def create_popup(self):
-        self.numpad=Numpad()
-        self.numpad.sign=True
-        self.numpad.sign_in_parent(self)
-        self.popupNumpad=OwnPopup(title='numpad', content=self.numpad)
+        self.upperStrainBtn.bind(on_press=self.show_popup)
+        self.upperStressBtn.bind(on_press=self.show_popup)
     
     '''
     close the numpad
@@ -80,39 +90,36 @@ class QuadraticFunctionInformation(GridLayout):
     the method finished_numpad close the numpad_popup
     '''
     def finished_numpad(self):
-        self.focusBtn.text=self.numpad.lblTextinput.text
+        self.focusBtn.text = self.numpad.lblTextinput.text
+        v = float(self.focusBtn.text)
         self.popupNumpad.dismiss()
-        if self.focusBtn==self.aBtn:
-            self.aBtn.text=self.numpad.lblTextinput.text
-            self.editor.set_a(float(self.aBtn.text))
-        elif self.focusBtn==self.bBtn:
-            self.bBtn.text=self.numpad.lblTextinput.text
-            self.editor.set_b(float(self.bBtn.text))
-        elif self.focusBtn==self.h:
-            self.editor.update_height(float(self.h.text))
-        elif self.focusBtn==self.w:
-            self.editor.update_width(float(self.w.text))
-        elif self.focusBtn==self.lowerStrain:
-            self.editor.update_lower_strain(float(self.lowerStrain.text))
-        elif self.focusBtn==self.lowerStress:
-            self.editor.update_lower_strain(float(self.lowerStress.text))
         self.numpad.reset_text()
+        if self.focusBtn == self.aBtn:
+            self.editor.a = v
+            self.editor.view.update_points()
+        elif self.focusBtn == self.bBtn:
+            self.editor.b = v
+            self.editor.view.update_points()
+        elif self.focusBtn == self.upperStrainBtn:
+            self.editor.upperStrain = v
+            self.editor.view.update_graph_sizeproperties()
+        elif self.focusBtn == self.upperStressBtn:
+            self.editor.upperStress = v
+            self.editor.view.update_graph_sizeproperties()
+        elif self.focusBtn == self.lowerStrain:
+            self.editor.lowerStrain = v
+            self.editor.view.update_graph_sizeproperties()
+        elif self.focusBtn == self.lowerStress:
+            self.editor.lowerStress = v
+            self.editor.view.update_graph_sizeproperties()
     
     '''
     open the numpad popup
     '''
-    def show_popup(self,btn):
-        self.focusBtn=btn
+    def show_popup(self, btn):
+        self.focusBtn = btn
         self.popupNumpad.open()
     
-    '''
-    sign in by the parent
-    '''
-    def sign_in(self, parent):
-        self.editor=parent
-    
-    def confirm(self,btn):
-        self.editor.confirm()
-    
-    def cancel(self,btn):
-        self.editor.cancel()
+    def show_type_selection(self, btn):
+        print('show type_selection (quadraticinformation)')
+        self.editor.lawEditor.editor.open()

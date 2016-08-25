@@ -12,14 +12,21 @@ from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-
+from kivy.properties import StringProperty
 
 class CircleInformation(GridLayout):
+    
     '''
     create the component, where you can change the diameter
     of the cross-section-circle
     '''
-    csShape=ObjectProperty()
+    
+    # important components
+    csShape = ObjectProperty()
+    
+    # strings
+    diameter = StringProperty('diameter [m]')
+    
     # Constructor
     def __init__(self, **kwargs):
         super(CircleInformation, self).__init__(**kwargs)
@@ -31,18 +38,24 @@ class CircleInformation(GridLayout):
     '''
     def create_gui(self):
         self.create_popup()
-        self.add_widget(OwnLabel(text='diameter: '))
-        self.btnRadius = OwnButton(text=str(self.csShape.d))
-        self.btnRadius.bind(on_press=self.show_numpad)
-        self.add_widget(self.btnRadius)
+        self.add_widget(OwnLabel(text=self.diameter))
+        self.btnDiameter = OwnButton(text=str(self.csShape.d))
+        self.btnDiameter.bind(on_press=self.show_numpad)
+        self.add_widget(self.btnDiameter)
         
     '''
     create the popup
     '''
     def create_popup(self):
         self.numpad = Numpad()
-        self.numpad.sign_in_parent(self)
-        self.popup = OwnPopup(content=self.numpad)
+        self.numpad.p = self
+        self.popup = OwnPopup(title=self.diameter, content=self.numpad)
+    
+    '''
+    open the popup
+    '''
+    def show_numpad(self, btn):
+        self.popup.open()
     
     '''
     close the numpad
@@ -51,18 +64,11 @@ class CircleInformation(GridLayout):
         self.popup.dismiss()
         
     '''
-    open the popup
-    '''
-    def show_numpad(self, btn):
-        self.focusBtn = btn
-        self.popup.open()
-    
-    '''
     set the text of the button
     '''
     def finished_numpad(self):
-        self.btnRadius.text = self.numpad.lblTextinput.text
-        d = float(self.btnRadius.text)
+        self.btnDiameter.text = self.numpad.lblTextinput.text
+        d = float(self.btnDiameter.text)
         self.csShape.d = d
         self.csShape.view.update_circle(d)
         self.popup.dismiss()

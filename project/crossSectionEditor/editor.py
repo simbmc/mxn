@@ -3,6 +3,7 @@ Created on 02.06.2016
 
 @author: mkennert
 '''
+from kivy.properties import StringProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from crossSectionEditor.circleInformation import CircleInformation
@@ -17,27 +18,30 @@ from ownComponents.ownPopup import OwnPopup
 
 
 class CrossSectionEditor(GridLayout):
+    
     '''
     the cross section editor is the component where you can 
     select the shape with the shape-selection and set 
     the size-properties of the shapes
     '''
-    circle, rectangle = 'circle', 'rectangle'
-    ishape, tshape = 'I-shape', 'T-shape'
     
-    # Constructor
+    # important components
+    cs = ObjectProperty()
+    
+    # strings
+    circle, rectangle = StringProperty('circle'), StringProperty('rectangle')
+    ishape, tshape = StringProperty('I-shape'), StringProperty('T-shape')
+    shapeStr = StringProperty('shape')
+    
+    # constructor
     def __init__(self, **kwargs):
         super(CrossSectionEditor, self).__init__(**kwargs)
-        self.cols = 2
-        self.spacing = Design.spacing
+        self.cols, self.spacing = 2, Design.spacing
         self.btnSize = Design.btnHeight
-        self.firstTimeCircle = True
-        self.firstTimeDoubleT = True
-        self.firstTimeT = True
-        self.focusInformation = None
+        self.firstTimeCircle, self.firstTimeDoubleT = True, True
+        self.firstTimeT, self.containsView = True, True
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         self.add_widget(self.content)
-        self.containsView = True
 
     '''
     the method set_cross_section was developed to say the view, 
@@ -73,8 +77,8 @@ class CrossSectionEditor(GridLayout):
                                       size_hint_y=None, row_force_default=True,
                                       row_default_height=self.btnSize,
                                       height=self.btnSize)
-        self.lblSelection = OwnLabel(text='shape ')
-        self.btnSelection = OwnButton(text='rectangle')
+        self.lblSelection = OwnLabel(text=self.shapeStr)
+        self.btnSelection = OwnButton(text=self.rectangle)
         self.btnSelection.bind(on_press=self.show_shape_selection)
         selectionContent.add_widget(self.lblSelection)
         selectionContent.add_widget(self.btnSelection)
@@ -88,7 +92,7 @@ class CrossSectionEditor(GridLayout):
         shapeContent = ShapeSelection()
         shapeContent.information = self
         shapeContent.create_gui()
-        self.shapeSelection = OwnPopup(title='shape', content=shapeContent)
+        self.shapeSelection = OwnPopup(title=self.shapeStr, content=shapeContent)
 
     '''
     look which shape the user has selected
@@ -97,7 +101,7 @@ class CrossSectionEditor(GridLayout):
     def finished_shape_selection(self, btn):
         if btn.text == self.circle:
             self.show_circle_shape(btn)
-            pass
+            # self.csShape=self.cir
         elif btn.text == self.rectangle:
             self.show_rectangle(btn)
         elif btn.text == self.ishape:
@@ -112,8 +116,15 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def change_cross_section(self, shape):
+        self.view=shape.view
         self.csShape = shape
     
+    def delete_layer(self):
+        self.view.delete_layer()
+    
+    def delete_bar(self):
+        self.view.delete_bar()
+        
     '''
     cancel the shape selection and close the shape-editor-popup
     '''
@@ -142,7 +153,6 @@ class CrossSectionEditor(GridLayout):
         self.focusInformation = self.rectangleInformation
         self.crossSection.show_rectangle_shape()
         self.update_view()
-        self.crossSection.show_rectangle_shape()
 
     '''
     show the doubleT-shape

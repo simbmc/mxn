@@ -30,9 +30,9 @@ class ExpInformation(GridLayout):
         self.add_widget(OwnLabel(text='function:'))
         self.add_widget(OwnLabel(text='f(x)=1-c*exp(-x)'))
         self.add_widget(OwnLabel(text='c'))
-        self.btnM = OwnButton(text='1')
-        self.btnM.bind(on_press=self.show_popup)
-        self.add_widget(self.btnM)
+        self.btnA = OwnButton(text='1')
+        self.btnA.bind(on_press=self.show_popup)
+        self.add_widget(self.btnA)
     
     '''
     create the popup with the numpad as content
@@ -68,15 +68,15 @@ class ExpInformation(GridLayout):
     def finished_numpad(self):
         self.focusBtn.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
-        if self.focusBtn == self.btnM:
-            self.focusBtn = self.btnM
-            self.btnM.text = self.numpad.lblTextinput.text
-            self.editor.update_graph(float(self.btnM.text))
+        if self.focusBtn == self.btnA:
+            self.focusBtn = self.btnA
+            self.btnA.text = self.numpad.lblTextinput.text
+            self.editor.update_graph(float(self.btnA.text))
         self.numpad.reset_text()
     
     '''
     update the slope
     '''
     def update_btn(self, value):
-        self.btnM.text = str(value)
+        self.btnA.text = str(value)
     

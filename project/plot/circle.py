@@ -17,6 +17,7 @@ class Circle(Plot):
     the radius is automatically scaled to guarantee that the
     circle is still a perfect when the ratio of the graph is not 1:1
     '''
+    
     _image = ObjectProperty()
     pos = ListProperty([0, 0])  # center
     d = NumericProperty(0.)  # radius

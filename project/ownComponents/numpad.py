@@ -3,6 +3,7 @@ Created on 01.03.2016
 
 @author: mkennert
 '''
+from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 
@@ -11,17 +12,26 @@ from ownComponents.ownLabel import OwnLabel
 
 
 class Numpad(GridLayout):
+    
     '''
     the class keyboard was developed to give the user the possibility
     to input a value
     '''
+    
+    # important components
+    # parent-component of the keyboard
+    p = ObjectProperty()
+    # lbl, which shows the string-input
+    lblTextinput = OwnLabel(text='')
+    
+    # strings
+    plusStr, minusStr = StringProperty('+'), StringProperty('-')
+    sign=BooleanProperty(False)
     # construktor
-
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
-        self.cols=1
-        self.btnHeight = Design.btnHeight
-        self.sign=False
+        self.cols = 1
+        self.create_numfield()
     '''
     the method create_numfield create the gui
     of the numpad
@@ -30,12 +40,12 @@ class Numpad(GridLayout):
     def create_numfield(self):
         self.lblTextinput = OwnLabel(text='')
         if self.sign:
-            display=GridLayout(cols=2, spacing=Design.spacing)
-            self.btnSign=Button(text='+',size_hint_y=None, height=self.btnHeight)
+            display = GridLayout(cols=2, spacing=Design.spacing)
+            self.btnSign = Button(text=self.plusStr, size_hint_y=None, height=Design.btnHeight)
             self.btnSign.bind(on_press=self.set_sign)
             display.add_widget(self.btnSign)
         else:
-            display=GridLayout(cols=1)
+            display = GridLayout(cols=1)
         display.add_widget(self.lblTextinput)
         self.numfieldLayout = GridLayout(cols=3)
         for i in range(1, 10):
@@ -54,11 +64,11 @@ class Numpad(GridLayout):
         cur = GridLayout(cols=1)
         layout = GridLayout(cols=2, spacing=Design.spacing,
                             row_force_default=True,
-                            row_default_height=self.btnHeight)
-        btnOK = Button(text='ok', size_hint_y=None, height=self.btnHeight)
+                            row_default_height=Design.btnHeight)
+        btnOK = Button(text='ok', size_hint_y=None, height=Design.btnHeight)
         btnOK.bind(on_press=self.finished)
         btnCancel = Button(
-            text='cancel', size_hint_y=None, height=self.btnHeight)
+            text='cancel', size_hint_y=None, height=Design.btnHeight)
         btnCancel.bind(on_press=self.cancel)
         layout.add_widget(btnOK)
         layout.add_widget(btnCancel)
@@ -67,11 +77,14 @@ class Numpad(GridLayout):
         self.add_widget(cur)
         self.add_widget(self.numfieldLayout)
     
-    def set_sign(self,btn):
-        if self.btnSign.text=='+':
-            self.btnSign.text='-'
+    '''
+    set the sign of the input-value
+    '''
+    def set_sign(self, btn):
+        if self.btnSign.text == self.plusStr:
+            self.btnSign.text = self.minusStr
         else:
-            self.btnSign.text='+'
+            self.btnSign.text = self.plusStr
     
     '''
     the method appending appends the choosen digit at the end.
@@ -99,32 +112,22 @@ class Numpad(GridLayout):
         self.lblTextinput.text = ''
 
     '''
-    the method sign_in_parent to set the parent of 
-    the object. the parent must have the method finished_numpad
-    '''
-    def sign_in_parent(self, parent):
-        self.p = parent
-        self.create_numfield()
-
-    '''
     the method finished close the popup when the user
     is finished and made a correctly input
     '''
 
     def finished(self, button):
-        #try to cast the string in a floatnumber
+        # try to cast the string in a floatnumber
         try:
-            #its not allowed that the value 
-            #is 0
-            x=float(self.lblTextinput.text)
+            x = float(self.lblTextinput.text)
             if self.sign:
-                if self.btnSign.text=='-':
-                    self.lblTextinput.text='-'+self.lblTextinput.text
-            if x>0:
-                self.p.finished_numpad()
+                if self.btnSign.text == self.minusStr:
+                    self.lblTextinput.text = self.minusStr + self.lblTextinput.text
+            print('here')
+            self.p.finished_numpad()
             self.reset_text()
-        #if the value is not a float
-        #the lblTextinput will be reset
+        # if the value is not a float
+        # the lblTextinput will be reset
         except ValueError:
             self.reset_text()
 

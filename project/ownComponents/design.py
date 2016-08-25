@@ -8,9 +8,11 @@ from kivy.metrics import dp, sp
 
 
 class Design:
+    
     '''
     the class design contains just attributes for the design
     '''
+    
     # size-properties
     btnHeight = dp(40)
     lblHeight = dp(10)

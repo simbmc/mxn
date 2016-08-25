@@ -6,9 +6,11 @@ from kivy.graphics import Line,RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
 class LinePlot(Plot):
+    
     '''
     draw a line by the given color
     '''
+    
     width=1.
     def __init__(self, **kwargs):
         super(LinePlot, self).__init__(**kwargs)

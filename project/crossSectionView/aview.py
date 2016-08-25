@@ -8,15 +8,11 @@ from abc import abstractmethod
 class AView(object):
 
     @abstractmethod
-    def add_layer(self,x,y, material):
+    def add_layer(self, x, y, material):
         raise NotImplemented('not implemented')
     
     @abstractmethod
-    def add_bar(self,x,y, material):
-        raise NotImplemented('not implemented')
-
-    @abstractmethod
-    def delete_layer(self):
+    def add_bar(self, x, y, material):
         raise NotImplemented('not implemented')
 
     @abstractmethod
@@ -29,5 +25,4 @@ class AView(object):
     '''
 
     def update_layer_information(self, name, price, density, stiffness, strength):
-        self.csShape.set_layer_information(
-            name, price, density, stiffness, strength)
+        self.csShape.set_layer_information(name, price, density, stiffness, strength)

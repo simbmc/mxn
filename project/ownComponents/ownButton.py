@@ -9,11 +9,13 @@ from ownComponents.design import Design
 
 
 class OwnButton(Button):
+    
     '''
     ownbutton has properties for the color and the size.
     this class make sure, that the buttons in the application
     has the same properties and make it easier to change btn-properties
     '''
+    
     background_color_normal = Design.btnColor
     background_color_down = ListProperty([1, 1, 1, 1])
     

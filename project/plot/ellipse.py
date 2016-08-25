@@ -12,6 +12,11 @@ from kivy.garden.graph import Plot
 
 
 class Ellipse(Plot):
+    
+    '''
+    draw a ellipse for given geometric parameters
+    '''
+    
     _image = ObjectProperty()
     xrange = ListProperty([0, 100])
     yrange = ListProperty([0, 100])
@@ -51,48 +56,3 @@ class Ellipse(Plot):
         w = tr[0] - bl[0]
         h = tr[1] - bl[1]
         image.ellipse = [bl[0], bl[1], w,h]
-
-if __name__ == '__main__':
-    from kivy.uix.boxlayout import BoxLayout
-    from kivy.app import App
-    from kivy.garden.graph import Graph
-    import random
-    from kivy.clock import Clock
-
-    class TestApp(App):
-
-        def build(self):
-            b = BoxLayout(orientation='vertical')
-
-            graph2 = Graph(
-                xlabel='x',
-                ylabel='y',
-                x_ticks_major=10,
-                y_ticks_major=10,
-                y_grid_label=True,
-                x_grid_label=True,
-                padding=5,
-                xlog=False,
-                ylog=False,
-                xmin=0,
-                ymin=0)
-
-            plot = Ellipse(color=[0, 0, 0])
-            graph2.add_plot(plot)
-
-            b.add_widget(graph2)
-            self.plot = plot
-
-            Clock.schedule_interval(self.update_color, 0.1)
-            Clock.schedule_interval(self.update_pos, 0.1)
-
-            return b
-
-        def update_color(self, *args):
-            self.plot.color = [random.randint(0, 255) for r in xrange(100)]
-
-        def update_pos(self, *args):
-            self.plot.xrange = [100. * random.random() for r in xrange(2)]
-            self.plot.yrange = [100. * random.random() for r in xrange(2)]
-
-    TestApp().run()

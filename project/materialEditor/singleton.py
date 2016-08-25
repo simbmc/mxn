@@ -27,7 +27,7 @@ class Singleton:
     
     '''
     raise a TypError when the user want create a materiallist
-    with a other methodname
+    with a other methodname as Instance()
     '''
     def __call__(self):
         raise TypeError('Singletons must be accessed through `Instance()`')

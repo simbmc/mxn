@@ -3,6 +3,8 @@ Created on 04.04.2016
 
 @author: mkennert
 '''
+from kivy.properties import  ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.lawEditor import MaterialLawEditor
@@ -11,20 +13,31 @@ from ownComponents.design import Design
 from ownComponents.keyboard import Keyboard
 from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
+from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-from kivy.properties import ObjectProperty
+from plot.line import LinePlot
+
 
 class MaterialCreater(GridLayout):
-    _parent=ObjectProperty()
-    # Constructor
-
+    
+    # important components
+    _parent = ObjectProperty()
+    
+    # strings
+    strainStr, stressStr = StringProperty('strain [MPa]'), StringProperty('stress')
+    nameStr, materialStr = StringProperty('name'), StringProperty('material')
+    materialLawStr = StringProperty('material-law')
+    createStr = StringProperty('create new material')
+    priceStr, densityStr = StringProperty('price[euro/kg]'), StringProperty('density[kg/m^3]')
+    defaultValueStr, defaultFStr = StringProperty('1.0'), StringProperty('-')
+    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    
+    # constructor
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
-        self.cols,self.spacing = 2,Design.spacing
+        self.cols, self.spacing = 2, Design.spacing
         self.create_gui()
-        self.row_force_default = True
-        self.row_default_height = Design.btnHeight
 
     '''
     the method create gui create the gui of 
@@ -34,16 +47,24 @@ class MaterialCreater(GridLayout):
     def create_gui(self):
         self.create_popups()
         self.create_buttons()
-        self.add_widget(OwnLabel(text='name: '))
-        self.add_widget(self.nameBtn)
-        self.add_widget(OwnLabel(text='price[euro/kg]:'))
-        self.add_widget(self.priceBtn)
-        self.add_widget(OwnLabel(text='density[kg/m^3]:'))
-        self.add_widget(self.densityBtn)
-        self.add_widget(OwnLabel(text='material-law'))
-        self.add_widget(self.materialLaw)
-        self.add_widget(self.cancelBtn)
-        self.add_widget(self.createBtn)
+        self.information = GridLayout(cols=2, spacing=Design.spacing)
+        self.information.add_widget(OwnLabel(text=self.nameStr))
+        self.information.add_widget(self.nameBtn)
+        self.information.add_widget(OwnLabel(text=self.priceStr))
+        self.information.add_widget(self.priceBtn)
+        self.information.add_widget(OwnLabel(text=self.densityStr))
+        self.information.add_widget(self.densityBtn)
+        self.information.add_widget(OwnLabel(text=self.materialLawStr))
+        self.information.add_widget(self.materialLaw)
+        self.information.add_widget(self.cancelBtn)
+        self.information.add_widget(self.createBtn)
+        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+                              y_grid_label=True, x_grid_label=True)
+        self.p = LinePlot(color=[0, 0, 0, 1])
+        self.graph.add_plot(self.p)
+        self.add_widget(self.information)
+        self.add_widget(self.graph)
+    
 
     '''
     the method create_buttons create all buttons of the class
@@ -51,27 +72,53 @@ class MaterialCreater(GridLayout):
 
     def create_buttons(self):
         # materialname
-        self.nameBtn = OwnButton(text='name')
+        self.nameBtn = OwnButton(text=self.nameStr)
         self.nameBtn.bind(on_press=self.show_keyboard)
         # materialprice
-        self.priceBtn = OwnButton(text='1.0')
+        self.priceBtn = OwnButton(text=self.defaultValueStr)
         self.priceBtn.bind(on_press=self.show_numpad)
         # materialdensity
-        self.densityBtn = OwnButton(text='1.0')
+        self.densityBtn = OwnButton(text=self.defaultValueStr)
         self.densityBtn.bind(on_press=self.show_numpad)
         # material law
-        self.materialLaw = OwnButton(text='-')
+        self.materialLaw = OwnButton(text=self.defaultFStr)
         self.materialLaw.bind(on_press=self.show_material_law_editor)
         # create material and cancel
-        self.createBtn = OwnButton(text='ok')
+        self.createBtn = OwnButton(text=self.okStr)
         self.createBtn.bind(on_press=self.create_material)
-        self.cancelBtn = OwnButton(text='cancel')
+        self.cancelBtn = OwnButton(text=self.cancelStr)
         self.cancelBtn.bind(on_press=self.cancel_create)
+    
+    '''
+    the method create_popups create the popups 
+    and sign in by the keyboard and numpad 
+    '''
 
+    def create_popups(self):
+        self.materialLawEditor = MaterialLawEditor(creater=self)
+        self.popupLawEditor = OwnPopup(title=self.materialLawStr, content=self.materialLawEditor)
+        self.numpad = Numpad(p=self)
+        self.keyboard = Keyboard(p=self)
+        self.popupKeyboard = OwnPopup(title=self.nameStr, content=self.keyboard)
+        self.popupNumpad = OwnPopup(content=self.numpad)
+    
+    '''
+    the method create material create a own_material and update the 
+    materiallist allMaterials and the layout where you can choose 
+    the materials
+    '''
+
+    def create_material(self, button):
+        if self.materialLaw.text == self.defaultFStr:
+            return
+        curMaterial = OwnMaterial(self.nameBtn.text, self.priceBtn.text,
+                                  self.densityBtn.text, self.materialLawEditor.f)
+        self._parent.allMaterials.add_material(curMaterial)
+        self._parent.cancel_edit_material()
+    
     '''
     the method use_keyword open the keyboard_popup for the user
     '''
-
     def show_keyboard(self, button):
         self.keyboard.lblTextinput.text = button.text
         self.popupKeyboard.open()
@@ -84,23 +131,6 @@ class MaterialCreater(GridLayout):
         self.focusBtn = button
         self.numpad.lblTextinput.text = button.text
         self.popupNumpad.open()
-
-    '''
-    the method create_popups create the popups 
-    and sign in by the keyboard and numpad 
-    '''
-
-    def create_popups(self):
-        self.materialLawEditor = MaterialLawEditor()
-        self.materialLawEditor.sign_in(self)
-        self.popupLawEditor = OwnPopup(title='material law', 
-                                       content=self.materialLawEditor)
-        self.numpad = Numpad()
-        self.keyboard = Keyboard()
-        self.popupKeyboard = OwnPopup(title='name:', content=self.keyboard)
-        self.popupNumpad = OwnPopup(title='numpad', content=self.numpad)
-        self.numpad.sign_in_parent(self)
-        self.keyboard.sign_in_parent(self)
 
     '''
     the method finished_keyboard close the keyboard_popup
@@ -119,17 +149,12 @@ class MaterialCreater(GridLayout):
         self.focusBtn.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
         self.numpad.reset_text()
-
+    
+    '''
+    close_numpad will be called from the numpad!
+    '''
     def close_numpad(self):
         self.popupNumpad.dismiss()
-    
-#     '''
-#     the method sign_in_parent to set the parent of 
-#     the object. the parent must have the method update_materials
-#     '''
-# 
-#     def sign_in_parent(self, parent):
-#         self._parent = parent
 
     '''
     the method reset_editor reset the values of the editor
@@ -138,21 +163,10 @@ class MaterialCreater(GridLayout):
     '''
 
     def reset_editor(self):
-        self.nameBtn.text = 'name'
-        self.priceBtn.text = '0.0'
-        self.densityBtn.text = '0.0'
-
-    '''
-    the method create material create a own_material and update the 
-    materiallist allMaterials and the layout where you can choose 
-    the materials
-    '''
-
-    def create_material(self, button):
-        curMaterial = OwnMaterial(
-            self.nameBtn.text, self.priceBtn.text, self.densityBtn.text,self.materialLawEditor.f)
-        self._parent.allMaterials.add_material(curMaterial)
-        self._parent.cancel_edit_material()
+        self.nameBtn.text = self.nameStr
+        self.priceBtn.text = self.defaultValueStr
+        self.densityBtn.text = self.defaultValueStr
+        self.materialLaw.text = self.defaultFStr
         
     '''
     cancel the create-law-process
@@ -162,7 +176,6 @@ class MaterialCreater(GridLayout):
         self.popupLawEditor.dismiss()
         
     # not finished yet
-
     def cancel_create(self, btn):
         self._parent.cancel_edit_material()
 
@@ -170,6 +183,18 @@ class MaterialCreater(GridLayout):
     def show_material_law_editor(self, btn):
         self.popupLawEditor.open()
     
-    #not finished yet
+    # not finished yet
     def close_material_law_editor(self, btn):
         self.popupLawEditor.dismiss()
+    
+    '''
+    update the graph by the given function-properties
+    '''
+    def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
+        self.p.points = points
+        self.graph.xmin = minStress
+        self.graph.xmax = maxStress
+        self.graph.ymin = minStrain
+        self.graph.ymax = maxStrain
+        self.graph.x_ticks_major = self.graph.xmax / 5.
+        self.graph.y_ticks_major = self.graph.ymax / 5.

@@ -11,9 +11,11 @@ from kivy.graphics import Line,RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
 class DashedLine(Plot):
+    
     '''
     draw a dashed-line by the given color
     '''
+    
     def __init__(self, **kwargs):
         super(DashedLine, self).__init__(**kwargs)
     

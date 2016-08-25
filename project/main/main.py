@@ -12,8 +12,7 @@ from crossSection.cs import CrossSection
 from crossSectionEditor.editor import CrossSectionEditor
 from materialEditor.editor import MaterialEditor
 from ownComponents.design import Design
-from reinforcementEditor.editor import ReinforcementEditor
-
+from reinforcementEditor.editor import ReinforcementEditor
 
 Window.clearcolor = (1, 1, 1, 1)
 
@@ -121,6 +120,7 @@ class MXNApp(App):
         self.content.remove_widget(self.view)
         self.content.add_widget(self.reEditor)
         self.view = self.reEditor
+        
 '''
 starts the application
 '''
