@@ -22,9 +22,9 @@ class QuadraticFunctionInformation(GridLayout):
     # strings
     functionStr, quadraticStr = StringProperty('function:'), StringProperty('quadratic')
     aStr, bStr = StringProperty('a:'), StringProperty('b:')
-    strainULStr = StringProperty('strain-upper-limit [MPa]:')
-    strainLLStr, stressULStr = StringProperty('strain-lower-limit [MPa]:'), StringProperty('stress-upper-limit:')
-    stressLLStr = StringProperty('stress-lower-limit:')
+    strainULStr = StringProperty('strain-upper-limit :')
+    strainLLStr, stressULStr = StringProperty('strain-lower-limit:'), StringProperty('stress-upper-limit [MPa]:')
+    stressLLStr = StringProperty('stress-lower-limit [MPa]:')
     okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
     
     # constructor
@@ -121,5 +121,4 @@ class QuadraticFunctionInformation(GridLayout):
         self.popupNumpad.open()
     
     def show_type_selection(self, btn):
-        print('show type_selection (quadraticinformation)')
         self.editor.lawEditor.editor.open()

@@ -20,8 +20,8 @@ class MultilinearInformation(GridLayout):
     
     # strings
     functionStr, mulitlinearStr = StringProperty('function:'), StringProperty('multi-linear')
-    pointsStr, strainULStr = StringProperty('points:'), StringProperty('strain-upper-limit [MPa]:')
-    strainLLStr, stressULStr = StringProperty('strain-lower-limit [MPa]:'), StringProperty('stress-upper-limit[MPa]:')
+    pointsStr, strainULStr = StringProperty('points:'), StringProperty('strain-upper-limit:')
+    strainLLStr, stressULStr = StringProperty('strain-lower-limit'), StringProperty('stress-upper-limit[MPa]:')
     stressLLStr = StringProperty('stress-lower-limit [MPa]:')
     okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
     xStr, yStr = StringProperty('x-coordinate [m]:'), StringProperty('y-coordinate [m]:')
@@ -123,7 +123,6 @@ class MultilinearInformation(GridLayout):
         self.popupNumpad.open()
     
     def show_type_selection(self, btn):
-        print('show type_selection (mulitlinearinformation)')
         self.editor.lawEditor.editor.open()
         
     '''

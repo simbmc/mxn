@@ -28,7 +28,7 @@ class QuadraticFunctionView(GridLayout):
     create the graph of the view
     '''
     def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
+        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
                            x_ticks_major=2.5, y_ticks_major=2.5,
                            y_grid_label=True, x_grid_label=True,
                            x_grid=True, y_grid=True,
