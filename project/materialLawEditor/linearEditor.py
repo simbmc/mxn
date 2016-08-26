@@ -16,6 +16,7 @@ from kivy.properties import  ObjectProperty, NumericProperty
 
 class LinearEditor(GridLayout):
     
+    
     # important components
     view = ObjectProperty()
     information = ObjectProperty()
@@ -36,8 +37,10 @@ class LinearEditor(GridLayout):
         self.add_widget(self.view)
         self.add_widget(self.information)
     
+    '''
+    confirm the material-law and set the function f in the material-editor-class
+    '''
     def confirm(self, btn):
-        print('confirm (linearEditor)')
         f = Linear(self.a, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
         self.lawEditor.f = f
         self.lawEditor.creater.materialLaw.text = f.f_toString()
@@ -45,6 +48,11 @@ class LinearEditor(GridLayout):
                                             self.upperStrain, f.points)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.cancel(None)
+    
+    '''
+    cancel the selection where you can select the function-type
+    of the material-law
+    '''
     def cancel(self, btn):
         self.lawEditor.cancel_graphicShow()
     
@@ -52,7 +60,6 @@ class LinearEditor(GridLayout):
     update the complete information and graph by the given function-properties
     '''
     def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
-        print('update_function (linearEditor)')
         self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
         self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
     

@@ -17,7 +17,7 @@ class MultilinearView(GridLayout):
     editor = ObjectProperty()
     
     # strings
-    strainStr, stressStr = StringProperty('strain [MPa]'), StringProperty('stress')
+    strainStr, stressStr = StringProperty('strain '), StringProperty('stress [MPa]')
     
     # constructor
     def __init__(self, **kwargs):

@@ -27,7 +27,7 @@ from plot.line import LinePlot
 class MaterialEditor(ScrollView, IObserver):
     
     # strings
-    strainStr, stressStr = StringProperty('strain [MPa]'), StringProperty('stress')
+    strainStr, stressStr = StringProperty('strain'), StringProperty('stress [MPa]')
     nameStr, materialStr = StringProperty('name'), StringProperty('material')
     materialLawStr = StringProperty('material-law')
     createStr = StringProperty('create new material')
@@ -97,7 +97,7 @@ class MaterialEditor(ScrollView, IObserver):
         self.information.add_widget(self.materialLaw)
         self.information.add_widget(self.btnBack)
         self.information.add_widget(self.btnEdit)
-        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
         self.content.add_widget(self.information)
         self.content.add_widget(self.graph)

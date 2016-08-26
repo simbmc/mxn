@@ -45,7 +45,7 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.create_edit_area_layer()
         self.create_edit_area_bar()
         self.errorLbl = OwnLabel(text='[color=ff3333]error: wrong parameters[/color]',
-                              markup=True, size_hint_y=None, height=sp(20))
+                                 markup=True, size_hint_y=None, height=sp(20))
 
     '''
     change the current cross section

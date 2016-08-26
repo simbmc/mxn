@@ -64,8 +64,8 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def create_gui(self):
-        self.create_selection_menu()
         self.create_pop_up_shape()
+        self.create_selection_menu()
         self.content.add_widget(self.rectangleInformation, 0)
 
     '''
@@ -79,7 +79,7 @@ class CrossSectionEditor(GridLayout):
                                       height=self.btnSize)
         self.lblSelection = OwnLabel(text=self.shapeStr)
         self.btnSelection = OwnButton(text=self.rectangle)
-        self.btnSelection.bind(on_press=self.show_shape_selection)
+        self.btnSelection.bind(on_press=self.shapeSelection.open)
         selectionContent.add_widget(self.lblSelection)
         selectionContent.add_widget(self.btnSelection)
         self.content.add_widget(selectionContent)
@@ -101,7 +101,6 @@ class CrossSectionEditor(GridLayout):
     def finished_shape_selection(self, btn):
         if btn.text == self.circle:
             self.show_circle_shape(btn)
-            # self.csShape=self.cir
         elif btn.text == self.rectangle:
             self.show_rectangle(btn)
         elif btn.text == self.ishape:
@@ -116,29 +115,50 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def change_cross_section(self, shape):
-        self.view=shape.view
+        self.view = shape.view
         self.csShape = shape
     
-    def delete_layer(self):
-        self.view.delete_layer()
-    
-    def delete_bar(self):
-        self.view.delete_bar()
         
     '''
     cancel the shape selection and close the shape-editor-popup
     '''
-    def cancel_shape_selection(self):
+    def cancel_shape_selection(self,btn):
         self.shapeSelection.dismiss()
         
+    '''
+    add the view at the left side of the editor
+    '''
+
+    def add_view(self):
+        self.view = self.crossSection.view
+        self.containsView = True
+        self.add_widget(self.view, 1)
 
     '''
-    open the popup where the user can select the shape
+    update the view when the shape has changes
     '''
 
-    def show_shape_selection(self, btn):
-        self.shapeSelection.open()
+    def update_view(self):
+        if self.containsView:
+            self.remove_widget(self.view)
+            self.view = self.crossSection.view
+            self.add_widget(self.view, 1)
+            self.containsView = True
+            
+    '''
+    remove the view of the editor
+    '''
 
+    def remove_view(self):
+        if self.containsView:
+            self.remove_widget(self.view)
+            self.containsView = False
+    
+    
+    #################################
+    # show-methods of the shapes    #
+    #################################
+    
     '''
     show the rectangle-shape
     '''
@@ -212,32 +232,3 @@ class CrossSectionEditor(GridLayout):
         self.focusInformation = self.tInformation
         self.crossSection.show_tshape()
         self.update_view()
-
-    '''
-    add the view at the left side of the editor
-    '''
-
-    def add_view(self):
-        self.view = self.crossSection.view
-        self.containsView = True
-        self.add_widget(self.view, 1)
-
-    '''
-    update the view when the shape has changes
-    '''
-
-    def update_view(self):
-        if self.containsView:
-            self.remove_widget(self.view)
-            self.view = self.crossSection.view
-            self.add_widget(self.view, 1)
-            self.containsView = True
-            
-    '''
-    remove the view of the editor
-    '''
-
-    def remove_view(self):
-        if self.containsView:
-            self.remove_widget(self.view)
-            self.containsView = False

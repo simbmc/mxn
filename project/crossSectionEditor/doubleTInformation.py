@@ -24,9 +24,9 @@ class DoubleTInformation(GridLayout):
     csShape = ObjectProperty()
     
     # strings
-    twStr,thStr=StringProperty('top-width [m]'),StringProperty('top-height [m]')
-    mwStr,mhStr=StringProperty('middle-width [m]'),StringProperty('middle-height [m]')
-    bwStr,bhStr=StringProperty('bottom-width [m]'),StringProperty('bottom-height [m]')
+    twStr, thStr = StringProperty('top-width [m]'), StringProperty('top-height [m]')
+    mwStr, mhStr = StringProperty('middle-width [m]'), StringProperty('middle-height [m]')
+    bwStr, bhStr = StringProperty('bottom-width [m]'), StringProperty('bottom-height [m]')
     
     # constructor
     def __init__(self, **kwargs):
@@ -50,7 +50,9 @@ class DoubleTInformation(GridLayout):
         self.add_widget(self.middleHeight)
         self.add_widget(OwnLabel(text=self.bhStr))
         self.add_widget(self.bottomHeight)
-        self.create_popup()
+        # create the popup to input the values
+        self.numpad = Numpad(p=self)
+        self.popup = OwnPopup(content=self.numpad)
         
     '''
     create all btns of this component
@@ -70,34 +72,26 @@ class DoubleTInformation(GridLayout):
         self.bottomHeight.bind(on_press=self.show_numpad)
     
     '''
-    create the popup
-    '''
-    def create_popup(self):
-        self.numpad = Numpad()
-        self.numpad.p=self
-        self.popup = OwnPopup(content=self.numpad)
-    
-    '''
     open the popup
     '''
     def show_numpad(self, btn):
         self.focusBtn = btn
         if self.focusBtn == self.topHeight:
-            self.popup.title=self.thStr
+            self.popup.title = self.thStr
         elif self.focusBtn == self.topWidth:
-            self.popup.title=self.twStr
+            self.popup.title = self.twStr
         elif self.focusBtn == self.middleHeight:
-            self.popup.title=self.mhStr
+            self.popup.title = self.mhStr
         elif self.focusBtn == self.middleWidth:
-            self.popup.title=self.mwStr
+            self.popup.title = self.mwStr
         elif self.focusBtn == self.bottomHeight:
-            self.popup.title=self.bhStr
+            self.popup.title = self.bhStr
         elif self.focusBtn == self.bottomWidth:
-            self.popup.title=self.bwStr
+            self.popup.title = self.bwStr
         self.popup.open()
         
     '''
-    close the numpad
+    close the numpad. this method will be call from the numpad
     '''
     def close_numpad(self):
         self.popup.dismiss()
@@ -110,15 +104,15 @@ class DoubleTInformation(GridLayout):
         self.popup.dismiss()
         value = float(self.focusBtn.text)
         if self.focusBtn == self.topHeight:
-            self.csShape.th=value
+            self.csShape.th = value
         elif self.focusBtn == self.topWidth:
-            self.csShape.tw=value
+            self.csShape.tw = value
         elif self.focusBtn == self.middleHeight:
-            self.csShape.mh=value
+            self.csShape.mh = value
         elif self.focusBtn == self.middleWidth:
-            self.csShape.mw=value
+            self.csShape.mw = value
         elif self.focusBtn == self.bottomHeight:
-            self.csShape.bh=value
+            self.csShape.bh = value
         elif self.focusBtn == self.bottomWidth:
-            self.csShape.bw=value
+            self.csShape.bw = value
         self.csShape.view.update()

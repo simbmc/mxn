@@ -10,11 +10,14 @@
             app_icon_height: dp(1000)
         ActionOverflow:
         ActionButton:
-            text: 'cross section editor'
+            text: 'cross section'
             on_press:app.show_cross_section_editor()
         ActionButton:
-            text: 'reinforcement editor'
+            text: 'reinforcement'
             on_press:app.show_reinforcement_editor()
         ActionButton:
-            text: 'material editor'
+        	text: 'stress-strain-explorer'
+        	on_press:app.show_explorer()
+        ActionButton:
+            text: 'material'
             on_press:app.show_material_editor()

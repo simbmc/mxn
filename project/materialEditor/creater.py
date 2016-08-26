@@ -25,7 +25,7 @@ class MaterialCreater(GridLayout):
     _parent = ObjectProperty()
     
     # strings
-    strainStr, stressStr = StringProperty('strain [MPa]'), StringProperty('stress')
+    strainStr, stressStr = StringProperty('strain '), StringProperty('stress [MPa]')
     nameStr, materialStr = StringProperty('name'), StringProperty('material')
     materialLawStr = StringProperty('material-law')
     createStr = StringProperty('create new material')
@@ -58,7 +58,7 @@ class MaterialCreater(GridLayout):
         self.information.add_widget(self.materialLaw)
         self.information.add_widget(self.cancelBtn)
         self.information.add_widget(self.createBtn)
-        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.graph.add_plot(self.p)

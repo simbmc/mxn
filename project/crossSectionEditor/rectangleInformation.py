@@ -37,8 +37,7 @@ class RectangleInformation(GridLayout):
     '''
     def create_gui(self):
         # create Numpad
-        self.numpad = Numpad()
-        self.numpad.p = self
+        self.numpad = Numpad(p=self)
         self.popUp = OwnPopup(content=self.numpad)
         self.heightValue = OwnLabel(text=self.heightStr)
         self.btnHeight = OwnButton(text=str(self.csShape.ch))
@@ -52,32 +51,18 @@ class RectangleInformation(GridLayout):
         self.add_widget(self.btnWidth)
     
     '''
-    the method update_height change the height of the cs_view
-    '''
-    def update_height(self, value):
-        self.csShape.ch=value
-        self.csShape.view.update_height(value)
-    
-    '''
-    the method update_width change the width of the cs_view
-    '''
-    def update_width(self, value):
-        self.csShape.cw=value
-        self.csShape.view.update_width(value)
-    
-    '''
     show the numpad
     '''
     def show_numpad(self, btn):
         self.focusbtn = btn
-        if btn==self.btnHeight:
-            self.popUp.title=self.heightStr
+        if btn == self.btnHeight:
+            self.popUp.title = self.heightStr
         else:
-            self.popUp.title=self.widthStr
+            self.popUp.title = self.widthStr
         self.popUp.open()
     
     '''
-    close the numpad
+    close the numpad. this method will be call from the numpad
     '''
     def close_numpad(self):
         self.popUp.dismiss()
@@ -89,9 +74,9 @@ class RectangleInformation(GridLayout):
         v = float(self.numpad.lblTextinput.text)
         self.focusbtn.text = str(v)
         if self.focusbtn == self.btnHeight:
-            self.update_height(float(v))
-            self.popUp.title = self.heightStr
+            self.csShape.ch = v
+            self.csShape.view.update_height(v)
         else:
-            self.update_width(float(v))
-            self.popUp.title = self.widthStr
+            self.csShape.cw = v
+            self.csShape.view.update_width(v)
         self.popUp.dismiss()

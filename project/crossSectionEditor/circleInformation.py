@@ -37,28 +37,17 @@ class CircleInformation(GridLayout):
     create the gui of the circle-information
     '''
     def create_gui(self):
-        self.create_popup()
+        # create the popup where you can set the diamter
+        self.numpad = Numpad(p=self)
+        self.popup = OwnPopup(title=self.diameter, content=self.numpad)
+        # create the information        
         self.add_widget(OwnLabel(text=self.diameter))
         self.btnDiameter = OwnButton(text=str(self.csShape.d))
-        self.btnDiameter.bind(on_press=self.show_numpad)
+        self.btnDiameter.bind(on_press=self.popup.open)
         self.add_widget(self.btnDiameter)
-        
-    '''
-    create the popup
-    '''
-    def create_popup(self):
-        self.numpad = Numpad()
-        self.numpad.p = self
-        self.popup = OwnPopup(title=self.diameter, content=self.numpad)
     
     '''
-    open the popup
-    '''
-    def show_numpad(self, btn):
-        self.popup.open()
-    
-    '''
-    close the numpad
+    close the numpad. this method will be call from the numpad
     '''
     def close_numpad(self):
         self.popup.dismiss()

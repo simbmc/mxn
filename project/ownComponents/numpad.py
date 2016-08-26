@@ -26,7 +26,7 @@ class Numpad(GridLayout):
     
     # strings
     plusStr, minusStr = StringProperty('+'), StringProperty('-')
-    sign=BooleanProperty(False)
+    sign = BooleanProperty(False)
     # construktor
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
@@ -119,11 +119,11 @@ class Numpad(GridLayout):
     def finished(self, button):
         # try to cast the string in a floatnumber
         try:
+            # proofs whether you can cast the input
             x = float(self.lblTextinput.text)
             if self.sign:
                 if self.btnSign.text == self.minusStr:
                     self.lblTextinput.text = self.minusStr + self.lblTextinput.text
-            print('here')
             self.p.finished_numpad()
             self.reset_text()
         # if the value is not a float

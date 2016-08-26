@@ -21,11 +21,12 @@ class CrossSection(GridLayout):
     will be show
     '''
     
-    #important components
+    # important components
     csEditor, information = ObjectProperty(), ObjectProperty()
     reEditor, view = ObjectProperty(), ObjectProperty()
+    explorer = ObjectProperty()
     
-    #shapes
+    # shapes
     csRectangle, csDoubleT = ObjectProperty(ShapeRectangle()), ObjectProperty(ShapeDoubleT())
     csT, csCircle = ObjectProperty(ShapeT()), ObjectProperty(ShapeCircle())
     ###################################
@@ -50,6 +51,8 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csRectangle.view
         self.reEditor.change_cross_section(self.view)
+        self.explorer.update_csShape(self.csRectangle, self.csRectangle.ch,
+                                     self.csRectangle.layers, self.csRectangle.bars)
     
     '''
     show the doubleT-view
@@ -58,6 +61,8 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csDoubleT.view
         self.reEditor.change_cross_section(self.csDoubleT)
+        self.explorer.update_csShape(self.csDoubleT, self.csDoubleT.get_total_height(),
+                                     self.csDoubleT.layers, self.csDoubleT.bars)
     
     '''
     show the T-view
@@ -66,6 +71,8 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csT.view
         self.reEditor.change_cross_section(self.view)
+        self.explorer.update_csShape(self.csT, self.csT.get_total_height(),
+                                     self.csT.layers, self.csT.bars)
     
     '''
     show the circle-View
@@ -74,13 +81,15 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csCircle.view
         self.reEditor.change_cross_section(self.view)
+        self.explorer.update_csShape(self.csCircle, self.csCircle.d,
+                                     self.csCircle.layers, self.csCircle.bars)
 
     '''
     set the reinforcement editor
     '''
     def set_reinforcement_editor(self, reEditor):
         self.reEditor = reEditor
-        self.csRectangle.information=reEditor
-        self.csDoubleT.information=reEditor
+        self.csRectangle.information = reEditor
+        self.csDoubleT.information = reEditor
         self.csT.information = reEditor
-        self.csCircle.information=reEditor
+        self.csCircle.information = reEditor

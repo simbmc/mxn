@@ -16,7 +16,7 @@ class LinearView(GridLayout):
     editor=ObjectProperty()
     
     #strings
-    strainStr,stressStr=StringProperty('strain [MPa]'), StringProperty('stress')
+    strainStr,stressStr=StringProperty('strain'), StringProperty('stress [MPa]')
     
     #constructor
     def __init__(self, **kwargs):
@@ -28,7 +28,7 @@ class LinearView(GridLayout):
     create the graph of the view
     '''
     def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               x_ticks_major=2, y_ticks_major=2,
                               y_grid_label=True, x_grid_label=True,
                               x_grid=True, y_grid=True,
@@ -42,32 +42,32 @@ class LinearView(GridLayout):
     update the graph with the new lower strain limit.
     '''
     def update_strain_lower_limit(self, value):
-        self.graph.ymin = value
-        self.graph.y_ticks_major = (self.graph.ymax-value) / 5.
+        self.graph.xmin = value
+        self.graph.x_ticks_major = (self.graph.xmax-value) / 5.
         self.update_graph(self.editor.a)
     
     '''
     update the graph with the new upper strain limit.
     '''
     def update_strain_upper_limit(self, value):
-        self.graph.ymax = value
-        self.graph.y_ticks_major = (value-self.graph.ymin) / 5.
+        self.graph.xmax = value
+        self.graph.x_ticks_major = (value-self.graph.xmin) / 5.
         self.update_graph(self.editor.a)
     
     '''
     update the graph with the new lower stress limit.
     '''
     def update_stress_lower_limit(self, value):
-        self.graph.xmin = value
-        self.graph.x_ticks_major = (self.graph.xmax-value) / 5.
+        self.graph.ymin = value
+        self.graph.y_ticks_major = (self.graph.ymax-value) / 5.
         self.update_graph(self.editor.a)
     
     '''
     update the graph with the new upper stress limit.
     '''
     def update_stress_upper_limit(self, value):
-        self.graph.xmax = value
-        self.graph.x_ticks_major = (value-self.graph.xmin) / 5.
+        self.graph.ymax = value
+        self.graph.y_ticks_major = (value-self.graph.ymin) / 5.
         self.update_graph(self.editor.a)
     
     '''

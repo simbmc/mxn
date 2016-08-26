@@ -19,9 +19,9 @@ class LinearInformation(GridLayout):
     
     # strings
     functionStr, linearStr = StringProperty('function:'), StringProperty('linear')
-    aStr, strainULStr = StringProperty('a:'), StringProperty('strain-upper-limit [MPa]:')
-    strainLLStr, stressULStr = StringProperty('strain-lower-limit [MPa]:'), StringProperty('stress-upper-limit:')
-    stressLLStr = StringProperty('stress-lower-limit:')
+    aStr, strainULStr = StringProperty('a:'), StringProperty('strain-upper-limit:')
+    strainLLStr, stressULStr = StringProperty('strain-lower-limit:'), StringProperty('stress-upper-limit  [MPa]:')
+    stressLLStr = StringProperty('stress-lower-limit  [MPa]:')
     okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
     
     # constructor
@@ -76,7 +76,6 @@ class LinearInformation(GridLayout):
         self.btnCancel.bind(on_press=self.editor.cancel)
         self.btnA.bind(on_press=self.show_popup)
         
-
     '''
     close the numpad when the user cancel the input
     '''
@@ -87,11 +86,6 @@ class LinearInformation(GridLayout):
     open the numpad popup
     '''
     def show_popup(self, btn):
-        print('show popup')
-        print(self.btnA)
-        print(self.btnA.text)
-        print(btn.text)
-        print(btn.text == self.btnA.text)
         self.focusBtn = btn
         if self.focusBtn == self.btnA:
             self.popupNumpad.title = self.aStr
@@ -112,7 +106,6 @@ class LinearInformation(GridLayout):
     when the user confirm his input
     '''
     def finished_numpad(self):
-        print('finished_numpad (linearinformation)')
         print(self.focusBtn == self.btnA)
         self.focusBtn.text = self.numpad.lblTextinput.text
         # close and reset the numpad
@@ -122,7 +115,6 @@ class LinearInformation(GridLayout):
         if self.focusBtn == self.btnA:
             self.editor.a = v
             self.editor.view.update_graph(v)
-            print('update view')
         elif self.focusBtn == self.btnStrainUL:
             self.editor.upperStrain = v
             self.editor.view.update_strain_upper_limit(v)

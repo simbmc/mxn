@@ -18,6 +18,11 @@ from reinforcement.layer import Layer
 
 class DoubleTView(AView, GridLayout):
     
+    '''
+    the class DoubleTView was developed to show the doubleT-shape of 
+    the cross-section
+    '''
+    
     # important components
     csShape = ObjectProperty()
     
@@ -62,24 +67,6 @@ class DoubleTView(AView, GridLayout):
         self.tw = self.csShape.tw
         self.ch = self.csShape.get_total_height()
         self.cw = self.csShape.get_max_width()
-    
-    '''
-    draw the double_T
-    '''
-    def draw_double_t(self):
-        x0 = self.graph.xmax / 2.
-        y1 = self.graph.ymax / 1e3
-        x1 = x0 - self.bw / 2.
-        y2 = y3 = self.bh
-        x3 = x1 + self.bw / 2. - self.mw / 2.
-        y4 = y3 + self.mh
-        x5 = x3 + self.mw / 2. - self.tw / 2.
-        y6 = y4 + self.th
-        x7 = x5 + self.tw
-        x9 = x7 - self.tw / 2. + self.mw / 2.
-        x11 = x9 + self.bw / 2. - self.mw / 2.
-        return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y6),
-                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1), (x1, y1)]
 
     '''
     update the view when the model has changed
@@ -117,6 +104,7 @@ class DoubleTView(AView, GridLayout):
             self.graph.add_plot(line)
             self.csShape.layers.append(l)
             print(len(self.csShape.layers))
+            
     '''
     edit a layer which is already exist
     '''
@@ -136,22 +124,6 @@ class DoubleTView(AView, GridLayout):
             self.focusLayer.line.points = [(mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
         if self.lineIsFocused:
             self.graph.remove_plot(self.focusLine)
-
-    '''
-    the method delete_layer was developed to delete layer from the cross section
-    '''
-
-    def delete_layer(self):
-        print(self.csShape)
-        print('delete layer dt')
-        if len(self.csShape.layers) > 0:
-            for layer in self.csShape.layers:
-                print('layers')
-                if layer.focus:
-                    print('focus')
-                    self.csShape.layers.remove(layer)
-                    self.graph.remove_plot(layer.line)
-                    self.graph.remove_plot(self.focusLine)
                     
     '''
     add a bar
@@ -186,32 +158,7 @@ class DoubleTView(AView, GridLayout):
         else:
             self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
             self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
-    
-    # not finished yet
-    def delete_bar(self):
-        print('delete bar')
-        if len(self.csShape.bars) > 0:
-            for bar in self.csShape.bars:
-                if bar.focus:
-                    self.csShape.bars.remove(bar)
-                    self.graph.remove_plot(bar.ellipse)
-                    
-    '''
-    proofs whether the coordinates are in the shape. 
-    return True, when the coordinates are not in the shape
-    '''
-    def proof_coordinates(self, x, y, epsX, epsY, mid):
-        if y + epsY > self.ch or x > self.cw or x < self.deltaX or y - epsY < 0 :
-            return True
-        elif y + epsY < self.bh and (x > mid + self.bw / 2. or x < mid - self.bw / 2.):
-            return True
-        elif y + epsY < self.bh + self.mh and y - epsY > self.bh and (x > mid + self.mw / 2. or x < mid - self.mw / 2.):
-            return True
-        elif y + epsY < self.ch and y - epsY > self.bh + self.mh and (x > mid + self.tw / 2. or x < mid - self.tw / 2.):
-            return True
-        else:
-            return False
-            
+        
     '''
     update the graph and the layers
     '''
@@ -227,6 +174,22 @@ class DoubleTView(AView, GridLayout):
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_double_t()
         self.graph.add_plot(self.p)
+            
+    '''
+    proofs whether the coordinates are in the shape. 
+    return True, when the coordinates are not in the shape
+    '''
+    def proof_coordinates(self, x, y, epsX, epsY, mid):
+        if y + epsY > self.ch or x > self.cw or x < self.deltaX or y - epsY < 0 :
+            return True
+        elif y + epsY < self.bh and (x > mid + self.bw / 2. or x < mid - self.bw / 2.):
+            return True
+        elif y + epsY < self.bh + self.mh and y - epsY > self.bh and (x > mid + self.mw / 2. or x < mid - self.mw / 2.):
+            return True
+        elif y + epsY < self.ch and y - epsY > self.bh + self.mh and (x > mid + self.tw / 2. or x < mid - self.tw / 2.):
+            return True
+        else:
+            return False
     
     '''
     give the user the possibility to focus a layer or a bar
@@ -236,41 +199,23 @@ class DoubleTView(AView, GridLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * (self.cw + self.deltaX)
         y = (touch.y - y0) / gh * (self.ch + self.deltaY)
-        # change_bar is a switch
-        change_bar = False
-        for bar in self.csShape.bars:
-            if bar.mouse_within(x, y):
-                bar.focus = True
-                bar.ellipse.color = Design.focusColor
-                self.focusBar = bar
-                self.csShape.cancel_editing_layer()
-                self.csShape.show_edit_bar_area()
-                self.csShape.update_bar_information(bar.x, bar.y, bar.material, bar.csArea)
-                change_bar = True
-            else:
-                bar.ellipse.color = [255, 0, 0]
-                bar.focus = False
-        # make sure that only one reinforcement can be added
-        # at the same time
-        if change_bar:
-            return 
-        else:
-            self.csShape.cancel_editing_bar()
-        oneIsFocused = False
-        if x < self.cw:
-            for layer in self.csShape.layers:
-                if layer.mouse_within(y, self.ch / 1e2):
-                    layer.focus = True
-                    oneIsFocused = True
-                    self.lineIsFocused = True
-                    self.focusLayer = layer
-                    self.csShape.cancel_editing_bar()
-                    self.csShape.show_edit_area_layer()
-                    self.csShape.update_layer_information(layer.y, layer.material, layer.h)
-                    self.focusLine.points = layer.line.points
-                    self.graph.add_plot(self.focusLine)
-                else:
-                    layer.focus = False
-        if not oneIsFocused and self.lineIsFocused:
-            self.graph.remove_plot(self.focusLine)
-            self.csShape.cancel_editing_layer()
+        self.touch_reaction(x, y, self.cw, self.ch)
+    
+    '''
+    draw the double_T
+    '''
+    def draw_double_t(self):
+        x0 = self.graph.xmax / 2.
+        y1 = self.graph.ymax / 1e3
+        x1 = x0 - self.bw / 2.
+        y2 = y3 = self.bh
+        x3 = x1 + self.bw / 2. - self.mw / 2.
+        y4 = y3 + self.mh
+        x5 = x3 + self.mw / 2. - self.tw / 2.
+        y6 = y4 + self.th
+        x7 = x5 + self.tw
+        x9 = x7 - self.tw / 2. + self.mw / 2.
+        x11 = x9 + self.bw / 2. - self.mw / 2.
+        return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y6),
+                (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1), (x1, y1)]
+        

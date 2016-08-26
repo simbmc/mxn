@@ -12,7 +12,8 @@ from crossSection.cs import CrossSection
 from crossSectionEditor.editor import CrossSectionEditor
 from materialEditor.editor import MaterialEditor
 from ownComponents.design import Design
-from reinforcementEditor.editor import ReinforcementEditor
+from reinforcementEditor.editor import ReinforcementEditorfrom explorer.explorer import Explorer
+
 
 Window.clearcolor = (1, 1, 1, 1)
 
@@ -53,6 +54,7 @@ class MXNApp(App):
         self.create_material_editor()
         self.create_reinforcement_editor()
         self.create_cross_section_editor()
+        self.create_explorer()
 
 
     '''
@@ -81,6 +83,12 @@ class MXNApp(App):
     def create_reinforcement_editor(self):
         self.reEditor = ReinforcementEditor()
         self.reEditor.set_cross_section(self.crossSection)
+    
+    def create_explorer(self):
+        self.explorer = Explorer(csShape=self.csShape, bars=self.csShape.bars,
+                                 layers=self.csShape.layers)
+        self.crossSection.explorer = self.explorer
+        
 
     #############################################################################
     # Attention:When you want write a new show-method than make sure             #
@@ -120,6 +128,19 @@ class MXNApp(App):
         self.content.remove_widget(self.view)
         self.content.add_widget(self.reEditor)
         self.view = self.reEditor
+    
+    '''
+    show the strain-stress-explorer
+    '''
+        
+    def show_explorer(self):
+        self.csEditor.remove_view()
+        if not self.reEditor.containsView:
+            self.reEditor.add_view()
+        self.content.remove_widget(self.view)
+        self.content.add_widget(self.explorer)
+        self.view = self.explorer
+        self.explorer.update_strain_stress()
         
 '''
 starts the application

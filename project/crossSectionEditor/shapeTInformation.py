@@ -46,7 +46,9 @@ class TInformation(GridLayout):
         self.add_widget(self.topHeight)
         self.add_widget(OwnLabel(text=self.bhStr))
         self.add_widget(self.bottomHeight)
-        self.create_popup()
+        # create the numpad
+        self.numpad = Numpad(p=self)
+        self.popup = OwnPopup(content=self.numpad)
         
     '''
     create all buttons of this component
@@ -61,29 +63,28 @@ class TInformation(GridLayout):
         self.bottomWidth.bind(on_press=self.show_numpad)
         self.bottomHeight.bind(on_press=self.show_numpad)
         
-    '''
-    create the popup
-    '''
-    def create_popup(self):
-        self.numpad = Numpad()
-        self.numpad.p=self
-        self.popup = OwnPopup(content=self.numpad)
     
     '''
-    open the popup
+    open the popup and set the title of the popup
     '''
     def show_numpad(self, btn):
         self.focusBtn = btn
         if self.focusBtn == self.topHeight:
-            self.popup.title=self.thStr
+            self.popup.title = self.thStr
         elif self.focusBtn == self.topWidth:
-            self.popup.title=self.twStr
+            self.popup.title = self.twStr
         elif self.focusBtn == self.bottomHeight:
-            self.popup.title=self.bhStr
+            self.popup.title = self.bhStr
         elif self.focusBtn == self.bottomWidth:
-            self.popup.title=self.bwStr
+            self.popup.title = self.bwStr
         self.popup.open()
     
+    '''
+    close the numpad. this method will be call from the numpad
+    '''
+    def close_numpad(self):
+        self.popup.dismiss()
+        
     '''
     set the text of the button
     '''
@@ -92,17 +93,11 @@ class TInformation(GridLayout):
         self.focusBtn.text, value = s, float(s)
         self.popup.dismiss()
         if self.focusBtn == self.topHeight:
-            self.csShape.th=value
+            self.csShape.th = value
         elif self.focusBtn == self.topWidth:
-            self.csShape.tw=value
+            self.csShape.tw = value
         elif self.focusBtn == self.bottomHeight:
-            self.csShape.bh=value
+            self.csShape.bh = value
         elif self.focusBtn == self.bottomWidth:
-            self.csShape.bw=value
+            self.csShape.bw = value
         self.csShape.view.update()
-    
-    '''
-    close the numpad
-    '''
-    def close_numpad(self):
-        self.popup.dismiss()
