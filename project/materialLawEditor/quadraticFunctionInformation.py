@@ -118,7 +118,22 @@ class QuadraticFunctionInformation(GridLayout):
     '''
     def show_popup(self, btn):
         self.focusBtn = btn
+        if self.focusBtn == self.aBtn:
+            self.popupNumpad.title = self.aStr
+        elif self.focusBtn == self.bBtn:
+            self.popupNumpad.title = self.bStr
+        elif self.focusBtn == self.upperStrainBtn:
+            self.popupNumpad.title = self.strainULStr
+        elif self.focusBtn == self.upperStressBtn:
+            self.popupNumpad.title = self.stressULStr
+        elif self.focusBtn == self.lowerStrain:
+            self.popupNumpad.title = self.strainLLStr
+        elif self.focusBtn == self.lowerStress:
+            self.popupNumpad.title = self.stressLLStr
         self.popupNumpad.open()
     
+    '''
+    show the popup where the user can select the function-type
+    '''
     def show_type_selection(self, btn):
         self.editor.lawEditor.editor.open()

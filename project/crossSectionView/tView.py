@@ -56,7 +56,7 @@ class TView(AView, GridLayout):
     the method add_layer was developed to add new layer at the cross section
     '''
 
-    def add_layer(self, x, y, material):
+    def add_layer(self, y, csArea, material):
         mid = self.graph.xmax / 2.
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
@@ -68,7 +68,7 @@ class TView(AView, GridLayout):
             else:
                 w1 = mid - self.th / 2.
                 w2 = mid + self.th / 2.
-            l = Layer(0, y, 0., w1)
+            l = Layer(y, csArea, w1)
             l.material = material
             line = DashedLine(color=[1, 0, 0, 1], points=[(w1, y), (w2, y)])
             l.line = line
@@ -86,18 +86,20 @@ class TView(AView, GridLayout):
         self.csShape.hide_error_message()
         self.focusLayer.y = y
         self.focusLayer.material = material
+        self.focusLayer.csArea = csArea
         if y < self.bh:
             self.focusLayer.line.points = [(mid - self.bw / 2., y), (mid - self.bw / 2. + self.bw, y)]
         else:
             self.focusLayer.line.points = [(mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
         if self.lineIsFocused:
+            self.focusLine.points = self.focusLayer.line.points
             self.graph.remove_plot(self.focusLine)
     
     '''
     add a bar
     '''
 
-    def add_bar(self, x, y, material):
+    def add_bar(self, x, y, csArea, material):
         mid = self.graph.xmax / 2.
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
@@ -105,7 +107,7 @@ class TView(AView, GridLayout):
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
-            b = Bar(x, y)
+            b = Bar(x, y, csArea)
             b.material = material
             plot = FilledEllipse(xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY], color=[255, 0, 0, 1])
             b.ellipse = plot
@@ -126,6 +128,7 @@ class TView(AView, GridLayout):
             self.focusBar.x = x
             self.focusBar.y = y
             self.focusBar.material = material
+            self.focusBar.csArea = csArea
             self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
             self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
     
@@ -138,7 +141,7 @@ class TView(AView, GridLayout):
         self.update_all_graph()
     
     '''
-    update the values
+    update the local values with the values of the shape
     '''
     def update_values(self):
         self.bh = self.csShape.bh  

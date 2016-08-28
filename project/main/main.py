@@ -12,7 +12,7 @@ from crossSection.cs import CrossSection
 from crossSectionEditor.editor import CrossSectionEditor
 from materialEditor.editor import MaterialEditor
 from ownComponents.design import Design
-from reinforcementEditor.editor import ReinforcementEditorfrom explorer.explorer import Explorer
+from reinforcementEditor.refEdit import ReinforcementEditorfrom explorer.stressStrainExplorer import Explorer
 
 
 Window.clearcolor = (1, 1, 1, 1)
@@ -56,7 +56,6 @@ class MXNApp(App):
         self.create_cross_section_editor()
         self.create_explorer()
 
-
     '''
     create the material-editor
     '''
@@ -84,6 +83,10 @@ class MXNApp(App):
         self.reEditor = ReinforcementEditor()
         self.reEditor.set_cross_section(self.crossSection)
     
+    '''
+    create the explorer where you can see the stress-strain-behavior of the
+    cross section
+    '''
     def create_explorer(self):
         self.explorer = Explorer(csShape=self.csShape, bars=self.csShape.bars,
                                  layers=self.csShape.layers)

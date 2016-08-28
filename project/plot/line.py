@@ -1,8 +1,13 @@
+'''
+Created on 28.06.2016
+
+@author: mkennert
+'''
 from math import log10
 
 from kivy.graphics.texture import Texture
 from kivy.properties import ListProperty, ObjectProperty, NumericProperty
-from kivy.graphics import Line,RenderContext
+from kivy.graphics import Line, RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
 class LinePlot(Plot):
@@ -11,7 +16,7 @@ class LinePlot(Plot):
     draw a line by the given color
     '''
     
-    width=1.
+    width = 1.
     def __init__(self, **kwargs):
         super(LinePlot, self).__init__(**kwargs)
     

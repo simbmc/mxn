@@ -68,14 +68,14 @@ class CSCircleView(AView, BoxLayout):
     '''
     add a new layer
     '''
-    def add_layer(self, x, y, material):
+    def add_layer(self, y, csArea, material):
         if y >= self.csShape.d or y <= 0:
             self.csShape.show_error_message()
             return
         self.csShape.hide_error_message()
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
-        l = Layer(0, y, 0., 0)
+        l = Layer(y, csArea, 0)
         l.material = material
         line = DashedLine(color=[1, 0, 0, 1], points=[(x1, y), (x2, y)])
         l.line = line
@@ -92,19 +92,21 @@ class CSCircleView(AView, BoxLayout):
         self.csShape.hide_error_message()
         self.focusLayer.y = y
         self.focusLayer.material = material
+        self.focusLayer.csArea = csArea
         if y < self.d * 2:
             x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
             x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
             self.focusLayer.line.points = [(x1, y), (x2, y)]
             self.csShape.hide_error_message()
         if self.lineIsFocused:
+            self.focusLine.points=self.focusLayer.line.points
             self.graph.remove_plot(self.focusLine)
         
     '''
     add a new bar
     '''
 
-    def add_bar(self, x, y, material):
+    def add_bar(self, x, y, csArea, material):
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
         if self.proof_coordinates(x, y, epsX, epsY):
@@ -113,7 +115,7 @@ class CSCircleView(AView, BoxLayout):
         self.csShape.hide_error_message()
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
-        b = Bar(x, y)
+        b = Bar(x, y, csArea)
         b.material = material
         plot = FilledEllipse(xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY],
                              color=[255, 0, 0, 1])
@@ -134,6 +136,7 @@ class CSCircleView(AView, BoxLayout):
         self.focusBar.x = x
         self.focusBar.y = y
         self.focusBar.material = material
+        self.focusBar.csArea = csArea
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
         self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
@@ -148,8 +151,6 @@ class CSCircleView(AView, BoxLayout):
             return True
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2. - epsX
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2. + epsX
-        print(x1)
-        print(x)
         if x < x1 or x > x2:
             return True
         else: 

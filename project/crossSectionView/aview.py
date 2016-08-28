@@ -81,7 +81,7 @@ class AView(object):
                 self.csShape.cancel_editing_layer()
                 self.csShape.show_edit_bar_area()
                 # x, y, material, csArea
-                self.csShape.update_bar_information(bar.x, bar.y, bar.material, bar.csArea)
+                self.csShape.update_bar_information(bar.x, bar.y, bar.csArea, bar.material)
                 change_bar = True
             else:
                 bar.ellipse.color = [255, 0, 0]
@@ -102,7 +102,7 @@ class AView(object):
                     self.focusLayer = layer
                     self.csShape.cancel_editing_bar()
                     self.csShape.show_edit_area_layer()
-                    self.csShape.update_layer_information(layer.y, layer.material, layer.h)
+                    self.csShape.update_layer_information(layer.y, layer.h, layer.material)
                     self.focusLine.points = layer.line.points
                     self.graph.add_plot(self.focusLine)
                 else:

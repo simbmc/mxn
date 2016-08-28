@@ -22,8 +22,7 @@ class Layer:
     focus = False
     
     # constructor
-    def __init__(self, x, y, h, w):
-        self.x = x
+    def __init__(self, y, h, w):
         self.y = y
         self.w = w
         self.h = h

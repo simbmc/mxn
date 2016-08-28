@@ -20,10 +20,10 @@ class Bar:
     focus = False
     
     # constructor
-    def __init__(self, x, y):
+    def __init__(self, x, y, csArea):
         self.x = x
         self.y = y
-        self.csArea = 0.
+        self.csArea = csArea
     
     '''
     proofs whether the mouse in the ellipse. if the coordinates of the mouse/touch

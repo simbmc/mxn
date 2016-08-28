@@ -68,13 +68,13 @@ class CSRectangleView(GridLayout, AView):
     the method add_layer was developed to add new layer at the cross section
     '''
 
-    def add_layer(self, x, y, material):
+    def add_layer(self, y, csArea, material):
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
             # default height 0
-            l = Layer(0, y, 0., self.cw)
+            l = Layer(y, csArea, self.cw)
             l.material = material  # set_Material(material)
             line = DashedLine(color=[1, 0, 0, 1], points=[(0, y), (self.cw, y)])
             l.line = line  # set_line(line)
@@ -92,22 +92,24 @@ class CSRectangleView(GridLayout, AView):
             self.csShape.hide_error_message()
             self.focusLayer.y = y
             self.focusLayer.material = material
+            self.focusLayer.csArea = csArea
             self.focusLayer.line.points = [(0, y), (self.cw, y)]
             if self.lineIsFocused:
+                self.focusLine.points=self.focusLayer.line.points
                 self.graph.remove_plot(self.focusLine)
     
     '''
     add a bar
     '''
 
-    def add_bar(self, x, y, material):
+    def add_bar(self, x, y, csArea, material):
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
         if y + epsY > self.ch or y - epsY < 0 or x + epsX > self.cw or x - epsX < 0:
             self.csShape.show_error_message()
         else:
             self.csShape.hide_error_message()
-            b = Bar(x, y)
+            b = Bar(x, y, csArea)
             b.material = material  # set_Material(material)
             plot = FilledEllipse(xrange=[x - epsX, x + epsX],
                                  yrange=[y - epsY, y + epsY],
@@ -129,6 +131,7 @@ class CSRectangleView(GridLayout, AView):
             self.focusBar.x = x
             self.focusBar.y = y
             self.focusBar.material = material
+            self.focusBar.csArea = csArea
             self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
             self.focusBar.ellipse.yrange = [y - epsY, y + epsY]       
 
