@@ -143,8 +143,25 @@ class MXNApp(App):
         self.content.remove_widget(self.view)
         self.content.add_widget(self.explorer)
         self.view = self.explorer
+        self.update_explorer()
         self.explorer.update_strain_stress()
-        
+    
+    '''
+    update the cross-section-information of the explorer
+    '''
+    def update_explorer(self):
+        if self.csEditor.csShape == self.crossSection.csDoubleT:
+            self.explorer.update_csShape(self.crossSection.csDoubleT, self.crossSection.csDoubleT.get_total_height(),
+                                         self.crossSection.csDoubleT.layers, self.crossSection.csDoubleT.bars)
+        elif self.csEditor.csShape == self.crossSection.csCircle:
+            self.explorer.update_csShape(self.crossSection.csCircle, self.crossSection.csCircle.d,
+                                         self.crossSection.csCircle.layers, self.crossSection.csCircle.bars)
+        elif self.csEditor.csShape == self.crossSection.csRectangle:
+            self.explorer.update_csShape(self.crossSection.csRectangle, self.crossSection.csRectangle.ch,
+                                         self.crossSection.csRectangle.layers, self.crossSection.csRectangle.bars)
+        elif self.csEditor.csShape == self.crossSection.csT:
+            self.explorer.update_csShape(self.crossSection.csT, self.crossSection.csT.get_total_height(),
+                                         self.crossSection.csT.layers, self.crossSection.csT.bars)
 '''
 starts the application
 '''

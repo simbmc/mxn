@@ -44,6 +44,7 @@ class CrossSection(GridLayout):
     # When you add more shapes, make sure that the shapes#
     # has a show-method like show_rectangle_view         #
     ######################################################
+    
     '''
     show the rectangle-view
     '''
@@ -51,8 +52,7 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csRectangle.view
         self.reEditor.change_cross_section(self.view)
-        self.explorer.update_csShape(self.csRectangle, self.csRectangle.ch,
-                                     self.csRectangle.layers, self.csRectangle.bars)
+        
     
     '''
     show the doubleT-view
@@ -61,8 +61,7 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csDoubleT.view
         self.reEditor.change_cross_section(self.csDoubleT)
-        self.explorer.update_csShape(self.csDoubleT, self.csDoubleT.get_total_height(),
-                                     self.csDoubleT.layers, self.csDoubleT.bars)
+        
     
     '''
     show the T-view
@@ -71,8 +70,7 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csT.view
         self.reEditor.change_cross_section(self.view)
-        self.explorer.update_csShape(self.csT, self.csT.get_total_height(),
-                                     self.csT.layers, self.csT.bars)
+        
     
     '''
     show the circle-View
@@ -81,8 +79,7 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csCircle.view
         self.reEditor.change_cross_section(self.view)
-        self.explorer.update_csShape(self.csCircle, self.csCircle.d,
-                                     self.csCircle.layers, self.csCircle.bars)
+        
 
     '''
     set the reinforcement editor

@@ -217,6 +217,7 @@ class Explorer(GridLayout):
         self.layers = layers
         self.bars = bars
         self.h = h
+        print(self.h)
     
     '''
     open the popup for the value input
@@ -250,7 +251,11 @@ class Explorer(GridLayout):
         elif self.focusBtn == self.upperStrainBtn:
             self.maxStrain = v
         elif self.focusBtn == self.integrationNumberBtn:
-            self.integrationNumberBtn.text = s
-            self.numberIntegration = int(v)
+            # 100 is the limit
+            if v > 100:
+                v = 100
+            else:
+                self.integrationNumberBtn.text = s
+                self.numberIntegration = int(v)
         self.update_strain_stress()
         self.popupNumpad.dismiss()
