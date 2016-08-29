@@ -173,14 +173,12 @@ class MaterialLawEditor(GridLayout):
     cancel the create-process
     '''
     def cancel(self, btn):
-        print('cancel (lawEditor)')
         self.editor.dismiss()
     
     '''
     create the process, where you select the function-type
     '''
     def cancel_graphicShow(self):
-        print('cancel_graphicShow (lawEditor)')
         self.creater.popupLawEditor.dismiss()
     
     '''

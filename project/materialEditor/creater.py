@@ -21,6 +21,11 @@ from plot.line import LinePlot
 
 class MaterialCreater(GridLayout):
     
+    '''
+    the material-creater is the component, where the user 
+    can add new material
+    '''
+    
     # important components
     _parent = ObjectProperty()
     

@@ -14,6 +14,10 @@ from kivy.properties import  ObjectProperty, StringProperty
 
 class LinearInformation(GridLayout):
     
+    '''
+    with the LinearInformation you can set the properties of the function
+    '''
+    
     # important components
     editor = ObjectProperty()
     

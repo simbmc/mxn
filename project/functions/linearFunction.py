@@ -25,8 +25,9 @@ class Linear(IFunction):
         self.points = [(minStress, self.f(minStress)), (maxStress, self.f(maxStress))]
     
     '''
-    eval the linear-function by the parameters a
+    evaluate the linear-function by the parameters a
     '''
+        
     def f(self, x):
         if x >= self.minStrain and x <= self.maxStrain:
             return self.a * x
@@ -36,5 +37,6 @@ class Linear(IFunction):
     '''
     return the String which represents the function
     '''
+       
     def f_toString(self):
         return "f(x)=" + str(self.a) + "x"

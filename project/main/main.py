@@ -17,16 +17,16 @@ from reinforcementEditor.refEdit import ReinforcementEditorfrom explorer.stress
 
 Window.clearcolor = (1, 1, 1, 1)
 
-'''
-create the Actionbar in the mainMenu with the kv.file screenmixapp
-'''
 class AppActionBar(ActionBar):
+    '''
+    create the Actionbar in the mainMenu with the kv.file screenmixapp
+    '''
     pass
 
-'''
-create the ActionMenu in the mainMenu with the kv.file screenmixapp
-'''
 class ActionMenu(ActionPrevious):
+    '''
+    create the ActionMenu in the mainMenu with the kv.file screenmixapp
+    '''
     pass
 
 

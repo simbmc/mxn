@@ -1,6 +1,5 @@
 '''
 Created on 06.05.2016
-
 @author: mkennert
 '''
 from kivy.uix.gridlayout import GridLayout
@@ -12,6 +11,10 @@ from plot.line import LinePlot
 from kivy.properties import  ObjectProperty, StringProperty
 
 class MultilinearView(GridLayout):
+    
+    '''
+    the view-component show the function in a graph
+    '''
     
     # important components
     editor = ObjectProperty()
@@ -71,12 +74,9 @@ class MultilinearView(GridLayout):
     draw the lines between the points
     '''
     def draw_lines(self):
-        counter = 0
         for i in range(len(self._points)):
-            counter += 1
-            print(counter)
             if i == 0:
-                line = LinePlot(points=[(0, 0), (self._points[i].xrange[0] + self.epsX,
+                line = LinePlot(points=[(self.graph.xmin, self.graph.ymin), (self._points[i].xrange[0] + self.epsX,
                                                  self._points[i].yrange[0] + self.epsY)],
                                 color=[255, 0, 0])
             else:

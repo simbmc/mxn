@@ -26,6 +26,12 @@ from plot.line import LinePlot
 
 class MaterialEditor(ScrollView, IObserver):
     
+    '''
+    the material-edit is the component, where the user 
+    can see the materials and create new material with 
+    the material-creater
+    '''
+    
     # strings
     strainStr, stressStr = StringProperty('strain'), StringProperty('stress [MPa]')
     nameStr, materialStr = StringProperty('name'), StringProperty('material')

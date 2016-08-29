@@ -16,6 +16,10 @@ from ownComponents.ownPopup import OwnPopup
 
 class QuadraticFunctionInformation(GridLayout):
     
+    '''
+    with the QuadraticFunctionInformation you can set the properties of the function
+    '''
+    
     # important components
     editor = ObjectProperty()
     

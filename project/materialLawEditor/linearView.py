@@ -12,13 +12,17 @@ from kivy.properties import  ObjectProperty, StringProperty
 
 class LinearView(GridLayout):
     
-    #important components
-    editor=ObjectProperty()
+    '''
+    the view-component show the function in a graph
+    '''
     
-    #strings
-    strainStr,stressStr=StringProperty('strain'), StringProperty('stress [MPa]')
+    # important components
+    editor = ObjectProperty()
     
-    #constructor
+    # strings
+    strainStr, stressStr = StringProperty('strain'), StringProperty('stress [MPa]')
+    
+    # constructor
     def __init__(self, **kwargs):
         super(LinearView, self).__init__(**kwargs)
         self.cols = 1
@@ -43,7 +47,7 @@ class LinearView(GridLayout):
     '''
     def update_strain_lower_limit(self, value):
         self.graph.xmin = value
-        self.graph.x_ticks_major = (self.graph.xmax-value) / 5.
+        self.graph.x_ticks_major = (self.graph.xmax - value) / 5.
         self.update_graph(self.editor.a)
     
     '''
@@ -51,7 +55,7 @@ class LinearView(GridLayout):
     '''
     def update_strain_upper_limit(self, value):
         self.graph.xmax = value
-        self.graph.x_ticks_major = (value-self.graph.xmin) / 5.
+        self.graph.x_ticks_major = (value - self.graph.xmin) / 5.
         self.update_graph(self.editor.a)
     
     '''
@@ -59,7 +63,7 @@ class LinearView(GridLayout):
     '''
     def update_stress_lower_limit(self, value):
         self.graph.ymin = value
-        self.graph.y_ticks_major = (self.graph.ymax-value) / 5.
+        self.graph.y_ticks_major = (self.graph.ymax - value) / 5.
         self.update_graph(self.editor.a)
     
     '''
@@ -67,7 +71,7 @@ class LinearView(GridLayout):
     '''
     def update_stress_upper_limit(self, value):
         self.graph.ymax = value
-        self.graph.y_ticks_major = (value-self.graph.ymin) / 5.
+        self.graph.y_ticks_major = (value - self.graph.ymin) / 5.
         self.update_graph(self.editor.a)
     
     '''
@@ -84,6 +88,6 @@ class LinearView(GridLayout):
         self.line.points = points
         self.graph.xmin, self.graph.xmax = minStrain, maxStrain
         self.graph.ymin, self.graph.ymax = minStress, maxStress
-        self.graph.x_ticks_major = (self.graph.xmax-self.graph.xmin) / 5.
-        self.graph.y_ticks_major = (self.graph.ymax-self.graph.ymin) / 5.
+        self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
+        self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
         

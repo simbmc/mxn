@@ -18,6 +18,11 @@ from reinforcement.layer import Layer
 
 class TView(AView, GridLayout):
     
+    '''
+    the class TView was developed to show the t-shape of 
+    the cross-section
+    '''
+    
     # important components
     csShape = ObjectProperty()
     
@@ -163,10 +168,7 @@ class TView(AView, GridLayout):
         self.graph.ymax = self.ch + self.deltaY
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
-        self.graph.remove_plot(self.p)
-        self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_t()
-        self.graph.add_plot(self.p)
               
     '''
     proofs whether the coordinates are in the shape. 

@@ -21,7 +21,7 @@ class CrossSectionEditor(GridLayout):
     
     '''
     the cross section editor is the component where you can 
-    select the shape with the shape-selection and set 
+    select the shape with the shape-selection-component and set 
     the size-properties of the shapes
     '''
     
@@ -64,7 +64,7 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def create_gui(self):
-        self.create_pop_up_shape()
+        self.create_popup_shape()
         self.create_selection_menu()
         self.content.add_widget(self.rectangleInformation, 0)
 
@@ -88,12 +88,19 @@ class CrossSectionEditor(GridLayout):
     create popup where you can select the shape of the cross section
     '''
 
-    def create_pop_up_shape(self):
+    def create_popup_shape(self):
         shapeContent = ShapeSelection()
         shapeContent.information = self
         shapeContent.create_gui()
         self.shapeSelection = OwnPopup(title=self.shapeStr, content=shapeContent)
-
+    
+    '''
+    cancel the shape selection and close the shape-editor-popup
+    '''
+        
+    def cancel_shape_selection(self, btn):
+        self.shapeSelection.dismiss()
+    
     '''
     look which shape the user has selected
     '''
@@ -117,13 +124,6 @@ class CrossSectionEditor(GridLayout):
     def change_cross_section(self, shape):
         self.view = shape.view
         self.csShape = shape
-    
-        
-    '''
-    cancel the shape selection and close the shape-editor-popup
-    '''
-    def cancel_shape_selection(self,btn):
-        self.shapeSelection.dismiss()
         
     '''
     add the view at the left side of the editor

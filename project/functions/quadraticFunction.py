@@ -33,8 +33,9 @@ class QuadraticFunction(IFunction):
         self.points = [(x, self.f(x)) for x in arange(self.minStrain, self.maxStrain, d)]
     
     '''
-    eval the linear-function by the parameters a
+    evaluate the quadratic-function by the parameters a
     '''
+        
     def f(self, x):
         if x >= self.minStrain and x <= self.maxStrain:
             return self.a * x ** 2 + self.b * x
@@ -44,5 +45,6 @@ class QuadraticFunction(IFunction):
     '''
     return the function as a string
     '''
+       
     def f_toString(self):
         return "f(x)=" + str(self.a) + "x^2+" + str(self.b) + "x"

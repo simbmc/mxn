@@ -12,6 +12,10 @@ from kivy.properties import  ObjectProperty, StringProperty
 
 class QuadraticFunctionView(GridLayout):
     
+    '''
+    the view-component show the function in a graph
+    '''
+    
     # important components
     editor = ObjectProperty()
     
@@ -55,4 +59,5 @@ class QuadraticFunctionView(GridLayout):
         self.graph.ymax = self.editor.upperStrain
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
+        self.update_points()
         

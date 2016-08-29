@@ -160,11 +160,19 @@ class ShapeSelection(GridLayout):
         # Attention: make sure that the buttons habe the properties            #
         # size_hint_y=None, height=Design.btnHeight and a bind-method          #
         #######################################################################
-
     
-    #############################################
-    # everey shape must implemented a show-method#
-    #############################################
+    '''
+    finished the totally selection and call the 
+    finished_shape_selection of the information
+    '''
+
+    def finished(self, btn):
+        self.information.finished_shape_selection(self.focusShape)
+    
+    
+    ##############################################
+    # everey shape must implement a show-method  #
+    ##############################################
     
     '''
     show doubleT-View
@@ -214,16 +222,12 @@ class ShapeSelection(GridLayout):
         self.contentRight.remove_widget(self.focusShape)
         self.contentRight.add_widget(self.shapes)
 
+    ######################################
+    # help-methods to draw the shapes    #
+    ######################################
+    
     '''
-    finished the totally selection and call the 
-    finished_shape_selection of the information
-    '''
-
-    def finished(self, btn):
-        self.information.finished_shape_selection(self.focusShape)
-        
-    '''
-    draw the plot
+    draw a rectangle
     '''
     def draw_rectangle(self):
         c, h, w = 0.02, 0.23, 0.45

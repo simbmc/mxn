@@ -29,8 +29,9 @@ class Multilinear(IFunction):
         self.minStress, self.maxStress = minStrain, maxStress
     
     '''
-    eval the multilinear-function by the given points
+    evaluate the multi-linear-function by the given points
     '''
+        
     def f(self, x):
         if x >= self.minStrain and x <= self.maxStrain:
             return interp(x, self.x, self.y)
@@ -41,5 +42,5 @@ class Multilinear(IFunction):
     return the function as a string
     '''
     def f_toString(self):
-        return "multilinear"
+        return "multi-linear"
         

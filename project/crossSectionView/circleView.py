@@ -58,6 +58,7 @@ class CSCircleView(AView, BoxLayout):
     '''
     set the radius of the circle
     '''
+        
     def update_circle(self, r):
         self.d = r
         self.graph.x_ticks_major = self.graph.y_ticks_major = self.d / 5.
@@ -68,6 +69,7 @@ class CSCircleView(AView, BoxLayout):
     '''
     add a new layer
     '''
+        
     def add_layer(self, y, csArea, material):
         if y >= self.csShape.d or y <= 0:
             self.csShape.show_error_message()
@@ -85,6 +87,7 @@ class CSCircleView(AView, BoxLayout):
     '''
     edit a layer which is already exist
     '''
+        
     def edit_layer(self, y, material, csArea):
         if y >= self.csShape.d or y <= 0:
             self.csShape.show_error_message()
@@ -126,6 +129,7 @@ class CSCircleView(AView, BoxLayout):
     '''
     edit a bar which is already exist
     '''
+        
     def edit_bar(self, x, y, material, csArea):
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
@@ -146,6 +150,7 @@ class CSCircleView(AView, BoxLayout):
     proofs whether the coordinates are in the shape. 
     return True, when the coordinates are not in the shape
     '''
+        
     def proof_coordinates(self, x, y, epsX, epsY):
         if y + epsY > self.csShape.d or y - epsY < 0:
             return True

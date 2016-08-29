@@ -12,6 +12,13 @@ from kivy.properties import  ObjectProperty, NumericProperty
 
 class MultilinearEditor(GridLayout):
     
+    '''
+    MultilinearEditor is the main-component to create a multilinear-function. 
+    it manages the communication between the multilinear-view and the multilinear-information.
+    when the user confirm the created function f, the editor will set the function
+    of the material-law to f
+    '''
+    
     # important components
     lawEditor = ObjectProperty()
     

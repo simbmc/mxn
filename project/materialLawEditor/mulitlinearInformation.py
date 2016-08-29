@@ -15,6 +15,10 @@ from kivy.properties import  ObjectProperty, StringProperty
 
 class MultilinearInformation(GridLayout):
     
+    '''
+    with the MultilinearInformation you can set the properties of the linear-function
+    '''
+    
     # important components
     editor = ObjectProperty()
     

@@ -16,6 +16,12 @@ from kivy.properties import  ObjectProperty, NumericProperty
 
 class LinearEditor(GridLayout):
     
+    '''
+    LinearEditor is the main-component to create a linear-function. 
+    it manages the communication between the linear-view and the linear-information.
+    when the user confirm the created function f, the editor will set the function
+    of the material-law to f
+    '''
     
     # important components
     view = ObjectProperty()

@@ -113,7 +113,7 @@ class DoubleTView(AView, GridLayout):
         elif y < self.bh + self.mh + self.th:
             self.focusLayer.line.points = [(mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
         if self.lineIsFocused:
-            self.focusLine.points=self.focusLayer.line.points
+            self.focusLine.points = self.focusLayer.line.points
             self.graph.remove_plot(self.focusLine)
                     
     '''
@@ -176,10 +176,7 @@ class DoubleTView(AView, GridLayout):
         self.graph.ymax = self.ch + self.deltaY
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
-        self.graph.remove_plot(self.p)
-        self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_double_t()
-        self.graph.add_plot(self.p)
             
     '''
     proofs whether the coordinates are in the shape. 
@@ -224,4 +221,3 @@ class DoubleTView(AView, GridLayout):
         x11 = x9 + self.bw / 2. - self.mw / 2.
         return [(x1, y1), (x1, y2), (x3, y2), (x3, y4), (x5, y4), (x5, y6),
                 (x7, y6), (x7, y4), (x9, y4), (x9, y3), (x11, y3), (x11, y1), (x1, y1)]
-        
