@@ -32,12 +32,53 @@ class Numpad(GridLayout):
         super(Numpad, self).__init__(**kwargs)
         self.cols = 1
         self.create_numfield()
+        
     '''
     the method create_numfield create the gui
     of the numpad
     '''
 
     def create_numfield(self):
+        self.lblTextinput = OwnLabel(text='')
+        if self.sign:
+            display = GridLayout(cols=2, spacing=Design.spacing)
+            self.btnSign = Button(text=self.plusStr, size_hint_y=None, height=Design.btnHeight)
+            self.btnSign.bind(on_press=self.set_sign)
+            display.add_widget(self.btnSign)
+        else:
+            display = GridLayout(cols=1)
+        display.add_widget(self.lblTextinput)
+        self.numfieldLayout = GridLayout(cols=3)
+        for i in range(1, 10):
+            cur = Button(text=str(i))
+            cur.bind(on_press=self.appending)
+            self.numfieldLayout.add_widget(cur)
+        btnDot = Button(text='.')
+        btnDot.bind(on_press=self.appending)
+        self.numfieldLayout.add_widget(btnDot)
+        btnZero = Button(text='0')
+        btnZero.bind(on_press=self.appending)
+        btnDelete = Button(text='<<')
+        btnDelete.bind(on_press=self.delete)
+        self.numfieldLayout.add_widget(btnZero)
+        self.numfieldLayout.add_widget(btnDelete)
+        cur = GridLayout(cols=1)
+        layout = GridLayout(cols=2, spacing=Design.spacing,
+                            row_force_default=True,
+                            row_default_height=Design.btnHeight)
+        btnOK = Button(text='ok', size_hint_y=None, height=Design.btnHeight)
+        btnOK.bind(on_press=self.finished)
+        btnCancel = Button(
+            text='cancel', size_hint_y=None, height=Design.btnHeight)
+        btnCancel.bind(on_press=self.cancel)
+        layout.add_widget(btnOK)
+        layout.add_widget(btnCancel)
+        cur.add_widget(layout)
+        cur.add_widget(display)
+        self.add_widget(cur)
+        self.add_widget(self.numfieldLayout)
+    
+    def create_numfield_with_sign(self):
         self.lblTextinput = OwnLabel(text='')
         if self.sign:
             display = GridLayout(cols=2, spacing=Design.spacing)

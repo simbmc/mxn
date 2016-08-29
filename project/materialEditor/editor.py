@@ -39,6 +39,7 @@ class MaterialEditor(ScrollView, IObserver):
     createStr = StringProperty('create new material')
     priceStr, densityStr = StringProperty('price[euro/kg]'), StringProperty('density[kg/m^3]')
     backStr, editStr = StringProperty('back'), StringProperty('edit')
+    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
     
     # constructor
     def __init__(self, **kwargs):
@@ -117,7 +118,7 @@ class MaterialEditor(ScrollView, IObserver):
         self.density, self.materialLaw = OwnButton(), OwnButton()
         self.density.bind(on_press=self.show_numpad)
         self.materialLaw.bind(on_press=self.show_material_law)
-        self.btnBack, self.btnEdit = OwnButton(text=self.backStr), OwnButton(text=self.editStr)
+        self.btnBack, self.btnEdit = OwnButton(text=self.cancelStr), OwnButton(text=self.okStr)
         self.btnBack.bind(on_press=self.cancel_show)
         self.btnEdit.bind(on_press=self.edit_material)
         

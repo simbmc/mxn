@@ -14,7 +14,7 @@ from ownComponents.numpad import Numpad
 from ownComponents.ownPopup import OwnPopup
 from plot.line import LinePlot
 from plot.dashedLine import DashedLine
-import numpy as np
+from materialEditor.materiallist import MaterialList
 
 class Explorer(GridLayout):
     
@@ -34,10 +34,13 @@ class Explorer(GridLayout):
     upperStrainStr = StringProperty('upper-strain:')
     defaultMinStrain = StringProperty('-0.5')
     defaultMaxStrain = StringProperty('0.5')
+    defaultNumber = StringProperty('30')
+    numberStr = StringProperty('integration points')
     
     # important values
     h = NumericProperty()
     minStrain, maxStrain = NumericProperty(-0.5), NumericProperty(0.5)
+    numberIntegration = NumericProperty(30)
     
     # constructor
     def __init__(self, **kwargs):
@@ -45,6 +48,7 @@ class Explorer(GridLayout):
         self.cols, self.spacing = 1, Design.spacing
         self.graphContent = GridLayout(cols=2)
         self.h = self.csShape.ch
+        self.allMaterial = MaterialList.Instance()
         self.create_gui()
     
     '''
@@ -69,9 +73,7 @@ class Explorer(GridLayout):
                                     y_grid_label=True, x_grid_label=True,
                                     xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
         self.graphContent.add_widget(self.graphStrain)
-        self.pStrain = LinePlot(color=[255, 0, 0])
         self.pStrainCs = LinePlot(color=[255, 0, 0])
-        self.graphStrain.add_plot(self.pStrain)
         self.graphStrain.add_plot(self.pStrainCs)
     
     '''
@@ -91,17 +93,23 @@ class Explorer(GridLayout):
     create the area where you can input the lower and upper strain
     '''
     def create_input_area(self):
-        inputArea = GridLayout(cols=4, row_force_default=True,
+        inputArea = GridLayout(cols=6, row_force_default=True,
                              row_default_height=Design.btnHeight, size_hint_y=None,
                              height=1.1 * Design.btnHeight)
+        # create and bind btns
         self.lowerStrainBtn = OwnButton(text=self.defaultMinStrain)
         self.lowerStrainBtn.bind(on_press=self.show_popup)
         self.upperStrainBtn = OwnButton(text=self.defaultMaxStrain)
         self.upperStrainBtn.bind(on_press=self.show_popup)
+        self.integrationNumberBtn = OwnButton(text=self.defaultNumber)
+        self.integrationNumberBtn.bind(on_press=self.show_popup)
+        # fill the inputArea
         inputArea.add_widget(OwnLabel(text=self.lowerStrainStr))
         inputArea.add_widget(self.lowerStrainBtn)
         inputArea.add_widget(OwnLabel(text=self.upperStrainStr))
         inputArea.add_widget(self.upperStrainBtn)
+        inputArea.add_widget(OwnLabel(text=self.numberStr))
+        inputArea.add_widget(self.integrationNumberBtn)
         self.add_widget(inputArea)
     
     '''
@@ -120,8 +128,7 @@ class Explorer(GridLayout):
             pstrain = DashedLine(color=[255, 0, 0], points=[(0, layer.y), (v, layer.y)])
             self.graphStrain.add_plot(pstrain)
             pstress = DashedLine(color=[255, 0, 0],
-                                 points=[(0, layer.y),
-                                         (layer.material.materialLaw.f(np.abs(v)), layer.y)])
+                                 points=[(0, layer.y), (layer.material.materialLaw.f(v), layer.y)])
             self.graphStress.add_plot(pstress)
         # #update all bar-lines
         for bar in self.bars:
@@ -129,10 +136,34 @@ class Explorer(GridLayout):
             pStrain = DashedLine(color=[255, 0, 0], points=[(0, bar.y), (v, bar.y)])
             self.graphStrain.add_plot(pStrain)
             pstress = DashedLine(color=[255, 0, 0],
-                                 points=[(0, bar.y),
-                                         (bar.material.materialLaw.f(np.abs(bar.y)), bar.y)])
+                                 points=[(0, bar.y), (bar.material.materialLaw.f(v), bar.y)])
             self.graphStress.add_plot(pstress)
+        self.update_matrix()
     
+    def update_matrix(self):
+        concrete = self.allMaterial.allMaterials[3]
+        # save the y-coordinates of the layers and bars
+        yCoordinates = []
+        for layer in self.layers:
+            yCoordinates.append(layer.y)
+        for bar in self.bars:
+            yCoordinates.append(bar.y)
+        #
+        tick = self.h / (self.numberIntegration + len(yCoordinates))
+        counter = 0.
+        while counter < self.h:
+            reinforcentmentExist = False
+            for y in yCoordinates:
+                if counter == y:
+                    reinforcentmentExist = True
+            if not reinforcentmentExist:
+                v = self.f(counter)
+                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (v, counter)])
+                self.graphStrain.add_plot(p)
+                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (concrete.materialLaw.f(v), counter)])
+                self.graphStress.add_plot(p)
+            counter += tick
+            
     '''
     update the graph-properties
     '''
@@ -150,8 +181,7 @@ class Explorer(GridLayout):
         self.graphStress.ymax = self.h
         self.graphStress.y_ticks_major = self.h / 5.
         # update plots
-        self.pStrain.points = [(self.minStrain, 0), (self.maxStrain, self.h)]
-        self.pStrainCs.points = [(self.minStrain, 0), (0, 0), (0, self.h), (self.maxStrain, self.h)]
+        self.pStrainCs.points = [ (0, 0), (0, self.h)]
         self.pStressCs.points = [(0, 0), (0, self.h)]
         # clear the graph and delete the plots which represent 
         # the layers and the bars
@@ -164,7 +194,7 @@ class Explorer(GridLayout):
     def clear_graph(self):
         while len(self.graphStrain.plots) > 2 or len(self.graphStress.plots) > 1:
             for plot in self.graphStrain.plots:
-                if plot != self.pStrain and plot != self.pStrainCs:
+                if  plot != self.pStrainCs:
                     self.graphStrain.remove_plot(plot)
                     self.graphStrain._clear_buffer()
             for plot in self.graphStress.plots:
@@ -196,8 +226,10 @@ class Explorer(GridLayout):
         self.numpad.lblTextinput.text = str(btn.text)
         if btn == self.lowerStrainBtn:
             self.popupNumpad.title = self.lowerStrainStr
-        else:
+        elif btn == self.upperStrainBtn:
             self.popupNumpad.title = self.upperStrainStr
+        elif btn == self.integrationNumberBtn:
+            self.popupNumpad.title = self.numberStr
         self.popupNumpad.open()
     
     '''
@@ -215,8 +247,10 @@ class Explorer(GridLayout):
         self.focusBtn.text = s
         if self.focusBtn == self.lowerStrainBtn:
             self.minStrain = v
-            self.update_strain_stress()
-        else:
+        elif self.focusBtn == self.upperStrainBtn:
             self.maxStrain = v
-            self.update_strain_stress()
+        elif self.focusBtn == self.integrationNumberBtn:
+            self.integrationNumberBtn.text = s
+            self.numberIntegration = int(v)
+        self.update_strain_stress()
         self.popupNumpad.dismiss()
