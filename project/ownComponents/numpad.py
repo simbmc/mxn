@@ -7,7 +7,6 @@ from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
 
-from ownComponents.design import Design
 from ownComponents.ownLabel import OwnLabel
 
 
@@ -132,7 +131,7 @@ class Numpad(GridLayout):
         try:
             # proofs whether you can cast the input
             x = float(self.lblTextinput.text)
-            if self.sign and x < 0:
+            if not self.sign and x < 0:
                 self.reset_text()
                 return
             self.lblTextinput.text = self.lblTextinput.text

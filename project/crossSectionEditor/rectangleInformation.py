@@ -35,6 +35,7 @@ class RectangleInformation(GridLayout):
     '''
     create the gui
     '''
+        
     def create_gui(self):
         # create Numpad
         self.numpad = Numpad(p=self)
@@ -53,6 +54,7 @@ class RectangleInformation(GridLayout):
     '''
     show the numpad
     '''
+        
     def show_numpad(self, btn):
         self.focusbtn = btn
         if btn == self.btnHeight:
@@ -64,12 +66,14 @@ class RectangleInformation(GridLayout):
     '''
     close the numpad. this method will be call from the numpad
     '''
+        
     def close_numpad(self):
         self.popUp.dismiss()
     
     '''
     set the values
     '''
+        
     def finished_numpad(self):
         v = float(self.numpad.lblTextinput.text)
         self.focusbtn.text = str(v)

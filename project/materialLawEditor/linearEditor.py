@@ -52,6 +52,9 @@ class LinearEditor(GridLayout):
         self.lawEditor.creater.materialLaw.text = f.f_toString()
         self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
                                             self.upperStrain, f.points)
+        print()
+        print(self.lowerStress)
+        print(self.lowerStrain)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.cancel(None)
     
@@ -66,6 +69,10 @@ class LinearEditor(GridLayout):
     update the complete information and graph by the given function-properties
     '''
     def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
+        self.lowerStress = minStress
+        self.upperStress = maxStress
+        self.lowerStrain = minStrain
+        self.upperStrain = maxStrain
         self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
         self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
     

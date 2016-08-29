@@ -32,8 +32,9 @@ class MultilinearView(GridLayout):
     '''
     create the graph of the view
     '''
+        
     def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                            x_ticks_major=self.editor.upperStress / 5.,
                            y_ticks_major=self.editor.upperStrain / 5.,
                            x_grid=True, y_grid=True,
@@ -45,6 +46,7 @@ class MultilinearView(GridLayout):
     '''
     create the points. draw the points of the diagonal of the graph 
     '''
+        
     def create_points(self, n):
         self._points, self.lines = [], []
         self.epsX = self.graph.xmax / Design.barProcent
@@ -73,6 +75,7 @@ class MultilinearView(GridLayout):
     '''
     draw the lines between the points
     '''
+        
     def draw_lines(self):
         for i in range(len(self._points)):
             if i == 0:
@@ -91,12 +94,13 @@ class MultilinearView(GridLayout):
     '''
     update the whole graph
     '''
+            
     def update_graph(self):
-        self.graph.ymax = self.editor.upperStrain
-        self.graph.ymin = self.editor.lowerStrain
+        self.graph.ymax = self.editor.upperStress
+        self.graph.ymin = self.editor.lowerStress
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
-        self.graph.xmax = self.editor.upperStress
-        self.graph.xmin = self.editor.lowerStress
+        self.graph.xmax = self.editor.upperStrain
+        self.graph.xmin = self.editor.lowerStrain
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
         d = 50.
         curX = self.graph.xmax / d
@@ -113,6 +117,7 @@ class MultilinearView(GridLayout):
     '''
     update the number of points
     '''
+        
     def update_points(self):
         # clear all points and lines
         while len(self.graph.plots) > 0:
@@ -125,6 +130,7 @@ class MultilinearView(GridLayout):
     '''
     when the user change the x-coordinate of a point
     '''
+        
     def update_point_position(self, x, y):
         l = len(self._points)
         for i in range(l):
@@ -149,6 +155,7 @@ class MultilinearView(GridLayout):
     '''
     returns the coordinate of the points
     '''
+                    
     def get_coordinates(self):
         x = [p.xrange[0] + self.epsX for p in self._points]
         y = [p.yrange[0] + self.epsY for p in self._points]

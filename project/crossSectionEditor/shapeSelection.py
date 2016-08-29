@@ -229,6 +229,7 @@ class ShapeSelection(GridLayout):
     '''
     draw a rectangle
     '''
+        
     def draw_rectangle(self):
         c, h, w = 0.02, 0.23, 0.45
         return [(c, 0.005), (c, h), (w, h), (w, 0.005), (c, 0.005)]
@@ -253,6 +254,7 @@ class ShapeSelection(GridLayout):
     '''
     draw the double_T
     '''
+        
     def draw_double_t(self):
         y1 = 1e-3
         bw = tw = 0.25

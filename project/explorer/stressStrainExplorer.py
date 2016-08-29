@@ -253,7 +253,8 @@ class Explorer(GridLayout):
         elif self.focusBtn == self.integrationNumberBtn:
             # 100 is the limit
             if v > 100:
-                v = 100
+                self.numberIntegration = 100
+                self.integrationNumberBtn.text = str(100)
             else:
                 self.integrationNumberBtn.text = s
                 self.numberIntegration = int(v)

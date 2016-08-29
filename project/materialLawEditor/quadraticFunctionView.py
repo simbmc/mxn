@@ -32,7 +32,7 @@ class QuadraticFunctionView(GridLayout):
     create the graph of the view
     '''
     def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                            x_ticks_major=2.5, y_ticks_major=2.5,
                            y_grid_label=True, x_grid_label=True,
                            x_grid=True, y_grid=True,
@@ -53,10 +53,10 @@ class QuadraticFunctionView(GridLayout):
     update the graph properties
     '''
     def update_graph_sizeproperties(self):
-        self.graph.xmin = self.editor.lowerStress
-        self.graph.xmax = self.editor.upperStress
-        self.graph.ymin = self.editor.lowerStrain
-        self.graph.ymax = self.editor.upperStrain
+        self.graph.xmin = self.editor.lowerStrain
+        self.graph.xmax = self.editor.upperStrain
+        self.graph.ymin = self.editor.lowerStress
+        self.graph.ymax = self.editor.upperStress
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
         self.update_points()

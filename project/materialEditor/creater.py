@@ -4,7 +4,6 @@ Created on 04.04.2016
 @author: mkennert
 '''
 from kivy.properties import  ObjectProperty, StringProperty
-from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.lawEditor import MaterialLawEditor
@@ -114,6 +113,8 @@ class MaterialCreater(GridLayout):
     '''
 
     def create_material(self, button):
+        # if the material has now material-law it will be not possible 
+        # to create a material
         if self.materialLaw.text == self.defaultFStr:
             return
         curMaterial = OwnMaterial(self.nameBtn.text, self.priceBtn.text,
@@ -173,13 +174,6 @@ class MaterialCreater(GridLayout):
         self.densityBtn.text = self.defaultValueStr
         self.materialLaw.text = self.defaultFStr
         
-    '''
-    cancel the create-law-process
-    '''
-
-    def cancel(self, button):
-        self.popupLawEditor.dismiss()
-        
     # not finished yet
     def cancel_create(self, btn):
         self._parent.cancel_edit_material()
@@ -197,9 +191,9 @@ class MaterialCreater(GridLayout):
     '''
     def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
         self.p.points = points
-        self.graph.xmin = minStress
-        self.graph.xmax = maxStress
-        self.graph.ymin = minStrain
-        self.graph.ymax = maxStrain
+        self.graph.xmin = minStrain
+        self.graph.xmax = maxStrain
+        self.graph.ymin = minStress
+        self.graph.ymax = maxStress
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.

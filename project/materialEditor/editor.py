@@ -3,7 +3,7 @@ Created on 11.04.2016
 
 @author: mkennert
 '''
-from kivy.properties import  ObjectProperty, StringProperty
+from kivy.properties import  StringProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -146,14 +146,18 @@ class MaterialEditor(ScrollView, IObserver):
                 self.popupInfo.open()
                 return
     
+    '''
+    update the graph-size-properties
+    '''
+    
     def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
         self.p.points = points
-        self.graph.xmin = minStress
-        self.graph.xmax = maxStress
-        self.graph.ymin = minStrain
-        self.graph.ymax = maxStrain
-        self.graph.x_ticks_major = self.graph.xmax / 5.
-        self.graph.y_ticks_major = self.graph.ymax / 5.
+        self.graph.xmin = minStrain
+        self.graph.xmax = maxStrain
+        self.graph.ymin = minStress
+        self.graph.ymax = maxStress
+        self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
+        self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
         
         
     '''

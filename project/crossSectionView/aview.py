@@ -60,6 +60,7 @@ class AView(object):
     '''
     the method delete_bar was developed to delete bars from the cross section
     '''
+                    
     def delete_bar(self):
         if len(self.csShape.bars) > 0:
             for bar in self.csShape.bars:
@@ -70,6 +71,7 @@ class AView(object):
     '''
     give the user the possibility to focus a layer or a bar
     '''
+                    
     def touch_reaction(self, x, y , cw, ch):
         # change_bar is a switch
         change_bar = False
@@ -95,7 +97,7 @@ class AView(object):
         oneIsFocused = False
         if x < cw:
             for layer in self.csShape.layers:
-                if layer.mouse_within(y, ch / 1e2):
+                if layer.mouse_within(y, ch / 8e1):
                     layer.focus = True
                     oneIsFocused = True
                     self.lineIsFocused = True

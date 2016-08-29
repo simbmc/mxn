@@ -36,6 +36,7 @@ class TInformation(GridLayout):
     '''
     create the gui
     '''
+        
     def create_gui(self):
         self.create_all_btns()
         self.add_widget(OwnLabel(text=self.twStr))
@@ -53,6 +54,7 @@ class TInformation(GridLayout):
     '''
     create all buttons of this component
     '''
+        
     def create_all_btns(self):
         self.topWidth = OwnButton(text=str(self.csShape.tw))
         self.bottomWidth = OwnButton(text=str(self.csShape.bw))
@@ -67,6 +69,7 @@ class TInformation(GridLayout):
     '''
     open the popup and set the title of the popup
     '''
+        
     def show_numpad(self, btn):
         self.focusBtn = btn
         if self.focusBtn == self.topHeight:
