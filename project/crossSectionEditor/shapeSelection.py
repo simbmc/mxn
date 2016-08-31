@@ -34,6 +34,7 @@ class ShapeSelection(GridLayout):
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
+        print('create shape-selection')
     
     '''
     create the gui
@@ -171,7 +172,7 @@ class ShapeSelection(GridLayout):
     
     
     ##############################################
-    # everey shape must implement a show-method  #
+    # every shape must implement a show-method  #
     ##############################################
     
     '''

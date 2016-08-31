@@ -44,6 +44,7 @@ class MaterialEditor(ScrollView, IObserver):
     # constructor
     def __init__(self, **kwargs):
         super(MaterialEditor, self).__init__(**kwargs)
+        print('create material-editor')
         self.btnSize = Design.btnHeight
         self.firstPlot = True
         
@@ -66,7 +67,6 @@ class MaterialEditor(ScrollView, IObserver):
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
         
-
     '''
     create the popups: 
     popupInfo to show the material information
@@ -106,11 +106,15 @@ class MaterialEditor(ScrollView, IObserver):
         self.information.add_widget(self.btnEdit)
         self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
+        self.p = LinePlot(color=[0, 0, 0, 1])
+        self.graph.add_plot(self.p)
         self.content.add_widget(self.information)
         self.content.add_widget(self.graph)
         self.create_popups()
     
-    
+    '''
+    create all btns of the component
+    '''
     def create_btns(self):
         self.name, self.price = OwnButton(), OwnButton()
         self.name.bind(on_press=self.show_keyboard)
@@ -121,30 +125,6 @@ class MaterialEditor(ScrollView, IObserver):
         self.btnBack, self.btnEdit = OwnButton(text=self.cancelStr), OwnButton(text=self.okStr)
         self.btnBack.bind(on_press=self.cancel_show)
         self.btnEdit.bind(on_press=self.edit_material)
-        
-    '''
-    set the labeltext with the materialproperties
-    '''
-
-    def show_material_information(self, btn):
-        for i in range(0, len(self.allMaterials.allMaterials)):
-            material = self.allMaterials.allMaterials[i]
-            if material.name == btn.text:
-                self.focusBtnMaterial = btn
-                self.focusMaterial = material
-                self.name.text = material.name
-                self.price.text = str(material.price)
-                self.density.text = str(material.density)
-                self.materialLaw.text = material.materialLaw.f_toString()
-                if self.firstPlot:
-                    self.firstPlot = False
-                    self.p = LinePlot(points=material.materialLaw.points, color=[0, 0, 0, 1])
-                    self.graph.add_plot(self.p)
-                self.update_graph(material.materialLaw.minStress, material.materialLaw.maxStress,
-                            material.materialLaw.minStrain, material.materialLaw.maxStrain,
-                            material.materialLaw.points)
-                self.popupInfo.open()
-                return
     
     '''
     update the graph-size-properties
@@ -158,22 +138,6 @@ class MaterialEditor(ScrollView, IObserver):
         self.graph.ymax = maxStress
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
-        
-        
-    '''
-    close the popup, which shows the information from
-    the choosen material
-    '''
-
-    def cancel_show(self, button):
-        self.popupInfo.dismiss()
-
-    '''
-    open the popup, which has the creator as content
-    '''
-
-    def create_material(self, button):
-        self.popupCreate.open()
 
     '''
     the method update_materials update the view of the materials. 
@@ -189,14 +153,6 @@ class MaterialEditor(ScrollView, IObserver):
         self.materialLayout.add_widget(self.btnMaterialEditor)
 
     '''
-    cancel the create-process. this method is necessary, because editor creator-instance call 
-    the method cancel_edit_materialfrom the parent
-    '''
-
-    def cancel_edit_material(self):
-        self.popupCreate.dismiss()
-
-    '''
     the method set_cross_section was developed to say the view, 
     which cross section should it use
     '''
@@ -208,7 +164,45 @@ class MaterialEditor(ScrollView, IObserver):
         self.create_gui()
     
     
-    # not finished yet
+    '''
+    edit the selected material. all components which use 
+    this material will have the new properties
+    '''
+        
+    def edit_material(self, btn):
+        self.focusBtnMaterial.text = self.name.text
+        self.focusMaterial.name = self.name.text
+        self.focusMaterial.density = float(self.density.text)
+        self.focusMaterial.price = float(self.price.text)
+        self.focusMaterial.materialLaw = self.materialLawEditor.f
+        self.cancel_show(None)
+    
+    '''
+    set the labeltext with the materialproperties
+    '''
+
+    def show_material_information(self, btn):
+        print('show_material_information (editor)')
+        for i in range(0, len(self.allMaterials.allMaterials)):
+            material = self.allMaterials.allMaterials[i]
+            self.materialLawEditor.f = material.materialLaw
+            if material.name == btn.text:
+                self.focusBtnMaterial = btn
+                self.focusMaterial = material
+                self.name.text = material.name
+                self.price.text = str(material.price)
+                self.density.text = str(material.density)
+                self.materialLaw.text = material.materialLaw.f_toString()
+                self.update_graph(material.materialLaw.minStress, material.materialLaw.maxStress,
+                            material.materialLaw.minStrain, material.materialLaw.maxStrain,
+                            material.materialLaw.points)
+                self.popupInfo.open()
+                return
+    
+    '''
+    open the numpad for the input-value
+    '''
+        
     def show_numpad(self, btn):
         self.focusBtn = btn
         self.numpad.lblTextinput.text = btn.text
@@ -218,15 +212,23 @@ class MaterialEditor(ScrollView, IObserver):
             self.popupNumpad.title = self.densityStr
         self.popupNumpad.open()
     
-    # not finished yet
+    '''
+    show the keyboard for the name-input
+    '''
+        
     def show_keyboard(self, btn):
         self.focusBtn = btn
         self.keyboard.lblTextinput.text = btn.text
         self.popupKeyboard.open()
 
-    # not finished yet
+    '''
+    show the material-law
+    '''
+        
     def show_material_law(self, btn):
+        print('show_material_law (editor)')
         f = self.focusMaterial.materialLaw
+        self.materialLawEditor.f = f
         self.popupLawEditor.open()
         if isinstance(f, Linear):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnLinear
@@ -243,27 +245,57 @@ class MaterialEditor(ScrollView, IObserver):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnExponentiell
             self.materialLawEditor.confirm(None)
         
-    
+    '''
+    when the user confirm his name-input
+    '''
+            
     def finished_keyboard(self):
         self.name.text = self.keyboard.lblTextinput.text
         self.popupKeyboard.dismiss()
     
+    '''
+    when the user confirm his value-input
+    '''
+        
     def finished_numpad(self):
         self.focusBtn.text = self.numpad.lblTextinput.text
         self.popupNumpad.dismiss()
     
+    '''
+    when the user cancel the value-input
+    '''
+        
     def close_numpad(self):
         self.popupNumpad.dismiss()
     
-    def edit_material(self, btn):
-        self.focusBtnMaterial.text = self.name.text
-        self.focusMaterial.name = self.name.text
-        self.focusMaterial.density = float(self.density.text)
-        self.focusMaterial.price = float(self.price.text)
-        self.focusMaterial.materialLaw = self.materialLawEditor.f
-        self.cancel_show(None)
-    
-    # for the material-law-editor
-    def cancel(self, x):
+    '''
+    cancel the material-law-editor
+    '''
+        
+    def close_material_law_editor(self, x):
+        # for the material-law-editor
         self.popupLawEditor.dismiss()
         
+    '''
+    cancel the create-process. this method is necessary, because editor creator-instance call 
+    the method cancel_edit_materialfrom the parent
+    '''
+
+    def cancel_edit_material(self):
+        self.popupCreate.dismiss()
+    
+    '''
+    close the popup, which shows the information from
+    the choosen material
+    '''
+
+    def cancel_show(self, button):
+        self.popupInfo.dismiss()
+
+    '''
+    open the popup, which has the creator as content
+    '''
+
+    def create_material(self, button):
+        self.popupCreate.open()
+    

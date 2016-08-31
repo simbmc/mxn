@@ -30,6 +30,7 @@ class CircleInformation(GridLayout):
     # Constructor
     def __init__(self, **kwargs):
         super(CircleInformation, self).__init__(**kwargs)
+        print('create circle-information')
         self.cols, self.spacing = 2, Design.spacing
         self.height, self.size_hint_y = Design.btnHeight, None
     

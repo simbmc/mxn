@@ -52,6 +52,7 @@ class Keyboard(GridLayout):
         self.smallKeyboard.add_widget(btnDelete)
         self.smallKeyboard.add_widget(btnFinished)
         self.layout.add_widget(self.smallKeyboard)
+        
     '''
     the method appending appends character at the end.
     the method is called when the user use the keyboard

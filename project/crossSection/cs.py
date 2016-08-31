@@ -36,6 +36,7 @@ class CrossSection(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
+        print('create cross-section')
         self.cols, self.spacing = 2, Design.spacing
         self.allMaterials = MaterialList.Instance()
         self.view = self.csRectangle.view
@@ -53,19 +54,19 @@ class CrossSection(GridLayout):
         self.view = self.csRectangle.view
         self.reEditor.change_cross_section(self.view)
         
-    
     '''
     show the doubleT-view
     '''
+        
     def show_doublet_shape(self):
         self.remove_widget(self.view)
         self.view = self.csDoubleT.view
         self.reEditor.change_cross_section(self.csDoubleT)
         
-    
     '''
     show the T-view
     '''
+        
     def show_tshape(self):
         self.remove_widget(self.view)
         self.view = self.csT.view
@@ -75,6 +76,7 @@ class CrossSection(GridLayout):
     '''
     show the circle-View
     '''
+        
     def show_circle_shape(self):
         self.remove_widget(self.view)
         self.view = self.csCircle.view
@@ -84,6 +86,7 @@ class CrossSection(GridLayout):
     '''
     set the reinforcement editor
     '''
+        
     def set_reinforcement_editor(self, reEditor):
         self.reEditor = reEditor
         self.csRectangle.information = reEditor

@@ -40,6 +40,7 @@ class MaterialCreater(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
+        print('create material-creater')
         self.cols, self.spacing = 2, Design.spacing
         self.create_gui()
 
@@ -69,7 +70,6 @@ class MaterialCreater(GridLayout):
         self.add_widget(self.information)
         self.add_widget(self.graph)
     
-
     '''
     the method create_buttons create all buttons of the class
     '''
@@ -122,6 +122,18 @@ class MaterialCreater(GridLayout):
         self._parent.allMaterials.add_material(curMaterial)
         self._parent.cancel_edit_material()
     
+    '''
+    update the graph by the given function-properties
+    '''
+    def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
+        self.p.points = points
+        self.graph.xmin = minStrain
+        self.graph.xmax = maxStrain
+        self.graph.ymin = minStress
+        self.graph.ymax = maxStress
+        self.graph.x_ticks_major = self.graph.xmax / 5.
+        self.graph.y_ticks_major = self.graph.ymax / 5.
+        
     '''
     the method use_keyword open the keyboard_popup for the user
     '''
@@ -185,15 +197,3 @@ class MaterialCreater(GridLayout):
     # not finished yet
     def close_material_law_editor(self, btn):
         self.popupLawEditor.dismiss()
-    
-    '''
-    update the graph by the given function-properties
-    '''
-    def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
-        self.p.points = points
-        self.graph.xmin = minStrain
-        self.graph.xmax = maxStrain
-        self.graph.ymin = minStress
-        self.graph.ymax = maxStress
-        self.graph.x_ticks_major = self.graph.xmax / 5.
-        self.graph.y_ticks_major = self.graph.ymax / 5.

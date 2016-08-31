@@ -45,7 +45,9 @@ class Explorer(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(Explorer, self).__init__(**kwargs)
+        print('create explorer')
         self.cols, self.spacing = 1, Design.spacing
+        self.Change = True
         self.graphContent = GridLayout(cols=2)
         self.h = self.csShape.ch
         self.allMaterial = MaterialList.Instance()
@@ -54,20 +56,22 @@ class Explorer(GridLayout):
     '''
     create the gui of the explorer
     '''
+        
     def create_gui(self):
-        self.create_strain_graph()
-        self.create_stress_graph()
+        self.create_graphs()
         self.add_widget(self.graphContent)
         self.create_input_area()
         self.numpad = Numpad(p=self, sign=True)
         self.popupNumpad = OwnPopup(content=self.numpad)
+        self.update_strain_stress()
+    
+    '''
+    the method create_graphs create the graphs, where you can observe
+    the stress-strain-behavior
+    '''
         
-    '''
-    the method create_graph create the graph, where you can observe
-    the strain-behavior
-    '''
-
-    def create_strain_graph(self):
+    def create_graphs(self):
+        # create-strain-graph
         self.graphStrain = OwnGraph(xlabel=self.strainStr,
                                     x_ticks_major=0.1, y_ticks_major=0.1,
                                     y_grid_label=True, x_grid_label=True,
@@ -75,23 +79,19 @@ class Explorer(GridLayout):
         self.graphContent.add_widget(self.graphStrain)
         self.pStrainCs = LinePlot(color=[255, 0, 0])
         self.graphStrain.add_plot(self.pStrainCs)
-    
-    '''
-    the method create_graph create the graph, where you can observe
-    the strain-behavior
-    '''
-    def create_stress_graph(self):
+        # create-stress-graph
         self.graphStress = OwnGraph(xlabel=self.stressStr,
                                     x_ticks_major=0.1, y_ticks_major=0.1,
                                     y_grid_label=True, x_grid_label=True, padding=5,
                                     xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
         self.graphContent.add_widget(self.graphStress)
-        self.pStressCs = LinePlot(color=[255, 0, 0], points=[(0, 0), (0, self.h)])
+        self.pStressCs = LinePlot(color=[255, 0, 0])
         self.graphStress.add_plot(self.pStressCs)
     
     '''
     create the area where you can input the lower and upper strain
     '''
+        
     def create_input_area(self):
         inputArea = GridLayout(cols=6, row_force_default=True,
                              row_default_height=Design.btnHeight, size_hint_y=None,
@@ -115,7 +115,12 @@ class Explorer(GridLayout):
     '''
     update the strain-stress-behavior of the cross-section
     '''
+        
     def update_strain_stress(self):
+        if not self.Change:
+            return
+        print('update_strain_stress (explorer)')
+        self.Change = False
         # y=mx+b <=>y-mx=b
         self.layers = self.csShape.layers
         self.bars = self.csShape.bars
@@ -123,6 +128,7 @@ class Explorer(GridLayout):
         self.m = (self.h) / (self.maxStrain - self.minStrain)
         self.b = self.h - self.m * self.maxStrain
         # update all layer-lines
+        yCoordinates = []
         for layer in self.layers:
             v = self.f(layer.y)
             pstrain = DashedLine(color=[255, 0, 0], points=[(0, layer.y), (v, layer.y)])
@@ -130,6 +136,7 @@ class Explorer(GridLayout):
             pstress = DashedLine(color=[255, 0, 0],
                                  points=[(0, layer.y), (layer.material.materialLaw.f(v), layer.y)])
             self.graphStress.add_plot(pstress)
+            yCoordinates.append(layer.y)
         # #update all bar-lines
         for bar in self.bars:
             v = self.f(bar.y)
@@ -138,17 +145,16 @@ class Explorer(GridLayout):
             pstress = DashedLine(color=[255, 0, 0],
                                  points=[(0, bar.y), (bar.material.materialLaw.f(v), bar.y)])
             self.graphStress.add_plot(pstress)
-        self.update_matrix()
-    
-    def update_matrix(self):
-        concrete = self.allMaterial.allMaterials[3]
-        # save the y-coordinates of the layers and bars
-        yCoordinates = []
-        for layer in self.layers:
-            yCoordinates.append(layer.y)
-        for bar in self.bars:
             yCoordinates.append(bar.y)
-        #
+        self.update_matrix(yCoordinates)
+    
+    '''
+    update the matrix strain-stress-behavior
+    '''
+    
+    def update_matrix(self, yCoordinates):
+        print('update_matrix (explorer)')
+        self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
         tick = self.h / (self.numberIntegration + len(yCoordinates))
         counter = 0.
         while counter < self.h:
@@ -160,13 +166,14 @@ class Explorer(GridLayout):
                 v = self.f(counter)
                 p = DashedLine(color=[0, 0, 0], points=[(0, counter), (v, counter)])
                 self.graphStrain.add_plot(p)
-                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (concrete.materialLaw.f(v), counter)])
+                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (self.mlaw(v), counter)])
                 self.graphStress.add_plot(p)
             counter += tick
             
     '''
     update the graph-properties
     '''
+            
     def update_graph(self):
         # update strain-graph
         self.graphStrain.xmin = self.minStrain
@@ -187,11 +194,12 @@ class Explorer(GridLayout):
         # the layers and the bars
         self.clear_graph()
     
-    
     '''
     delete the plots which represent a layer or a bar
     '''
+        
     def clear_graph(self):
+        print('clear_graph (explorer)')
         while len(self.graphStrain.plots) > 2 or len(self.graphStress.plots) > 1:
             for plot in self.graphStrain.plots:
                 if  plot != self.pStrainCs:
@@ -205,6 +213,7 @@ class Explorer(GridLayout):
     '''
     the function which describes the strain-line
     '''
+                    
     def f(self, y):
         # y=mx+b <=> x=(y-b)/m
         return (y - self.b) / self.m
@@ -212,16 +221,24 @@ class Explorer(GridLayout):
     '''
     update the cs-properties
     '''
+   
     def update_csShape(self, cs, h, layers, bars):
+        if self.csShape == cs and self.h == h and self.layers == layers and self.bars == bars and\
+            self.mlaw == self.allMaterial.allMaterials[3].materialLaw.f:
+            self.Change = False
+            print('all is up to date. no update needed')
+            return
+        print('update_csShape (explorer)')
+        self.Change = True
         self.csShape = cs
         self.layers = layers
         self.bars = bars
         self.h = h
-        print(self.h)
     
     '''
     open the popup for the value input
     '''
+        
     def show_popup(self, btn):
         self.focusBtn = btn
         self.numpad.lblTextinput.text = str(btn.text)
@@ -236,12 +253,14 @@ class Explorer(GridLayout):
     '''
     cancel the numpad-input. the numpad call this method
     '''
+        
     def close_numpad(self):
         self.popupNumpad.dismiss()
     
     '''
     when the numpad input will be confirmed. the numpad call this method
     '''
+        
     def finished_numpad(self):
         s = self.numpad.lblTextinput.text
         v = float(s)

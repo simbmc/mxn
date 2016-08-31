@@ -3,15 +3,41 @@ Created on 12.05.2016
 
 @author: mkennert
 '''
+from abc import abstractmethod
 
-class AShape:
+from kivy.properties import ListProperty
+
+
+class AShape(object):
     
     '''
     AShape is the interface which the shapes must implement. it makes sure,
     that the shapes has the necessary methods, which the other components
     are uses
     '''
-
+    
+    # all layers of the cross-section
+    layers = ListProperty([])
+    
+    # all bars of the cross-section
+    bars = ListProperty([])
+    
+    #############################################################################
+    # the following methods must implemented individual in the class,           #
+    # which implements the interface                                            #
+    #############################################################################
+    
+    @abstractmethod
+    def _get_gravity_centre(self):
+        # should return the gravity centre of
+        # the cross-section-shape
+        raise NotImplemented('not implemented')
+    
+    def get_width(self, y):
+        # should return the width by the
+        # given y-coordinate
+        raise NotImplemented('not implemented')
+    
     #############################################################################
     # the following methods must not implemented in the class,                  #
     # which implements the interface                                            #
@@ -39,7 +65,7 @@ class AShape:
     edit the bar with the new values
     '''
     def edit_bar(self, x, y, csArea, material):
-        self.view.edit_bar(x, y, material, csArea)
+        self.view.edit_bar(x, y, csArea, material)
     
     '''
     update the layer-information when you edit existing layers

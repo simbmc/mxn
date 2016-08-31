@@ -46,8 +46,12 @@ class MultilinearEditor(GridLayout):
                                             self.upperStrain, f.points)
         self.lawEditor.creater.materialLaw.text = f.f_toString()
         self.lawEditor.cancel_graphicShow()
-        self.lawEditor.creater.cancel(None)
+        self.lawEditor.creater.close_material_law_editor(None)
 
-    # not finished yet
+    '''
+    cancel the selection where you can select the function-type
+    of the material-law
+    '''
+    
     def cancel(self, btn):
         self.lawEditor.cancel_graphicShow()

@@ -31,6 +31,7 @@ class DoubleTInformation(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(DoubleTInformation, self).__init__(**kwargs)
+        print('create doubleT-information')
         self.cols, self.spacing = 2, Design.spacing
         
     '''

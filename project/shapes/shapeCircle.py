@@ -3,11 +3,12 @@ Created on 13.06.2016
 
 @author: mkennert
 '''
+from kivy.properties import NumericProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
-from shapes.ashape import AShape
 from crossSectionView.circleView import CSCircleView
-from kivy.properties import NumericProperty, ObjectProperty, ListProperty
+from shapes.ashape import AShape
+import numpy as np
 
 class ShapeCircle(GridLayout, AShape):
     
@@ -16,11 +17,13 @@ class ShapeCircle(GridLayout, AShape):
     of a circle
     '''
     
-    # important components
-    view, information = ObjectProperty(), ObjectProperty()
-    layers, bars = ListProperty([]), ListProperty([])
+    # cross-section-view
+    view = ObjectProperty(CSCircleView())
     
-    # important values
+    # information-view of the cross-section
+    information = ObjectProperty()
+    
+    # diameter of the circle
     d = NumericProperty(0.25)
     
     # Constructor
@@ -29,3 +32,17 @@ class ShapeCircle(GridLayout, AShape):
         self.view = CSCircleView()
         self.view.csShape, self.view.d = self, self.d
         self.view.create_graph()
+    
+    '''
+    y distance of gravity centre from upper rim
+    '''
+    def _get_gravity_centre(self):
+        return self.d / 2.
+    
+    '''
+    returns width of cross section for different vertical coordinates
+    '''
+    def get_width(self, y):
+        x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
+        x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
+        return x2 - x1

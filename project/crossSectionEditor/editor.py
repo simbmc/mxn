@@ -36,6 +36,7 @@ class CrossSectionEditor(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(CrossSectionEditor, self).__init__(**kwargs)
+        print('cross-section-editor')
         self.cols, self.spacing = 2, Design.spacing
         self.btnSize = Design.btnHeight
         self.firstTimeCircle, self.firstTimeDoubleT = True, True

@@ -20,12 +20,15 @@ class Numpad(GridLayout):
     # important components
     # parent-component of the keyboard
     p = ObjectProperty()
-    # lbl, which shows the string-input
-    lblTextinput = OwnLabel(text='')
     
     # strings
     plusStr, minusStr = StringProperty('+'), StringProperty('-')
+    defaultStr = StringProperty('')
+    confirmStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    dotStr, backStr = StringProperty('.'), StringProperty('<<')
+    # booleans
     sign = BooleanProperty(False)
+    
     # construktor
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
@@ -39,7 +42,7 @@ class Numpad(GridLayout):
     
     def create_numfield_with_sign(self):
         self.create_btns()
-        self.lblTextinput = OwnLabel(text='')
+        self.lblTextinput = OwnLabel(text=self.defaultStr)
         self.numfieldLayout = GridLayout(cols=4)
         for i in range(1, 10):
             cur = Button(text=str(i))
@@ -63,20 +66,22 @@ class Numpad(GridLayout):
     '''
         
     def create_btns(self):
-        self.btnOK = Button(text='ok')
-        self.btnOK.bind(on_press=self.finished)
-        self.btnCancel = Button(text='cancel')
-        self.btnCancel.bind(on_press=self.cancel)
-        self.btnPlus = Button(text='+')
-        self.btnPlus.bind(on_press=self.set_sign)
-        self.btnMinus = Button(text='-')
+        # create the btns
+        self.btnZero = Button(text=str(0))
+        self.btnOK = Button(text=self.confirmStr)
+        self.btnCancel = Button(text=self.cancelStr)
+        self.btnPlus = Button(text=self.plusStr)
+        self.btnMinus = Button(text=self.minusStr)
+        self.btnDelete = Button(text=self.backStr)
+        self.btnDot = Button(text=self.dotStr)
+        # bind the btns
         self.btnMinus.bind(on_press=self.set_sign)
-        self.btnDot = Button(text='.')
+        self.btnOK.bind(on_press=self.finished)
+        self.btnCancel.bind(on_press=self.cancel)
         self.btnDot.bind(on_press=self.appending)
-        self.btnZero = Button(text='0')
         self.btnZero.bind(on_press=self.appending)
-        self.btnDelete = Button(text='<<')
         self.btnDelete.bind(on_press=self.delete)
+        self.btnPlus.bind(on_press=self.set_sign)
     
     '''
     set the sign of the input-value
@@ -95,6 +100,27 @@ class Numpad(GridLayout):
                 self.lblTextinput.text = self.minusStr + self.lblTextinput.text[1:]
             elif not self.lblTextinput.text[0] == self.minusStr:
                 self.lblTextinput.text = self.minusStr + self.lblTextinput.text
+
+    '''
+    the method finished close the popup when the user
+    is finished and made a correctly input
+    '''
+
+    def finished(self, button):
+        # try to cast the string in a floatnumber
+        try:
+            # proofs whether you can cast the input
+            x = float(self.lblTextinput.text)
+            if not self.sign and x < 0:
+                self.reset_text()
+                return
+            self.lblTextinput.text = self.lblTextinput.text
+            self.p.finished_numpad()
+            self.reset_text()
+        # if the value is not a float
+        # the lblTextinput will be reset
+        except ValueError:
+            self.reset_text()
     
     '''
     the method appending appends the choosen digit at the end.
@@ -120,28 +146,7 @@ class Numpad(GridLayout):
 
     def reset_text(self):
         self.lblTextinput.text = ''
-
-    '''
-    the method finished close the popup when the user
-    is finished and made a correctly input
-    '''
-
-    def finished(self, button):
-        # try to cast the string in a floatnumber
-        try:
-            # proofs whether you can cast the input
-            x = float(self.lblTextinput.text)
-            if not self.sign and x < 0:
-                self.reset_text()
-                return
-            self.lblTextinput.text = self.lblTextinput.text
-            self.p.finished_numpad()
-            self.reset_text()
-        # if the value is not a float
-        # the lblTextinput will be reset
-        except ValueError:
-            self.reset_text()
-
+    
     '''
     cancel the numpad input
     '''

@@ -28,7 +28,7 @@ class QuadraticFunction(IFunction):
     def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
         self.a, self.b = a, b
         self.minStrain, self.maxStrain = minStrain, maxStrain
-        self.minStress, self.maxStress = minStrain, maxStress
+        self.minStress, self.maxStress = minStress, maxStress
         d = (self.maxStrain - self.minStrain) / 1e2
         self.points = [(x, self.f(x)) for x in arange(self.minStrain, self.maxStrain, d)]
     

@@ -3,6 +3,7 @@ Created on 06.07.2016
 
 @author: mkennert
 '''
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.linearEditor import LinearEditor
@@ -13,7 +14,7 @@ from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownPopup import OwnPopup
 from plot.line import LinePlot
-from kivy.properties import ObjectProperty, StringProperty
+
 
 class MaterialLawEditor(GridLayout):
     
@@ -39,6 +40,7 @@ class MaterialLawEditor(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(MaterialLawEditor, self).__init__(**kwargs)
+        print('create law-editor')
         self.cols, self.spacing = 2, Design.spacing
         self.linearEditor = LinearEditor(lawEditor=self)
         self.multiLinearEditor = MultilinearEditor(lawEditor=self)

@@ -39,13 +39,6 @@ class EditLayer(GridLayout):
     def __init__(self, **kwargs):
         super(EditLayer, self).__init__(**kwargs)
         self.allMaterial = MaterialList.Instance()
-        self.create_gui()
-        # self.add = True
-        
-    '''
-    create the gui of the EditLayer-Components
-    '''
-    def create_gui(self):
         self.numpad = Numpad(p=self)
         self.popupNumpad = OwnPopup(content=self.numpad)
         self.create_add_area()
@@ -73,6 +66,7 @@ class EditLayer(GridLayout):
     create and bind all btns
     '''
     def create_btns(self):
+        # create the btns
         self.materialBtn = OwnButton(text=self.steelStr)
         self.yCoordinateBtn = OwnButton(text=self.defaultValueStr)
         self.csAreaBtn = OwnButton(text=self.defaultValueStr)
@@ -89,7 +83,7 @@ class EditLayer(GridLayout):
     open the popup where the user can the select the 
     material of the bar
     '''
-    def show_material_selection(self,btn):
+    def show_material_selection(self, btn):
         self.p.popupMaterial.open()
       
     '''

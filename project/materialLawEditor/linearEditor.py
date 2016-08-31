@@ -3,16 +3,14 @@ Created on 03.05.2016
 
 @author: mkennert
 '''
-from functions.linearFunction import Linear
-from ownComponents.design import Design
-
-
-
+from kivy.properties import  ObjectProperty, NumericProperty
 from kivy.uix.gridlayout import GridLayout
 
+from functions.linearFunction import Linear
 from materialLawEditor.linearInformation import LinearInformation
 from materialLawEditor.linearView import LinearView
-from kivy.properties import  ObjectProperty, NumericProperty
+from ownComponents.design import Design
+
 
 class LinearEditor(GridLayout):
     
@@ -52,11 +50,8 @@ class LinearEditor(GridLayout):
         self.lawEditor.creater.materialLaw.text = f.f_toString()
         self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
                                             self.upperStrain, f.points)
-        print()
-        print(self.lowerStress)
-        print(self.lowerStrain)
         self.lawEditor.cancel_graphicShow()
-        self.lawEditor.creater.cancel(None)
+        self.lawEditor.creater.close_material_law_editor(None)
     
     '''
     cancel the selection where you can select the function-type
@@ -75,4 +70,3 @@ class LinearEditor(GridLayout):
         self.upperStrain = maxStrain
         self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
         self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
-    

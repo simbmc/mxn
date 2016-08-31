@@ -29,6 +29,7 @@ class RectangleInformation(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(RectangleInformation, self).__init__(**kwargs)
+        print('create rectangle-information')
         self.cols, self.spacing = 2, Design.spacing
         self.size_hint_y = None
     

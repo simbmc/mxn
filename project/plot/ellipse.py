@@ -6,7 +6,7 @@ Created on 28.06.2016
 from math import log10
 
 from kivy.graphics.texture import Texture
-from kivy.properties import ListProperty, ObjectProperty, NumericProperty
+from kivy.properties import ListProperty, ObjectProperty
 from kivy.graphics import Line
 from kivy.garden.graph import Plot
 

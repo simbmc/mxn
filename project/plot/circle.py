@@ -55,4 +55,3 @@ class Circle(Plot):
             size[0], (funcy(self.pos[1]) - ymin) * ratioy + size[1]
         radius = min(self.d * ratiox, self.d * ratioy)
         image.circle = [bl[0], bl[1], radius]
-

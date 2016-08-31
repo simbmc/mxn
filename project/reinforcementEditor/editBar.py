@@ -37,13 +37,7 @@ class EditBar(GridLayout):
     # constructor
     def __init__(self, **kwargs):
         super(EditBar, self).__init__(**kwargs)
-        self.create_gui()
         self.allMaterial = MaterialList.Instance()
-        
-    '''
-    create the gui of the EditLayer-Components
-    '''
-    def create_gui(self):
         self.numpad = Numpad(p=self)
         self.popupNumpad = OwnPopup(content=self.numpad)
         self.create_add_area()
@@ -56,6 +50,24 @@ class EditBar(GridLayout):
                                     row_default_height=Design.btnHeight,
                                     height=Design.btnHeight,
                                     spacing=Design.spacing)
+        self.create_btns()
+        # fill the addArea with content
+        self.addArea.add_widget(OwnLabel(text=self.materialStr))
+        self.addArea.add_widget(self.materialBtn)
+        self.addArea.add_widget(OwnLabel(text=self.xCoordinateStr))
+        self.addArea.add_widget(self.xCoordinateBtn)
+        self.addArea.add_widget(OwnLabel(text=self.yCoordinateStr))
+        self.addArea.add_widget(self.yCoordinateBtn)
+        self.addArea.add_widget(OwnLabel(text=self.csAreaStr))
+        self.addArea.add_widget(self.csAreaBtn)
+        self.addArea.add_widget(self.confirmBtn)
+        self.addArea.add_widget(self.cancelBtn)
+    
+    '''
+    create all btns of the component
+    '''
+        
+    def create_btns(self):
         # create btns
         self.materialBtn = OwnButton(text=self.steelStr)
         self.xCoordinateBtn = OwnButton(text=self.defaultValueStr)
@@ -70,18 +82,7 @@ class EditBar(GridLayout):
         self.xCoordinateBtn.bind(on_press=self.show_numpad)
         self.yCoordinateBtn.bind(on_press=self.show_numpad)
         self.csAreaBtn.bind(on_press=self.show_numpad)
-        # fill the addArea with content
-        self.addArea.add_widget(OwnLabel(text=self.materialStr))
-        self.addArea.add_widget(self.materialBtn)
-        self.addArea.add_widget(OwnLabel(text=self.xCoordinateStr))
-        self.addArea.add_widget(self.xCoordinateBtn)
-        self.addArea.add_widget(OwnLabel(text=self.yCoordinateStr))
-        self.addArea.add_widget(self.yCoordinateBtn)
-        self.addArea.add_widget(OwnLabel(text=self.csAreaStr))
-        self.addArea.add_widget(self.csAreaBtn)
-        self.addArea.add_widget(self.confirmBtn)
-        self.addArea.add_widget(self.cancelBtn)
-    
+        
     '''
     open the popup where the user can the select the 
     material of the bar

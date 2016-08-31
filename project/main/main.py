@@ -31,11 +31,14 @@ class ActionMenu(ActionPrevious):
 
 
 class MXNApp(App):
+    
     '''
     Build the application
     '''
+    
     # constructor
     def build(self):
+        print('build application')
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         bar = AppActionBar()
         self.content.add_widget(bar)
@@ -87,6 +90,7 @@ class MXNApp(App):
     create the explorer where you can see the stress-strain-behavior of the
     cross section
     '''
+        
     def create_explorer(self):
         self.explorer = Explorer(csShape=self.csShape, bars=self.csShape.bars,
                                  layers=self.csShape.layers)
@@ -149,6 +153,7 @@ class MXNApp(App):
     '''
     update the cross-section-information of the explorer
     '''
+        
     def update_explorer(self):
         if self.csEditor.csShape == self.crossSection.csDoubleT:
             self.explorer.update_csShape(self.crossSection.csDoubleT, self.crossSection.csDoubleT.get_total_height(),
@@ -165,5 +170,6 @@ class MXNApp(App):
 '''
 starts the application
 '''
+            
 if __name__ == '__main__':
     MXNApp().run()

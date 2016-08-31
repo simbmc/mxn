@@ -3,11 +3,7 @@ Created on 27.06.2016
 
 @author: mkennert
 '''
-from math import log10
-
-from kivy.graphics.texture import Texture
-from kivy.properties import ListProperty, ObjectProperty, NumericProperty
-from kivy.graphics import Line,RenderContext
+from kivy.graphics import Line, RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
 class DashedLine(Plot):
@@ -26,7 +22,7 @@ class DashedLine(Plot):
                 use_parent_projection=True)
         with self._grc:
             self._gcolor = Color(*self.color)
-            self._gline = Line(points=[], width=1,dash_offset=5,dash_length=10)
+            self._gline = Line(points=[], width=1, dash_offset=5, dash_length=10)
         return [self._grc]
     
     def draw(self, *args):

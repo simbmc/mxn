@@ -3,10 +3,7 @@ Created on 28.06.2016
 
 @author: mkennert
 '''
-from math import log10
 
-from kivy.graphics.texture import Texture
-from kivy.properties import ListProperty, ObjectProperty, NumericProperty
 from kivy.graphics import Line, RenderContext
 from kivy.garden.graph import Plot, Color, Mesh
 
@@ -39,4 +36,3 @@ class LinePlot(Plot):
         with self._grc:
             self._gcolor = Color(*self.color)
         self._gline.points = points
-    

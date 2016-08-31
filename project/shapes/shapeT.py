@@ -3,7 +3,7 @@ Created on 03.06.2016
 
 @author: mkennert
 '''
-from kivy.properties import NumericProperty, ObjectProperty, ListProperty
+from kivy.properties import NumericProperty, ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 
 from crossSectionView.tView import TView
@@ -19,11 +19,18 @@ class ShapeT(AShape, GridLayout):
     
     # important components
     view = ObjectProperty(TView())
-    layers, bars = ListProperty([]), ListProperty([])
     
-    # important values
-    tw, th = NumericProperty(0.3), NumericProperty(0.15)  # top-area
-    bw, bh = NumericProperty(0.15), NumericProperty(0.3)  # bottom-area
+    # width of the top rectangle
+    tw = NumericProperty(0.3)
+    
+    # height of the top rectangle
+    th = NumericProperty(0.15) 
+    
+    # width of the bottom rectangle
+    bw = NumericProperty(0.15)
+    
+    # height of the bottom rectangle
+    bh = NumericProperty(0.3)  # bottom-area
     
     # constructor
     def __init__(self, **kwargs):
@@ -33,18 +40,38 @@ class ShapeT(AShape, GridLayout):
         self.view.create_graph()
 
     '''
-    return the cs-height
+    return the total height of the cross-section
     '''
 
     def get_total_height(self):
         return self.th + self.bh
 
     '''
-    return the max-width
+    return the total width of the cross-section
     '''
 
     def get_max_width(self):
         if self.tw < self.bw:
+            return self.bw
+        else:
+            return self.tw
+    
+    '''
+    y distance of gravity centre from upper rim
+    '''
+   
+    def _get_gravity_centre(self):
+        h = self.get_total_height()
+        At, yt = self.tw * self.th, self.th / 2
+        Ab, yb = self.bw * self.bh, h - self.bh / 2
+        return (At * yt + Ab * yb) / (At + Ab) 
+    
+    '''
+    returns width of cross section for different vertical coordinates
+    '''
+   
+    def get_width(self, y):
+        if y < self.bh:
             return self.bw
         else:
             return self.tw

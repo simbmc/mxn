@@ -5,7 +5,13 @@ Created on 15.03.2016
 '''
 from abc import abstractmethod
 
+from kivy.properties import StringProperty, ObjectProperty, BooleanProperty
+
 from ownComponents.design import Design
+from plot.filled_ellipse import FilledEllipse
+from plot.line import LinePlot
+from reinforcement.bar import Bar
+from reinforcement.layer import Layer
 
 
 class AView(object):
@@ -15,6 +21,15 @@ class AView(object):
     that the view has the necessary methods, which the other components
     are use
     '''
+    
+    # important components
+    csShape = ObjectProperty()
+    focusLine = LinePlot(width=1.5, color=Design.focusColor)
+    lineIsFocused = BooleanProperty(False)
+    
+    # strings
+    ylabelStr = StringProperty('cross-section-height [m]')
+    xlabelStr = StringProperty('cross-section-width [m]')
     
     #############################################################################
     # the following methods must implemented individual in the class,           #
@@ -45,6 +60,31 @@ class AView(object):
     #############################################################################
     
     '''
+    create a layer and add it to the graph and the csShape
+    '''
+   
+    def create_layer(self, y, csArea, w, material, line):
+        self.csShape.hide_error_message()
+        l = Layer(y, csArea, w)
+        l.material = material
+        l.line = line
+        self.graph.add_plot(line)
+        self.csShape.layers.append(l)
+    
+    '''
+    update layer properties
+    '''
+   
+    def update_layer_properties(self, y, material, csArea):
+        self.csShape.hide_error_message()
+        self.focusLayer.y = y
+        self.focusLayer.material = material
+        self.focusLayer.csArea = csArea
+        if self.lineIsFocused:
+            self.focusLine.points = self.focusLayer.line.points
+            self.graph.remove_plot(self.focusLine)
+        
+    '''
     the method delete_layer was developed to delete layer from the cross section
     '''
 
@@ -56,6 +96,33 @@ class AView(object):
                     self.csShape.layers.remove(layer)
                     self.graph.remove_plot(layer.line)
                     self.graph.remove_plot(self.focusLine)
+    
+    '''
+    create a bar and add it to the graph and the csShape
+    '''
+                    
+    def create_bar(self, x, y, csArea, material, epsX, epsY):
+        self.csShape.hide_error_message()
+        b = Bar(x, y, csArea)
+        b.material = material
+        plot = FilledEllipse(xrange=[x - epsX, x + epsX], yrange=[y - epsY, y + epsY],
+                             color=[255, 0, 0, 1])
+        b.ellipse = plot
+        self.graph.add_plot(plot)
+        self.csShape.bars.append(b)
+    
+    '''
+    update the bar-properties
+    '''
+                    
+    def update_bar_properties(self, x, y, csArea, material, epsX, epsY):
+        self.csShape.hide_error_message()
+        self.focusBar.ellipse.xrange = [x - epsX, x + epsX]
+        self.focusBar.ellipse.yrange = [y - epsY, y + epsY]
+        self.focusBar.x = x
+        self.focusBar.y = y
+        self.focusBar.material = material
+        self.focusBar.csArea = csArea
     
     '''
     the method delete_bar was developed to delete bars from the cross section
