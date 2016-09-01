@@ -26,7 +26,10 @@ class ShapeCircle(GridLayout, AShape):
     # diameter of the circle
     d = NumericProperty(0.25)
     
-    # Constructor
+    '''
+    constructor
+    '''
+    
     def __init__(self, **kwargs):
         super(ShapeCircle, self).__init__(**kwargs)
         self.view = CSCircleView()
@@ -36,12 +39,14 @@ class ShapeCircle(GridLayout, AShape):
     '''
     y distance of gravity centre from upper rim
     '''
+        
     def _get_gravity_centre(self):
         return self.d / 2.
     
     '''
     returns width of cross section for different vertical coordinates
     '''
+   
     def get_width(self, y):
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.

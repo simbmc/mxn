@@ -19,12 +19,16 @@ class QuadraticFunction(IFunction):
     represents a quadratic-function f(x)=ax*x+b*x
     '''
     
-    # important values
-    a, b = NumericProperty(), NumericProperty()
-    minStrain, maxStrain = NumericProperty(), NumericProperty()
-    minStress, maxStress = NumericProperty(), NumericProperty()
+    # parameter a
+    a = NumericProperty()
     
-    # constuctor
+    # parameter b 
+    b = NumericProperty()
+    
+    '''
+    constructor
+    '''
+    
     def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
         self.a, self.b = a, b
         self.minStrain, self.maxStrain = minStrain, maxStrain

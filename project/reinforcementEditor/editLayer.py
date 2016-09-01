@@ -21,21 +21,28 @@ class EditLayer(GridLayout):
     can add or edit layers in the reinforcement-editor 
     '''
     
-    # important components
+    # reinforcement editor
     p = ObjectProperty()
     
-    # strings
     materialStr = StringProperty('material')
+    
     steelStr = StringProperty('steel')
+    
     yCoordinateStr = StringProperty('y-coordinate [m]')
+    
     csAreaStr = StringProperty('cross-sectional area')
+    
     defaultValueStr = StringProperty('0.0')
+    
     confirmStr = StringProperty('confirm')
+    
     cancelStr = StringProperty('cancel')
     
     add = BooleanProperty(True)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(EditLayer, self).__init__(**kwargs)
         self.allMaterial = MaterialList.Instance()

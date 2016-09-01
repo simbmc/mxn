@@ -10,30 +10,30 @@ from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-from kivy.properties import  ObjectProperty, StringProperty
+from kivy.properties import  StringProperty
+from materialLawEditor.ainformation import AInformation
 
-class LinearInformation(GridLayout):
+class LinearInformation(GridLayout, AInformation):
     
     '''
     with the LinearInformation you can set the properties of the function
     '''
     
-    # important components
-    editor = ObjectProperty()
+    # string-linear
+    linearStr = StringProperty('linear')
     
-    # strings
-    functionStr, linearStr = StringProperty('function:'), StringProperty('linear')
-    aStr, strainULStr = StringProperty('a:'), StringProperty('strain-upper-limit:')
-    strainLLStr, stressULStr = StringProperty('strain-lower-limit:'), StringProperty('stress-upper-limit  [MPa]:')
-    stressLLStr = StringProperty('stress-lower-limit  [MPa]:')
-    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    # string parameter a
+    aStr = StringProperty('a:')
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(LinearInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-        self.row_force_default, self.row_default_height = True, Design.btnHeight
         self.create_gui()
+        self.numpad = Numpad(sign=True, p=self)
+        self.popupNumpad = OwnPopup(content=self.numpad)
 
     '''
     create the gui of the linear-information, 
@@ -45,47 +45,18 @@ class LinearInformation(GridLayout):
         self.add_widget(self.btnLinear)
         self.add_widget(OwnLabel(text=self.aStr))
         self.add_widget(self.btnA)
-        self.add_widget(OwnLabel(text=self.strainULStr))
-        self.add_widget(self.btnStrainUL)
-        self.add_widget(OwnLabel(text=self.strainLLStr))
-        self.add_widget(self.btnStrainLL)
-        self.add_widget(OwnLabel(text=self.stressULStr))
-        self.add_widget(self.btnStressUL)
-        self.add_widget(OwnLabel(text=self.stressLLStr))
-        self.add_widget(self.btnStressLL)
-        self.add_widget(self.btnConfirm)
-        self.add_widget(self.btnCancel)
-        # create the numpad for the input
-        self.numpad = Numpad(sign=True, p=self)
-        self.popupNumpad = OwnPopup(content=self.numpad)
+        self.add_base_btns()
     
     '''
-    create all btns of the gui. this method to improve the code-overview
+    create all btns of the gui
     '''
     def create_btns(self):
-        self.btnStressUL = OwnButton(text=str(self.editor.upperStress))
-        self.btnStressLL = OwnButton(text=str(self.editor.lowerStress))
-        self.btnStrainUL = OwnButton(text=str(self.editor.upperStrain))
-        self.btnStrainLL = OwnButton(text=str(self.editor.lowerStrain))
-        self.btnA = OwnButton(text=str(self.editor.a))
-        self.btnConfirm = OwnButton(text=self.okStr)
-        self.btnCancel = OwnButton(text=self.cancelStr)
         self.btnLinear = OwnButton(text=self.linearStr)
         self.btnLinear.bind(on_press=self.show_type_selection)
-        self.btnConfirm.bind(on_press=self.editor.confirm)
-        self.btnStrainUL.bind(on_press=self.show_popup)
-        self.btnStressUL.bind(on_press=self.show_popup)
-        self.btnStressLL.bind(on_press=self.show_popup)
-        self.btnStrainLL.bind(on_press=self.show_popup)
-        self.btnCancel.bind(on_press=self.editor.cancel)
+        self.btnA = OwnButton(text=str(self.editor.a))
         self.btnA.bind(on_press=self.show_popup)
-        
-    '''
-    close the numpad when the user cancel the input
-    '''
-    def close_numpad(self):
-        self.popupNumpad.dismiss()
-
+        self.create_base_btns()
+       
     '''
     open the numpad popup
     '''
@@ -93,19 +64,9 @@ class LinearInformation(GridLayout):
         self.focusBtn = btn
         if self.focusBtn == self.btnA:
             self.popupNumpad.title = self.aStr
-        elif self.focusBtn == self.btnStrainUL:
-            self.popupNumpad.title = self.strainULStr
-        elif self.focusBtn == self.btnStressUL:
-            self.popupNumpad.title = self.stressULStr
-        elif self.focusBtn == self.btnStrainLL:
-            self.popupNumpad.title = self.strainLLStr
-        elif self.focusBtn == self.btnStressLL:
-            self.popupNumpad.title = self.stressLLStr
+        self.set_popup_title()
         self.popupNumpad.open()
-    
-    def show_type_selection(self, btn):
-        self.editor.lawEditor.editor.open()
-    
+
     '''
     when the user confirm his input
     '''
@@ -131,7 +92,7 @@ class LinearInformation(GridLayout):
         elif self.focusBtn == self.btnStressLL:
             self.editor.lowerStress = v
             self.editor.view.update_stress_lower_limit(v)
-    
+        
     '''
     update the complete information by the given function-properties
     '''

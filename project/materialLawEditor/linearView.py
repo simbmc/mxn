@@ -6,41 +6,24 @@ Created on 09.05.2016
 
 from kivy.uix.gridlayout import GridLayout
 
-from ownComponents.ownGraph import OwnGraph
 from plot.line import LinePlot
-from kivy.properties import  ObjectProperty, StringProperty
+from materialLawEditor.aview import AView
 
-class LinearView(GridLayout):
+class LinearView(GridLayout, AView):
     
     '''
     the view-component show the function in a graph
     '''
     
-    # important components
-    editor = ObjectProperty()
-    
-    # strings
-    strainStr, stressStr = StringProperty('strain'), StringProperty('stress [MPa]')
-    
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(LinearView, self).__init__(**kwargs)
         self.cols = 1
         self.create_graph()
-    
-    '''
-    create the graph of the view
-    '''
-    def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
-                              x_ticks_major=2, y_ticks_major=2,
-                              y_grid_label=True, x_grid_label=True,
-                              x_grid=True, y_grid=True,
-                              xmin=0, xmax=10, ymin=0, ymax=10)
-        self.line = LinePlot(points=[(0, 0), (10, 10)], width=2, color=[1, 0, 0])
+        self.line = LinePlot(points=[(0, 0), (self.editor.upperStrain, self.editor.upperStress)], width=2, color=[1, 0, 0])
         self.graph.add_plot(self.line)
-        self.add_widget(self.graph)
-    
     
     '''
     update the graph with the new lower strain limit.
@@ -80,14 +63,3 @@ class LinearView(GridLayout):
     def update_graph(self, value):
         y1, y2 = self.graph.xmin * value, self.graph.xmax * value
         self.line.points = [(self.graph.xmin, y1), (self.graph.xmax, y2)]
-   
-    '''
-    update the complete graph by the given function-properties
-    '''
-    def update_function(self, points, minStress, maxStress, minStrain, maxStrain):
-        self.line.points = points
-        self.graph.xmin, self.graph.xmax = minStrain, maxStrain
-        self.graph.ymin, self.graph.ymax = minStress, maxStress
-        self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
-        self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
-        

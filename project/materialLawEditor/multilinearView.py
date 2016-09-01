@@ -5,43 +5,24 @@ Created on 06.05.2016
 from kivy.uix.gridlayout import GridLayout
 
 from ownComponents.design import Design
-from ownComponents.ownGraph import OwnGraph
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
-from kivy.properties import  ObjectProperty, StringProperty
+from materialLawEditor.aview import AView
 
-class MultilinearView(GridLayout):
+class MultilinearView(GridLayout, AView):
     
     '''
     the view-component show the function in a graph
     '''
     
-    # important components
-    editor = ObjectProperty()
-    
-    # strings
-    strainStr, stressStr = StringProperty('strain '), StringProperty('stress [MPa]')
-    
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(MultilinearView, self).__init__(**kwargs)
         self.cols = 1
         self.create_graph()
         self.create_points(self.editor._points)
-
-    '''
-    create the graph of the view
-    '''
-        
-    def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
-                           x_ticks_major=self.editor.upperStress / 5.,
-                           y_ticks_major=self.editor.upperStrain / 5.,
-                           x_grid=True, y_grid=True,
-                           y_grid_label=True, x_grid_label=True,
-                           xmin=self.editor.lowerStress, xmax=self.editor.upperStress,
-                           ymin=self.editor.lowerStrain, ymax=self.editor.upperStrain)
-        self.add_widget(self.graph)
 
     '''
     create the points. draw the points of the diagonal of the graph 

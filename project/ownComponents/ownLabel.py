@@ -17,6 +17,9 @@ class OwnLabel(Label):
     
     background_color_normal = Design.foregroundColor
     
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(OwnLabel, self).__init__(**kwargs)
         self.color = self.background_color_normal

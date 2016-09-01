@@ -9,9 +9,10 @@ from functions.quadraticFunction import QuadraticFunction
 from materialLawEditor.quadraticFunctionInformation import QuadraticFunctionInformation
 from materialLawEditor.quadraticFunctionView import QuadraticFunctionView
 import numpy as np
-from kivy.properties import  ObjectProperty, NumericProperty
+from kivy.properties import  NumericProperty
+from materialLawEditor.aeditor import AEditor
 
-class QuadraticFunctionEditor(GridLayout):
+class QuadraticFunctionEditor(GridLayout, AEditor):
     
     '''
     QuadraticFunctionEditor is the main-component to create a quadratic-function. 
@@ -20,16 +21,15 @@ class QuadraticFunctionEditor(GridLayout):
     of the material-law to f
     '''
     
-    # important components
-    lawEditor = ObjectProperty()
-    view, information = ObjectProperty(), ObjectProperty()
+    # parameter a
+    a = NumericProperty(1.)
     
-    # important values
-    a, b = NumericProperty(1.), NumericProperty(0.)
-    upperStrain, upperStress = NumericProperty(10.), NumericProperty(10.)
-    lowerStrain, lowerStress = NumericProperty(0.), NumericProperty(0.)
+    # parameter b
+    b = NumericProperty(0.)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(QuadraticFunctionEditor, self).__init__(**kwargs)
         self.cols = 2
@@ -47,17 +47,6 @@ class QuadraticFunctionEditor(GridLayout):
     def confirm(self, btn):
         self.lawEditor.cancel_graphicShow()
         f = QuadraticFunction(self.a, self.b, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
-        self.lawEditor.f = f
-        self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
-                                            self.upperStrain, f.points)
-        self.lawEditor.creater.materialLaw.text = f.f_toString()
-        self.lawEditor.cancel_graphicShow()
-        self.lawEditor.creater.close_material_law_editor(None)
+        self.create_function(f)
     
-    '''
-    cancel the selection where you can select the function-type
-    of the material-law
-    '''
-    def cancel(self, btn):
-        self.lawEditor.cancel_graphicShow()
 

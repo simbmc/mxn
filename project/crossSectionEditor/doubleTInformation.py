@@ -20,15 +20,24 @@ class DoubleTInformation(GridLayout):
     of the cross-section-double-t
     '''
     
-    # important components
+    # double-t shape
     csShape = ObjectProperty()
     
-    # strings
-    twStr, thStr = StringProperty('top-width [m]'), StringProperty('top-height [m]')
-    mwStr, mhStr = StringProperty('middle-width [m]'), StringProperty('middle-height [m]')
-    bwStr, bhStr = StringProperty('bottom-width [m]'), StringProperty('bottom-height [m]')
+    twStr = StringProperty('top-width [m]')
     
-    # constructor
+    thStr = StringProperty('top-height [m]')
+    
+    mwStr = StringProperty('middle-width [m]')
+    
+    mhStr = StringProperty('middle-height [m]')
+    
+    bwStr = StringProperty('bottom-width [m]')
+    
+    bhStr = StringProperty('bottom-height [m]')
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(DoubleTInformation, self).__init__(**kwargs)
         print('create doubleT-information')

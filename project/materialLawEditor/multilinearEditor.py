@@ -8,9 +8,10 @@ from functions.multilinear import Multilinear
 from materialLawEditor.mulitlinearInformation import MultilinearInformation
 from materialLawEditor.multilinearView import MultilinearView
 from ownComponents.design import Design
-from kivy.properties import  ObjectProperty, NumericProperty
+from kivy.properties import NumericProperty
+from materialLawEditor.aeditor import AEditor
 
-class MultilinearEditor(GridLayout):
+class MultilinearEditor(GridLayout, AEditor):
     
     '''
     MultilinearEditor is the main-component to create a multilinear-function. 
@@ -19,15 +20,12 @@ class MultilinearEditor(GridLayout):
     of the material-law to f
     '''
     
-    # important components
-    lawEditor = ObjectProperty()
-    
-    # important values
-    upperStrain, upperStress = NumericProperty(50.), NumericProperty(50.)
-    lowerStrain, lowerStress = NumericProperty(0.), NumericProperty(0.)
+    # number of points
     _points = NumericProperty(5)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(MultilinearEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
@@ -41,17 +39,5 @@ class MultilinearEditor(GridLayout):
     def confirm(self, btn):
         x, y = self.view.get_coordinates()
         f = Multilinear(x, y, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
-        self.lawEditor.f = f
-        self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
-                                            self.upperStrain, f.points)
-        self.lawEditor.creater.materialLaw.text = f.f_toString()
-        self.lawEditor.cancel_graphicShow()
-        self.lawEditor.creater.close_material_law_editor(None)
+        self.create_function(f)
 
-    '''
-    cancel the selection where you can select the function-type
-    of the material-law
-    '''
-    
-    def cancel(self, btn):
-        self.lawEditor.cancel_graphicShow()

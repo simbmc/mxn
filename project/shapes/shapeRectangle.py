@@ -29,7 +29,10 @@ class ShapeRectangle(GridLayout, AShape):
     # width of the cross-section
     cw = NumericProperty(0.25)
     
-    # constructor
+    '''
+    constructor
+    '''
+    
     def __init__(self, **kwargs):
         super(ShapeRectangle, self).__init__(**kwargs)
         self.view.csShape = self
@@ -38,11 +41,13 @@ class ShapeRectangle(GridLayout, AShape):
     '''
     y distance of gravity centre from upper rim
     '''
+        
     def _get_gravity_centre(self):
         return self.ch / 2.
     
     '''
     returns width of cross section for different vertical coordinates
     '''
+   
     def get_width(self, y):
         return self.cw

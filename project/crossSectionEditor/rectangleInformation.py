@@ -20,13 +20,16 @@ class RectangleInformation(GridLayout):
     the width of the cross-section-rectangle
     '''
     
-    # important components
+    # cross section shape rectangle
     csShape = ObjectProperty()
     
-    # strings
-    heightStr, widthStr = StringProperty('height [m]'), StringProperty('width [m]')
+    heightStr = StringProperty('height [m]')
     
-    # constructor
+    widthStr = StringProperty('width [m]')
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(RectangleInformation, self).__init__(**kwargs)
         print('create rectangle-information')

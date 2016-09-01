@@ -17,7 +17,6 @@ class Numpad(GridLayout):
     to input a value
     '''
     
-    # important components
     # parent-component of the keyboard
     p = ObjectProperty()
     
@@ -26,10 +25,14 @@ class Numpad(GridLayout):
     defaultStr = StringProperty('')
     confirmStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
     dotStr, backStr = StringProperty('.'), StringProperty('<<')
-    # booleans
+    
+    # boolean whether it should be possible to input negative
+    # values
     sign = BooleanProperty(False)
     
-    # construktor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
         self.cols = 1

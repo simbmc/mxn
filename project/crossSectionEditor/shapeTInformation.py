@@ -20,14 +20,20 @@ class TInformation(GridLayout):
     of the cross-section-t-shape
     '''
     
-    # important components
+    # cross section shape T
     csShape = ObjectProperty()
     
-    # strings
-    twStr, thStr = StringProperty('top-width [m]'), StringProperty('top-height [m]')
-    bwStr, bhStr = StringProperty('bottom-width [m]'), StringProperty('bottom-height [m]')
+    twStr = StringProperty('top-width [m]')
     
-    # constructor
+    thStr = StringProperty('top-height [m]')
+    
+    bwStr = StringProperty('bottom-width [m]')
+    
+    bhStr = StringProperty('bottom-height [m]')
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(TInformation, self).__init__(**kwargs)
         print('create t-information')

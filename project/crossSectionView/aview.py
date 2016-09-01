@@ -22,13 +22,17 @@ class AView(object):
     are use
     '''
     
-    # important components
+    #cs-shape
     csShape = ObjectProperty()
+    
+    #line to show that the layer has the focus
     focusLine = LinePlot(width=1.5, color=Design.focusColor)
+    
+    #boolean whether a line has the focus
     lineIsFocused = BooleanProperty(False)
     
-    # strings
     ylabelStr = StringProperty('cross-section-height [m]')
+    
     xlabelStr = StringProperty('cross-section-width [m]')
     
     #############################################################################

@@ -21,16 +21,26 @@ class ShapeSelection(GridLayout):
     the currently cross-section-shape 
     '''
     
-    # important components
+    # refEditor
     information = ObjectProperty()
     
-    # strings
-    circleStr, rectangleStr = StringProperty('circle'), StringProperty('rectangle')
-    ishapeStr, tshapeStr = StringProperty('I-shape'), StringProperty('T-shape')
-    shapeStr = StringProperty('shape')
-    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
+    circleStr = StringProperty('circle')
     
-    # constructor
+    rectangleStr = StringProperty('rectangle')
+    
+    ishapeStr = StringProperty('I-shape')
+    
+    tshapeStr = StringProperty('T-shape')
+    
+    shapeStr = StringProperty('shape')
+    
+    okStr = StringProperty('ok')
+    
+    cancelStr = StringProperty('cancel')
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
@@ -273,4 +283,3 @@ class ShapeSelection(GridLayout):
         points = [(x1, y1), (x1, y2), (x3, y3), (x4, y4), (x5, y5), (x6, y6),
                   (x7, y7), (x8, y4), (x9, y4), (x10, y3), (x11, y3), (x12, y1), (x1, y1)]
         return points
-

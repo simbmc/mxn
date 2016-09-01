@@ -19,6 +19,9 @@ class OwnButton(Button):
     background_color_normal = Design.btnColor
     background_color_down = ListProperty([1, 1, 1, 1])
     
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(OwnButton, self).__init__(**kwargs)
         self.size_hint_y=None

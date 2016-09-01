@@ -19,7 +19,9 @@ class DoubleTView(AView, GridLayout):
     the cross-section
     '''
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(DoubleTView, self).__init__(**kwargs)
         AView.__init__(self)

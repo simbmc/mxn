@@ -3,16 +3,17 @@ Created on 03.05.2016
 
 @author: mkennert
 '''
-from kivy.properties import  ObjectProperty, NumericProperty
+from kivy.properties import  NumericProperty
 from kivy.uix.gridlayout import GridLayout
 
 from functions.linearFunction import Linear
 from materialLawEditor.linearInformation import LinearInformation
 from materialLawEditor.linearView import LinearView
 from ownComponents.design import Design
+from materialLawEditor.aeditor import AEditor
 
 
-class LinearEditor(GridLayout):
+class LinearEditor(GridLayout, AEditor):
     
     '''
     LinearEditor is the main-component to create a linear-function. 
@@ -21,18 +22,12 @@ class LinearEditor(GridLayout):
     of the material-law to f
     '''
     
-    # important components
-    view = ObjectProperty()
-    information = ObjectProperty()
-    lawEditor = ObjectProperty()
-    f = ObjectProperty()
-    
-    # important values
-    upperStrain, upperStress = NumericProperty(10.), NumericProperty(10.)
-    lowerStrain, lowerStress = NumericProperty(0.), NumericProperty(0.)
+    # parameter a
     a = NumericProperty(1.)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(LinearEditor, self).__init__(**kwargs)
         self.cols , self.spacing = 2, Design.spacing
@@ -46,27 +41,4 @@ class LinearEditor(GridLayout):
     '''
     def confirm(self, btn):
         f = Linear(self.a, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
-        self.lawEditor.f = f
-        self.lawEditor.creater.materialLaw.text = f.f_toString()
-        self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
-                                            self.upperStrain, f.points)
-        self.lawEditor.cancel_graphicShow()
-        self.lawEditor.creater.close_material_law_editor(None)
-    
-    '''
-    cancel the selection where you can select the function-type
-    of the material-law
-    '''
-    def cancel(self, btn):
-        self.lawEditor.cancel_graphicShow()
-    
-    '''
-    update the complete information and graph by the given function-properties
-    '''
-    def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
-        self.lowerStress = minStress
-        self.upperStress = maxStress
-        self.lowerStrain = minStrain
-        self.upperStrain = maxStrain
-        self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
-        self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
+        self.create_function(f)

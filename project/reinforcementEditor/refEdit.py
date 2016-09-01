@@ -26,18 +26,24 @@ class ReinforcementEditor(GridLayout, IObserver):
     the selected cross-section-shape
     '''
     
-    # important components
+    # editLayer
     editLayer = ObjectProperty()
+    
+    # editBar
     editBar = ObjectProperty()
     
-    # strings
     addLayerStr = StringProperty('add layer')
+    
     deleteLayerStr = StringProperty('delete layer')
+    
     addBarStr = StringProperty('add bar')
+    
     deleteBarStr = StringProperty('delete bar')
     
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(ReinforcementEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
@@ -122,7 +128,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
     delete the selected layer in the focus view
     '''
-    def delete_layer(self):
+    def delete_layer(self, btn):
         self.view.delete_layer()
     
     '''
@@ -143,7 +149,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
     delete the selected bar in the focus view
     '''
-    def delete_bar(self):
+    def delete_bar(self, btn):
         self.view.delete_bar()
     
     '''

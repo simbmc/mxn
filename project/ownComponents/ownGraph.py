@@ -17,6 +17,9 @@ class OwnGraph(Graph):
     all graphs
     '''
     
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(OwnGraph, self).__init__(**kwargs)
         self.background_color = [1,1,1,1]

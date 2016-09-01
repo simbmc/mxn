@@ -17,6 +17,9 @@ class OwnPopup(Popup):
     has the same properties and make it easier to change popup-properties
     '''
     
+    '''
+    constructor
+    '''
     background_color_normal = Design.foregroundColor
     def __init__(self, **kwargs):
         super(OwnPopup, self).__init__(**kwargs)

@@ -21,7 +21,9 @@ class MaterialList:
     implements a update-method.
     '''
     
-    # constuctor
+    '''
+    constructor
+    '''
     def __init__(self):
         self.allMaterials = [Steel(), CarbonFiber(), GlassFiber(), Concrete()]
         self.listeners = []

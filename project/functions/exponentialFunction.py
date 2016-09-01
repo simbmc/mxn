@@ -3,9 +3,12 @@ Created on 06.05.2016
 
 @author: mkennert
 '''
-import numpy as np
+from numpy import arange
+
 from functions.function import IFunction
+import numpy as np
 from kivy.properties import NumericProperty
+
 
 class ExponentialFunction(IFunction):
     
@@ -13,12 +16,16 @@ class ExponentialFunction(IFunction):
     represents a exponentialFunction f(x)=ae^(bx)
     '''
     
-    # important values
-    a, b = NumericProperty(), NumericProperty()
-    minStrain, maxStrain = NumericProperty(), NumericProperty()
-    minStress, maxStress = NumericProperty(), NumericProperty()
+    # parameter a
+    a = NumericProperty()
     
-    # constructor
+    # parameter b 
+    b = NumericProperty()
+    
+    '''
+    constructor
+    '''
+    
     def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
         self.a, self.b = a, b
         self.minStrain, self.maxStrain = minStrain, maxStrain

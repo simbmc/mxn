@@ -18,11 +18,12 @@ class Keyboard(GridLayout):
     the keyboard-object is a popup
     '''    
     
-    # important components
     # parent-component of the keyboard
     p = ObjectProperty()
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(Keyboard, self).__init__(**kwargs)
         self.cols = 1

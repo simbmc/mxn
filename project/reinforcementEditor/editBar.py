@@ -21,20 +21,28 @@ class EditBar(GridLayout):
     can add or edit layers in the reinforcement-editor 
     '''
     
-    # important components
+    # reinforcement editor
     p = ObjectProperty()
     
-    # strings
     materialStr = StringProperty('material')
+    
     steelStr = StringProperty('steel')
+    
     xCoordinateStr = StringProperty('x-coordinate [m]')
+    
     yCoordinateStr = StringProperty('y-coordinate [m]')
+    
     csAreaStr = StringProperty('cross-sectional area')
+    
     defaultValueStr = StringProperty('0.0')
+    
     confirmStr = StringProperty('confirm')
+    
     cancelStr = StringProperty('cancel')
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(EditBar, self).__init__(**kwargs)
         self.allMaterial = MaterialList.Instance()

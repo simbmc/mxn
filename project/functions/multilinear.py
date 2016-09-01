@@ -4,7 +4,6 @@ Created on 06.07.2016
 @author: mkennert
 '''
 
-from kivy.properties import NumericProperty
 from numpy import interp
 
 from functions.function import IFunction
@@ -16,11 +15,11 @@ class Multilinear(IFunction):
     represents a multilinear function
     '''
     
-    # important values
-    minStrain, maxStrain = NumericProperty(), NumericProperty()
-    minStress, maxStress = NumericProperty(), NumericProperty()
     
-    # constructor
+    '''
+    constructor
+    '''
+    
     def __init__(self, x, y, minStrain, maxStrain, minStress, maxStress):
         # x=x-coordinates, y=y-coordinates
         self.x, self.y = x, y

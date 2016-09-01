@@ -64,8 +64,7 @@ class MXNApp(App):
     '''
 
     def create_material_editor(self):
-        self.materialEditor = MaterialEditor()
-        self.materialEditor.set_cross_section(self.crossSection)
+        self.materialEditor = MaterialEditor(csShape=self.crossSection)
 
     '''
     create the cross section-editor
@@ -148,7 +147,6 @@ class MXNApp(App):
         self.content.add_widget(self.explorer)
         self.view = self.explorer
         self.update_explorer()
-        self.explorer.update_strain_stress()
     
     '''
     update the cross-section-information of the explorer
@@ -156,7 +154,8 @@ class MXNApp(App):
         
     def update_explorer(self):
         if self.csEditor.csShape == self.crossSection.csDoubleT:
-            self.explorer.update_csShape(self.crossSection.csDoubleT, self.crossSection.csDoubleT.get_total_height(),
+            self.explorer.update_csShape(self.crossSection.csDoubleT,
+                                         self.crossSection.csDoubleT.get_total_height(),
                                          self.crossSection.csDoubleT.layers, self.crossSection.csDoubleT.bars)
         elif self.csEditor.csShape == self.crossSection.csCircle:
             self.explorer.update_csShape(self.crossSection.csCircle, self.crossSection.csCircle.d,

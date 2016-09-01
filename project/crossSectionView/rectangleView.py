@@ -21,11 +21,16 @@ class CSRectangleView(GridLayout, AView):
     the cross-section
     '''
     
-    # important values
-    # heigth, width of the cross-section
-    ch, cw = NumericProperty(0.5), NumericProperty(0.25)
     
-    # Constructor
+    # height of the cross-section
+    ch = NumericProperty(0.5)
+    
+    # width of the cross-section
+    cw = NumericProperty(0.25)
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(CSRectangleView, self).__init__(**kwargs)
         self.cols = 1

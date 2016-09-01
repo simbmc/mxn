@@ -12,17 +12,19 @@ class Linear(IFunction):
     represents a linear function f(x)=ax
     '''
     
-    # important values
+    # parameter a
     a = NumericProperty()
-    minStrain, maxStrain = NumericProperty(), NumericProperty()
-    minStress, maxStress = NumericProperty(), NumericProperty()
     
-    # constructor
+    
+    '''
+    constructor
+    '''
+    
     def __init__(self, a, minStrain, maxStrain, minStress, maxStress):
         self.a = a
         self.minStrain, self.maxStrain = minStrain, maxStrain
         self.minStress, self.maxStress = minStress, maxStress
-        self.points = [(minStress, self.f(minStress)), (maxStress, self.f(maxStress))]
+        self.points = [(minStrain, self.f(minStrain)), (maxStrain, self.f(maxStrain))]
     
     '''
     evaluate the linear-function by the parameters a

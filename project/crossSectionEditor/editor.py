@@ -25,15 +25,22 @@ class CrossSectionEditor(GridLayout):
     the size-properties of the shapes
     '''
     
-    # important components
+    # cross section
     cs = ObjectProperty()
     
-    # strings
-    circle, rectangle = StringProperty('circle'), StringProperty('rectangle')
-    ishape, tshape = StringProperty('I-shape'), StringProperty('T-shape')
+    circle = StringProperty('circle')
+    
+    rectangle = StringProperty('rectangle')
+    
+    ishape = StringProperty('I-shape')
+    
+    tshape = StringProperty('T-shape')
+    
     shapeStr = StringProperty('shape')
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(CrossSectionEditor, self).__init__(**kwargs)
         print('cross-section-editor')

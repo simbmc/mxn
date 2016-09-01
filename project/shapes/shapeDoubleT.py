@@ -16,7 +16,6 @@ class ShapeDoubleT(GridLayout, AShape):
     represents a cross section which has the doubleT- or I-Shape
     '''
     
-    
     # cross-section-view
     view = ObjectProperty(DoubleTView())
     
@@ -41,7 +40,10 @@ class ShapeDoubleT(GridLayout, AShape):
     # height of the bottom rectangle
     bh = NumericProperty(0.2)
     
-    # constructor
+    '''
+    constructor
+    '''
+    
     def __init__(self, **kwargs):
         super(ShapeDoubleT, self).__init__(**kwargs)
         self.cols = 2
@@ -81,6 +83,7 @@ class ShapeDoubleT(GridLayout, AShape):
     '''
     returns width of cross section for different vertical coordinates
     '''
+   
     def get_width(self, y):
         if y < self.bh:
             return self.bw

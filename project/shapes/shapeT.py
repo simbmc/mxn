@@ -32,7 +32,10 @@ class ShapeT(AShape, GridLayout):
     # height of the bottom rectangle
     bh = NumericProperty(0.3)  # bottom-area
     
-    # constructor
+    '''
+    constructor
+    '''
+    
     def __init__(self, **kwargs):
         super(ShapeT, self).__init__(**kwargs)
         self.cols = 2

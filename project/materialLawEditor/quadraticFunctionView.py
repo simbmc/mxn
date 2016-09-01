@@ -6,39 +6,22 @@ Created on 06.05.2016
 from kivy.uix.gridlayout import GridLayout
 from numpy import arange
 
-from ownComponents.ownGraph import OwnGraph
 from plot.line import LinePlot
-from kivy.properties import  ObjectProperty, StringProperty
+from materialLawEditor.aview import AView
 
-class QuadraticFunctionView(GridLayout):
+class QuadraticFunctionView(GridLayout, AView):
     
     '''
     the view-component show the function in a graph
     '''
     
-    # important components
-    editor = ObjectProperty()
-    
-    # strings
-    strainStr, stressStr = StringProperty('strain'), StringProperty('stress [MPa]')
-    
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(QuadraticFunctionView, self).__init__(**kwargs)
         self.cols = 1
         self.create_graph()
-    
-    '''
-    create the graph of the view
-    '''
-    def create_graph(self):
-        self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
-                           x_ticks_major=2.5, y_ticks_major=2.5,
-                           y_grid_label=True, x_grid_label=True,
-                           x_grid=True, y_grid=True,
-                           xmin=self.editor.lowerStress, xmax=self.editor.upperStress,
-                           ymin=self.editor.lowerStrain, ymax=self.editor.upperStrain)
-        self.add_widget(self.graph)
         self.plot = LinePlot(color=[255, 0, 0])
         self.plot.points = [(x, self.editor.f(x)) for x in arange(-self.graph.xmax, self.graph.xmax + 1, self.graph.xmax / 1e2)]
         self.graph.add_plot(self.plot)

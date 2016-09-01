@@ -21,13 +21,15 @@ class CircleInformation(GridLayout):
     of the cross-section-circle
     '''
     
-    # important components
+    # circle-shape
     csShape = ObjectProperty()
     
-    # strings
+    # diameter of the circle
     diameter = StringProperty('diameter [m]')
     
-    # Constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(CircleInformation, self).__init__(**kwargs)
         print('create circle-information')

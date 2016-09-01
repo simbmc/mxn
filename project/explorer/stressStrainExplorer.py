@@ -3,196 +3,160 @@ Created on 25.08.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty, StringProperty, NumericProperty, ListProperty
+from decimal import Decimal
+
+from kivy.properties import ObjectProperty, NumericProperty, ListProperty
 from kivy.uix.gridlayout import GridLayout
 
-from ownComponents.design import Design
-from ownComponents.ownGraph import OwnGraph
-from ownComponents.ownLabel import OwnLabel
-from ownComponents.ownButton import OwnButton
-from ownComponents.numpad import Numpad
-from ownComponents.ownPopup import OwnPopup
-from plot.line import LinePlot
-from plot.dashedLine import DashedLine
+from explorer.gui import ExplorerGui
 from materialEditor.materiallist import MaterialList
+import numpy as np
+from ownComponents.design import Design
+from plot.dashedLine import DashedLine
 
-class Explorer(GridLayout):
+
+class Explorer(GridLayout, ExplorerGui):
     
     '''
     the Explorer is the component which shows the stress-strain.behaviour
     of the selected cross-section-shape
     '''
     
-    # important components
+    # cross-section-shape
     csShape = ObjectProperty()
-    layers, bars = ListProperty([]), ListProperty([])
     
-    # important strings
-    strainStr = StringProperty('strain')
-    stressStr = StringProperty('stress')
-    lowerStrainStr = StringProperty('lower-strain:')
-    upperStrainStr = StringProperty('upper-strain:')
-    defaultMinStrain = StringProperty('-0.5')
-    defaultMaxStrain = StringProperty('0.5')
-    defaultNumber = StringProperty('30')
-    numberStr = StringProperty('integration points')
+    # layers of the cross-section
+    layers = ListProperty([])
     
-    # important values
+    # bars of the cross-section
+    bars = ListProperty([])
+    
+    # height of the cross-section-shape
     h = NumericProperty()
-    minStrain, maxStrain = NumericProperty(-0.5), NumericProperty(0.5)
+    
+    # minimum strain
+    minStrain = NumericProperty(-0.5)
+    
+    # maximum strain
+    maxStrain = NumericProperty(0.5)
+    
+    # minimum stress of the cross section
+    minStress = NumericProperty()
+    
+    # maximum stress of the cross section
+    maxStress = NumericProperty()
+    
+    # number of integration points
     numberIntegration = NumericProperty(30)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(Explorer, self).__init__(**kwargs)
         print('create explorer')
         self.cols, self.spacing = 1, Design.spacing
-        self.Change = True
         self.graphContent = GridLayout(cols=2)
         self.h = self.csShape.ch
         self.allMaterial = MaterialList.Instance()
         self.create_gui()
     
     '''
-    create the gui of the explorer
+    update the cs-properties and the strain-stress-diagram
     '''
-        
-    def create_gui(self):
-        self.create_graphs()
-        self.add_widget(self.graphContent)
-        self.create_input_area()
-        self.numpad = Numpad(p=self, sign=True)
-        self.popupNumpad = OwnPopup(content=self.numpad)
+   
+    def update_csShape(self, cs, h, layers, bars):
+        self.csShape = cs
+        self.layers = layers
+        self.bars = bars
+        self.h = h
+        self.minStress = self.minStrain
+        self.maxStress = self.maxStrain
+        self.reset_explorer()
         self.update_strain_stress()
-    
-    '''
-    the method create_graphs create the graphs, where you can observe
-    the stress-strain-behavior
-    '''
+        self.plot()
+        self.update_graph()
         
-    def create_graphs(self):
-        # create-strain-graph
-        self.graphStrain = OwnGraph(xlabel=self.strainStr,
-                                    x_ticks_major=0.1, y_ticks_major=0.1,
-                                    y_grid_label=True, x_grid_label=True,
-                                    xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
-        self.graphContent.add_widget(self.graphStrain)
-        self.pStrainCs = LinePlot(color=[255, 0, 0])
-        self.graphStrain.add_plot(self.pStrainCs)
-        # create-stress-graph
-        self.graphStress = OwnGraph(xlabel=self.stressStr,
-                                    x_ticks_major=0.1, y_ticks_major=0.1,
-                                    y_grid_label=True, x_grid_label=True, padding=5,
-                                    xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
-        self.graphContent.add_widget(self.graphStress)
-        self.pStressCs = LinePlot(color=[255, 0, 0])
-        self.graphStress.add_plot(self.pStressCs)
-    
-    '''
-    create the area where you can input the lower and upper strain
-    '''
-        
-    def create_input_area(self):
-        inputArea = GridLayout(cols=6, row_force_default=True,
-                             row_default_height=Design.btnHeight, size_hint_y=None,
-                             height=1.1 * Design.btnHeight)
-        # create and bind btns
-        self.lowerStrainBtn = OwnButton(text=self.defaultMinStrain)
-        self.lowerStrainBtn.bind(on_press=self.show_popup)
-        self.upperStrainBtn = OwnButton(text=self.defaultMaxStrain)
-        self.upperStrainBtn.bind(on_press=self.show_popup)
-        self.integrationNumberBtn = OwnButton(text=self.defaultNumber)
-        self.integrationNumberBtn.bind(on_press=self.show_popup)
-        # fill the inputArea
-        inputArea.add_widget(OwnLabel(text=self.lowerStrainStr))
-        inputArea.add_widget(self.lowerStrainBtn)
-        inputArea.add_widget(OwnLabel(text=self.upperStrainStr))
-        inputArea.add_widget(self.upperStrainBtn)
-        inputArea.add_widget(OwnLabel(text=self.numberStr))
-        inputArea.add_widget(self.integrationNumberBtn)
-        self.add_widget(inputArea)
-    
     '''
     update the strain-stress-behavior of the cross-section
     '''
         
     def update_strain_stress(self):
-        if not self.Change:
-            return
         print('update_strain_stress (explorer)')
-        self.Change = False
-        # y=mx+b <=>y-mx=b
-        self.layers = self.csShape.layers
-        self.bars = self.csShape.bars
-        self.update_graph()
         self.m = (self.h) / (self.maxStrain - self.minStrain)
         self.b = self.h - self.m * self.maxStrain
-        # update all layer-lines
-        yCoordinates = []
-        for layer in self.layers:
-            v = self.f(layer.y)
-            pstrain = DashedLine(color=[255, 0, 0], points=[(0, layer.y), (v, layer.y)])
-            self.graphStrain.add_plot(pstrain)
-            pstress = DashedLine(color=[255, 0, 0],
-                                 points=[(0, layer.y), (layer.material.materialLaw.f(v), layer.y)])
-            self.graphStress.add_plot(pstress)
-            yCoordinates.append(layer.y)
-        # #update all bar-lines
-        for bar in self.bars:
-            v = self.f(bar.y)
-            pStrain = DashedLine(color=[255, 0, 0], points=[(0, bar.y), (v, bar.y)])
-            self.graphStrain.add_plot(pStrain)
-            pstress = DashedLine(color=[255, 0, 0],
-                                 points=[(0, bar.y), (bar.material.materialLaw.f(v), bar.y)])
-            self.graphStress.add_plot(pstress)
-            yCoordinates.append(bar.y)
-        self.update_matrix(yCoordinates)
-    
-    '''
-    update the matrix strain-stress-behavior
-    '''
-    
-    def update_matrix(self, yCoordinates):
         print('update_matrix (explorer)')
         self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
-        tick = self.h / (self.numberIntegration + len(yCoordinates))
-        counter = 0.
-        while counter < self.h:
-            reinforcentmentExist = False
-            for y in yCoordinates:
-                if counter == y:
-                    reinforcentmentExist = True
-            if not reinforcentmentExist:
-                v = self.f(counter)
-                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (v, counter)])
-                self.graphStrain.add_plot(p)
-                p = DashedLine(color=[0, 0, 0], points=[(0, counter), (self.mlaw(v), counter)])
-                self.graphStress.add_plot(p)
-            counter += tick
-            
+        self.yCoordinatesMatrix = np.linspace(0, self.h, self.numberIntegration)
+        self.strainMatrix = np.interp(self.yCoordinatesMatrix, [0, self.h], [self.minStrain, self.maxStrain])
+        self.stressMatrix = np.array([self.mlaw(strain) for strain in self.strainMatrix])
+        # update all layer-lines
+        index = 0
+        for layer in self.layers:
+            strain = self.f(layer.y)
+            stress = layer.material.materialLaw.f(strain)
+            self.yRef[index] = layer.y
+            self.csArea[index] = layer.h
+            self.strainRef[index] = strain
+            self.stressRef[index] = stress
+            index += 1
+        # #update all bar-lines
+        for bar in self.bars:
+            strain = self.f(bar.y)
+            stress = bar.material.materialLaw.f(strain)
+            self.yRef[index] = bar.y
+            self.csArea[index] = bar.csArea
+            self.strainRef[index] = strain
+            self.stressRef[index] = stress
+            index += 1
+        self.calculate_force_moment()
+    
     '''
-    update the graph-properties
+    calculation the force and the moment of the cross-section
     '''
-            
-    def update_graph(self):
-        # update strain-graph
-        self.graphStrain.xmin = self.minStrain
-        self.graphStrain.xmax = self.maxStrain
-        self.graphStrain.x_ticks_major = (self.maxStrain - self.minStrain) / 5.
-        self.graphStrain.ymax = self.h
-        self.graphStrain.y_ticks_major = self.h / 5.
-        # updare stress-graph
-        self.graphStress.xmin = self.minStrain
-        self.graphStress.xmax = self.maxStrain
-        self.graphStress.x_ticks_major = (self.maxStrain - self.minStrain) / 5.
-        self.graphStress.ymax = self.h
-        self.graphStress.y_ticks_major = self.h / 5.
-        # update plots
-        self.pStrainCs.points = [ (0, 0), (0, self.h)]
-        self.pStressCs.points = [(0, 0), (0, self.h)]
-        # clear the graph and delete the plots which represent 
-        # the layers and the bars
+   
+    def calculate_force_moment(self):
+        stress_y = np.array([s * self.csShape.get_width(s) for s in self.stressMatrix])
+        y_coord = np.array([self.yCoordinatesMatrix])
+        # normal force
+        N_m = np.trapz(stress_y , y_coord)
+        N_r = np.sum(self.stressRef * self.csArea)
+        N = N_m + N_r
+        # moment - matrix
+        gravity_center = self.csShape._get_gravity_centre()
+        M_m = np.trapz(stress_y * (y_coord - gravity_center), y_coord)
+        # moment - reinforcement
+        M_r = np.sum(self.stressRef * self.csArea * (self.yRef - gravity_center))
+        M = M_m + M_r
+        self.normalForceLbl.text = str('%.2E' % Decimal(str(N[0])))
+        self.momentLbl.text = str('%.2E' % Decimal(str(M[0])))
+        print('normal force: ' + str(N))
+        print('moment: ' + str(M))
+    
+    '''
+    plot the strain- and the stress-line of the matrix and reinforcment
+    '''
+        
+    def plot(self):
         self.clear_graph()
+        for y, strain, stress in zip(self.yCoordinatesMatrix, self.strainMatrix, self.stressMatrix):
+            if stress > self.maxStress:
+                self.maxStress = round(stress, 2)
+            elif stress < self.minStress:
+                self.minStress = round(stress, 2)
+            pstrain = DashedLine(color=[0, 0, 0], points=[(0, y), (strain, y)])
+            pstress = DashedLine(color=[0, 0, 0], points=[(0, y), (stress, y)])
+            self.graphStrain.add_plot(pstrain)
+            self.graphStress.add_plot(pstress)
+        for y, strain, stress in zip(self.yRef, self.strainRef, self.stressRef):
+            pstrain = DashedLine(color=[255, 0, 0], points=[(0, y), (strain, y)])
+            pstress = DashedLine(color=[255, 0, 0], points=[(0, y), (stress, y)])
+            if stress > self.maxStress:
+                self.maxStress = round(stress, 2)
+            elif stress < self.minStress:
+                self.minStress = round(stress, 2)
+            self.graphStrain.add_plot(pstrain)
+            self.graphStress.add_plot(pstress)
     
     '''
     delete the plots which represent a layer or a bar
@@ -200,6 +164,7 @@ class Explorer(GridLayout):
         
     def clear_graph(self):
         print('clear_graph (explorer)')
+        self.switch = False
         while len(self.graphStrain.plots) > 2 or len(self.graphStress.plots) > 1:
             for plot in self.graphStrain.plots:
                 if  plot != self.pStrainCs:
@@ -209,7 +174,24 @@ class Explorer(GridLayout):
                 if plot != self.pStressCs:
                     self.graphStress.remove_plot(plot)
                     self.graphStress._clear_buffer()
-            
+        
+    '''
+    reset the attributes for the calculation
+    '''
+                    
+    def reset_explorer(self):
+        # coordinates of the reinforcement
+        n = len(self.layers) + len(self.bars)
+        m = self.numberIntegration
+        self.yRef = np.zeros(n)
+        self.yCoordinatesMatrix = np.zeros(m)
+        # reinforcement area
+        self.csArea = np.zeros(n)
+        self.strainMatrix = np.zeros(m)
+        self.stressMatrix = np.zeros(m)
+        self.strainRef = np.zeros(n)
+        self.stressRef = np.zeros(n)
+    
     '''
     the function which describes the strain-line
     '''
@@ -217,65 +199,3 @@ class Explorer(GridLayout):
     def f(self, y):
         # y=mx+b <=> x=(y-b)/m
         return (y - self.b) / self.m
-    
-    '''
-    update the cs-properties
-    '''
-   
-    def update_csShape(self, cs, h, layers, bars):
-        if self.csShape == cs and self.h == h and self.layers == layers and self.bars == bars and\
-            self.mlaw == self.allMaterial.allMaterials[3].materialLaw.f:
-            self.Change = False
-            print('all is up to date. no update needed')
-            return
-        print('update_csShape (explorer)')
-        self.Change = True
-        self.csShape = cs
-        self.layers = layers
-        self.bars = bars
-        self.h = h
-    
-    '''
-    open the popup for the value input
-    '''
-        
-    def show_popup(self, btn):
-        self.focusBtn = btn
-        self.numpad.lblTextinput.text = str(btn.text)
-        if btn == self.lowerStrainBtn:
-            self.popupNumpad.title = self.lowerStrainStr
-        elif btn == self.upperStrainBtn:
-            self.popupNumpad.title = self.upperStrainStr
-        elif btn == self.integrationNumberBtn:
-            self.popupNumpad.title = self.numberStr
-        self.popupNumpad.open()
-    
-    '''
-    cancel the numpad-input. the numpad call this method
-    '''
-        
-    def close_numpad(self):
-        self.popupNumpad.dismiss()
-    
-    '''
-    when the numpad input will be confirmed. the numpad call this method
-    '''
-        
-    def finished_numpad(self):
-        s = self.numpad.lblTextinput.text
-        v = float(s)
-        self.focusBtn.text = s
-        if self.focusBtn == self.lowerStrainBtn:
-            self.minStrain = v
-        elif self.focusBtn == self.upperStrainBtn:
-            self.maxStrain = v
-        elif self.focusBtn == self.integrationNumberBtn:
-            # 100 is the limit
-            if v > 100:
-                self.numberIntegration = 100
-                self.integrationNumberBtn.text = str(100)
-            else:
-                self.integrationNumberBtn.text = s
-                self.numberIntegration = int(v)
-        self.update_strain_stress()
-        self.popupNumpad.dismiss()

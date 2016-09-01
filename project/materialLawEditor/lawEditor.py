@@ -23,21 +23,42 @@ class MaterialLawEditor(GridLayout):
     materials
     '''
     
-    # important components
+    # editor for the linear-function
     linearEditor = ObjectProperty()
+    
+    # editor for the multi-linear-function 
     multiLinearEditor = ObjectProperty()
+    
+    # editor for the quadratic-function
     quadraticEditor = ObjectProperty()
+    
+    # parent of the law-editor
     creater = ObjectProperty()
+    
+    # function f
     f = ObjectProperty()
     
-    # strings
-    okStr, cancelStr = StringProperty('ok'), StringProperty('cancel')
-    linearStr, mulitlinearStr = StringProperty('linear'), StringProperty('multi-linear')
-    quadraticStr, expStr = StringProperty('quadratic'), StringProperty('exponentiell')
-    functiontypeStr = StringProperty('function-type')
-    strainStr, stressStr = StringProperty('strain [MPa]'), StringProperty('stress')
+    okStr = StringProperty('ok')
     
-    # constructor
+    cancelStr = StringProperty('cancel')
+    
+    linearStr = StringProperty('linear')
+    
+    mulitlinearStr = StringProperty('multi-linear')
+    
+    quadraticStr = StringProperty('quadratic')
+    
+    expStr = StringProperty('exponentiell')
+    
+    functiontypeStr = StringProperty('function-type')
+    
+    strainStr = StringProperty('strain [MPa]')
+    
+    stressStr = StringProperty('stress')
+    
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(MaterialLawEditor, self).__init__(**kwargs)
         print('create law-editor')
@@ -192,11 +213,9 @@ class MaterialLawEditor(GridLayout):
         if self.focusBtn == self.btnLinear:
             self.focusEditor = self.linearEditor
             self.add_widget(self.focusEditor)
-            print('linear')
         elif self.focusBtn == self.btnMultiLinear:
             self.focusEditor = self.multiLinearEditor
             self.add_widget(self.focusEditor)
-            print('multiLinear')
         elif self.focusBtn == self.btnQuadratic:
             self.focusEditor = self.quadraticEditor
             self.add_widget(self.focusEditor)
@@ -204,4 +223,3 @@ class MaterialLawEditor(GridLayout):
             print('not finished yet')
             return  # not finished yet
         self.editor.dismiss()
-    

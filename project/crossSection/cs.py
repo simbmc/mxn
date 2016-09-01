@@ -21,19 +21,37 @@ class CrossSection(GridLayout):
     will be show
     '''
     
-    # important components
-    csEditor, information = ObjectProperty(), ObjectProperty()
-    reEditor, view = ObjectProperty(), ObjectProperty()
+    # cross section editor
+    csEditor = ObjectProperty()
+    
+    # reinforcement editor
+    reEditor = ObjectProperty()
+    
+    # cross section view
+    view = ObjectProperty()
+    
+    # eplorer where you can see the strain-stress-behavior
+    # of the cross-section
     explorer = ObjectProperty()
     
-    # shapes
-    csRectangle, csDoubleT = ObjectProperty(ShapeRectangle()), ObjectProperty(ShapeDoubleT())
-    csT, csCircle = ObjectProperty(ShapeT()), ObjectProperty(ShapeCircle())
+    #rectangle-shape
+    csRectangle = ObjectProperty(ShapeRectangle())
+    
+    #doubleT/I-shape
+    csDoubleT = ObjectProperty(ShapeDoubleT())
+    
+    #T-shape
+    csT = ObjectProperty(ShapeT())
+    
+    #circle-shape
+    csCircle = ObjectProperty(ShapeCircle())
     ###################################
     # here you can add more shapes    #
     ###################################
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
         print('create cross-section')
@@ -71,7 +89,6 @@ class CrossSection(GridLayout):
         self.remove_widget(self.view)
         self.view = self.csT.view
         self.reEditor.change_cross_section(self.view)
-        
     
     '''
     show the circle-View
@@ -82,7 +99,6 @@ class CrossSection(GridLayout):
         self.view = self.csCircle.view
         self.reEditor.change_cross_section(self.view)
         
-
     '''
     set the reinforcement editor
     '''

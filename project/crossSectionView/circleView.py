@@ -22,10 +22,12 @@ class CSCircleView(AView, BoxLayout):
     the cross-section
     '''
     
-    # important values
+    # diameter of the circle
     d = NumericProperty(0.25)
     
-    # constructor
+    '''
+    constructor
+    '''
     def __init__(self, **kwargs):
         super(CSCircleView, self).__init__(**kwargs)
         print('create circle view')
