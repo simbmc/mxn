@@ -12,10 +12,12 @@ from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
+from plot.dashedLine import DashedLine
 from plot.line import LinePlot
 
 
 class ExplorerGui:
+    
     '''
     the ExplorerGui contains and manages all gui-components of the explorer.
     '''
@@ -71,8 +73,17 @@ class ExplorerGui:
                                     y_grid_label=True, x_grid_label=True, padding=5,
                                     xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
         self.graphContent.add_widget(self.graphStress)
-        self.pStressCs = LinePlot(color=[255, 0, 0])
+        self.pStressCs = LinePlot(color=[0, 0, 0])
         self.graphStress.add_plot(self.pStressCs)
+        self.plotsStrain, self.plotsStress = [], []
+        # create all plots
+        for i in range(self.limitIntegration + self.limitReinforcement):
+            pStrain, pStress = DashedLine(color=[0, 0, 0]), DashedLine(color=[0, 0, 0])
+            self.plotsStrain.append(pStrain)
+            self.plotsStress.append(pStress)
+            self.graphStrain.add_plot(pStrain)
+            self.graphStress.add_plot(pStress)
+        
     
     '''
     create the area where you can input the lower and upper strain
@@ -140,9 +151,9 @@ class ExplorerGui:
             self.maxStrain = v
         elif self.focusBtn == self.integrationNumberBtn:
             # 100 is the limit
-            if v > 100:
-                self.numberIntegration = 100
-                self.integrationNumberBtn.text = str(100)
+            if v > self.limitIntegration:
+                self.numberIntegration = self.limitIntegration
+                self.integrationNumberBtn.text = str(self.limitIntegration)
             else:
                 self.integrationNumberBtn.text = s
                 self.numberIntegration = int(v)
@@ -158,7 +169,7 @@ class ExplorerGui:
         # update strain-graph
         self.graphStrain.xmin = self.minStrain * 1.05 
         self.graphStrain.xmax = self.maxStrain * 1.05 
-        self.graphStrain.x_ticks_major = (self.graphStrain.xmax  - self.graphStrain.xmin) / 5.
+        self.graphStrain.x_ticks_major = (self.graphStrain.xmax - self.graphStrain.xmin) / 5.
         self.graphStrain.ymax = self.h
         self.graphStrain.y_ticks_major = self.h / 5.
         # updare stress-graph

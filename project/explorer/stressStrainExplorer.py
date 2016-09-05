@@ -48,9 +48,16 @@ class Explorer(GridLayout, ExplorerGui):
     # number of integration points
     numberIntegration = NumericProperty(30)
     
+    # limit of the integrationpoints
+    limitIntegration = NumericProperty(100)
+    
+    # limit of the reinforcemen-components 
+    limitReinforcement = NumericProperty(50)
+    
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(Explorer, self).__init__(**kwargs)
         print('create explorer')
@@ -138,43 +145,27 @@ class Explorer(GridLayout, ExplorerGui):
     '''
         
     def plot(self):
-        self.clear_graph()
+        index = 0
         for y, strain, stress in zip(self.y_m, self.strain_m, self.stress_m):
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-            pstrain = DashedLine(color=[0, 0, 0], points=[(0, y), (strain, y)])
-            pstress = DashedLine(color=[0, 0, 0], points=[(0, y), (stress, y)])
-            self.graphStrain.add_plot(pstrain)
-            self.graphStress.add_plot(pstress)
+            self.plotsStrain[index].points = [(0, y), (strain, y)]
+            self.plotsStress[index].points = [(0, y), (stress, y)]
+            index += 1
         for y, strain, stress in zip(self.y_r, self.strain_r, self.stress_r):
-            pstrain = DashedLine(color=[255, 0, 0], points=[(0, y), (strain, y)])
-            pstress = DashedLine(color=[255, 0, 0], points=[(0, y), (stress, y)])
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-            self.graphStrain.add_plot(pstrain)
-            self.graphStress.add_plot(pstress)
-    
-    '''
-    delete the plots which represent a layer or a bar
-    '''
-        
-    def clear_graph(self):
-        print('clear_graph (explorer)')
-        self.switch = False
-        while len(self.graphStrain.plots) > 2 or len(self.graphStress.plots) > 1:
-            for plot in self.graphStrain.plots:
-                if  plot != self.pStrainCs:
-                    self.graphStrain.remove_plot(plot)
-                    self.graphStrain._clear_buffer()
-            for plot in self.graphStress.plots:
-                if plot != self.pStressCs:
-                    self.graphStress.remove_plot(plot)
-                    self.graphStress._clear_buffer()
-    
+            self.plotsStrain[index].points = [(0, y), (strain, y)]
+            self.plotsStress[index].points = [(0, y), (stress, y)]
+            index += 1
+        while index < self.limitIntegration:
+            self.plotsStrain[index].points = [(0, 0), (0, 0)]
+            self.plotsStress[index].points = [(0, 0), (0, 0)]
+            index += 1
     '''
     the function which describes the strain-line
     '''

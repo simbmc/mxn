@@ -23,6 +23,7 @@ class Multilinear(IFunction):
     def __init__(self, x, y, minStrain, maxStrain, minStress, maxStress):
         # x=x-coordinates, y=y-coordinates
         self.x, self.y = x, y
+        self.eps=1.05
         self.points = [(x[i], y[i]) for i in range(len(x))]
         self.minStrain, self.maxStrain = minStrain, maxStrain
         self.minStress, self.maxStress = minStrain, maxStress
@@ -32,7 +33,7 @@ class Multilinear(IFunction):
     '''
         
     def f(self, x):
-        if x >= self.minStrain and x <= self.maxStrain:
+        if x >= self.minStrain*self.eps and x <= self.maxStrain*self.eps:
             return interp(x, self.x, self.y)
         else: 
             return 0

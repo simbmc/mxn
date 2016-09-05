@@ -28,6 +28,9 @@ class CrossSectionEditor(GridLayout):
     # cross section
     cs = ObjectProperty()
     
+    # cross-section-shape
+    csShape = ObjectProperty()
+    
     circle = StringProperty('circle')
     
     rectangle = StringProperty('rectangle')
@@ -45,38 +48,41 @@ class CrossSectionEditor(GridLayout):
         super(CrossSectionEditor, self).__init__(**kwargs)
         print('cross-section-editor')
         self.cols, self.spacing = 2, Design.spacing
-        self.btnSize = Design.btnHeight
-        self.firstTimeCircle, self.firstTimeDoubleT = True, True
-        self.firstTimeT, self.containsView = True, True
         self.content = GridLayout(cols=1, spacing=Design.spacing)
-        self.add_widget(self.content)
-
-    '''
-    the method set_cross_section was developed to say the view, 
-    which cross section should it use
-    '''
-
-    def set_cross_section(self, cs):
-        self.crossSection = cs
-        # default cross section rectangle
-        self.csShape = cs.csRectangle
-        self.rectangleInformation = RectangleInformation()
-        self.shape = self.rectangleInformation
-        self.rectangleInformation.csShape = self.csShape
-        self.rectangleInformation.create_gui()
-        self.focusInformation = self.rectangleInformation
         self.create_gui()
+        self.add_widget(self.content)
 
     '''
     create the gui
     '''
 
     def create_gui(self):
+        self.create_informations()
         shapeContent = ShapeSelection(information=self)
         self.shapeSelection = OwnPopup(title=self.shapeStr, content=shapeContent)
         self.create_selection_menu()
         self.content.add_widget(self.rectangleInformation, 0)
-
+    
+    '''
+    create all informations of the shapes
+    '''
+        
+    def create_informations(self):
+        # create the rectangle-information
+        self.rectangleInformation = RectangleInformation(csShape=self.cs.csRectangle)
+        self.rectangleInformation.create_gui()
+        self.focusInformation = self.rectangleInformation
+        self.shape = self.rectangleInformation
+        # create double-t-information
+        self.doubleTInformation = DoubleTInformation(csShape=self.cs.csDoubleT)
+        self.doubleTInformation.create_gui()
+        # create circle-information
+        self.circleInformation = CircleInformation(csShape=self.cs.csCircle)
+        self.circleInformation.create_gui()
+        # create t-information
+        self.tInformation = TInformation(csShape=self.cs.csT)
+        self.tInformation.create_gui()
+    
     '''
     create the layout where you can select the cross-section-shape
     '''
@@ -84,8 +90,8 @@ class CrossSectionEditor(GridLayout):
     def create_selection_menu(self):
         selectionContent = GridLayout(cols=2, spacing=Design.spacing,
                                       size_hint_y=None, row_force_default=True,
-                                      row_default_height=self.btnSize,
-                                      height=self.btnSize)
+                                      row_default_height=Design.btnHeight,
+                                      height=Design.btnHeight)
         self.lblSelection = OwnLabel(text=self.shapeStr)
         self.btnSelection = OwnButton(text=self.rectangle)
         self.btnSelection.bind(on_press=self.shapeSelection.open)
@@ -129,7 +135,7 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def add_view(self):
-        self.view = self.crossSection.view
+        self.view = self.cs.view
         self.containsView = True
         self.add_widget(self.view, 1)
 
@@ -140,7 +146,7 @@ class CrossSectionEditor(GridLayout):
     def update_view(self):
         if self.containsView:
             self.remove_widget(self.view)
-            self.view = self.crossSection.view
+            self.view = self.cs.view
             self.add_widget(self.view, 1)
             self.containsView = True
             
@@ -163,14 +169,14 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def show_rectangle(self, btn):
-        self.csShape = self.crossSection.csRectangle
-        self.crossSection.view = self.csShape
+        self.csShape = self.cs.csRectangle
+        self.cs.view = self.csShape
         self.remove_widget(self.shape)
         self.shape = self.rectangleInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.rectangleInformation, 0)
         self.focusInformation = self.rectangleInformation
-        self.crossSection.show_rectangle_shape()
+        self.cs.show_rectangle_shape()
         self.cs.explorer.update_csShape(self.cs.csRectangle, self.cs.csRectangle.ch,
                                          self.cs.csRectangle.layers, self.cs.csRectangle.bars)
         self.update_view()
@@ -180,19 +186,14 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def show_double_t(self, btn):
-        self.csShape = self.crossSection.csDoubleT
-        self.crossSection.view = self.csShape
-        if self.firstTimeDoubleT:
-            self.doubleTInformation = DoubleTInformation()
-            self.doubleTInformation.csShape = self.csShape
-            self.doubleTInformation.create_gui()
-            self.firstTimeDoubleT = False
+        self.csShape = self.cs.csDoubleT
+        self.cs.view = self.csShape
         self.remove_widget(self.shape)
         self.shape = self.doubleTInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.doubleTInformation, 0)
         self.focusInformation = self.doubleTInformation
-        self.crossSection.show_doublet_shape()
+        self.cs.show_doublet_shape()
         self.cs.explorer.update_csShape(self.cs.csDoubleT,
                                          self.cs.csDoubleT.get_total_height(),
                                          self.cs.csDoubleT.layers, self.cs.csDoubleT.bars)
@@ -203,19 +204,14 @@ class CrossSectionEditor(GridLayout):
     '''
 
     def show_circle_shape(self, btn):
-        self.csShape = self.crossSection.csCircle
-        self.crossSection.view = self.csShape
-        if self.firstTimeCircle:
-            self.circleInformation = CircleInformation()
-            self.circleInformation.csShape = self.csShape
-            self.circleInformation.create_gui()
-            self.firstTimeCircle = False
+        self.csShape = self.cs.csCircle
+        self.cs.view = self.csShape
         self.remove_widget(self.shape)
         self.shape = self.circleInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.circleInformation, 0)
         self.focusInformation = self.circleInformation
-        self.crossSection.show_circle_shape()
+        self.cs.show_circle_shape()
         self.cs.explorer.update_csShape(self.cs.csCircle, self.cs.csCircle.d,
                                         self.cs.csCircle.layers, self.cs.csCircle.bars)
         self.update_view()
@@ -225,19 +221,14 @@ class CrossSectionEditor(GridLayout):
     '''
         
     def show_t(self, btn):
-        self.csShape = self.crossSection.csT
-        self.crossSection.view = self.csShape
-        if self.firstTimeT:
-            self.tInformation = TInformation()
-            self.tInformation.csShape = self.csShape
-            self.tInformation.create_gui()
-            self.firstTimeT = False
+        self.csShape = self.cs.csT
+        self.cs.view = self.csShape
         self.remove_widget(self.shape)
         self.shape = self.tInformation
         self.content.remove_widget(self.focusInformation)
         self.content.add_widget(self.tInformation, 0)
         self.focusInformation = self.tInformation
-        self.crossSection.show_tshape()
+        self.cs.show_tshape()
         self.cs.explorer.update_csShape(self.cs.csT, self.cs.csT.get_total_height(),
                                          self.cs.csT.layers, self.cs.csT.bars)
         self.update_view()

@@ -22,6 +22,8 @@ class Linear(IFunction):
     
     def __init__(self, a, minStrain, maxStrain, minStress, maxStress):
         self.a = a
+        #tolerance
+        self.eps=1.05
         self.minStrain, self.maxStrain = minStrain, maxStrain
         self.minStress, self.maxStress = minStress, maxStress
         self.points = [(minStrain, self.f(minStrain)), (maxStrain, self.f(maxStrain))]

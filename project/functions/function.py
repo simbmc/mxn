@@ -21,6 +21,7 @@ class IFunction:
     # maximal stress of the function
     maxStress = NumericProperty()
     
+    
     '''
     the subclasses of IFunction must implemented 
     a method f to eval the functionvalue

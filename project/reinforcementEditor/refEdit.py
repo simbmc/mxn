@@ -245,7 +245,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def add_view(self):
-        self.view = self.crossSection.view
+        self.view = self.cs.view
         self.containsView = True
         self.add_widget(self.view, 1)
 
@@ -256,7 +256,7 @@ class ReinforcementEditor(GridLayout, IObserver):
     def update_view(self):
         if self.containsView:
             self.remove_widget(self.view)
-            self.view = self.crossSection.view
+            self.view = self.cs.view
             self.add_widget(self.view, 1)
             self.containsView = True
 
@@ -282,8 +282,8 @@ class ReinforcementEditor(GridLayout, IObserver):
     '''
 
     def set_cross_section(self, cs):
-        self.crossSection = cs
-        self.allMaterials = self.crossSection.allMaterials
+        self.cs = cs
+        self.allMaterials = self.cs.allMaterials
         self.allMaterials.add_listener(self)
         # default cross section rectangle
         self.csShape = cs.csRectangle
@@ -292,4 +292,4 @@ class ReinforcementEditor(GridLayout, IObserver):
         self.rectangleInformation.csShape = self.csShape
         self.rectangleInformation.create_gui()
         self.create_gui()
-        self.crossSection.set_reinforcement_editor(self)
+        self.cs.set_reinforcement_editor(self)

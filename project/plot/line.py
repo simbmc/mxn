@@ -14,6 +14,7 @@ class LinePlot(Plot):
     '''
     
     width = 1.
+    
     def __init__(self, **kwargs):
         super(LinePlot, self).__init__(**kwargs)
     

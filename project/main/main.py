@@ -43,11 +43,11 @@ class MXNApp(App):
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         bar = AppActionBar()
         self.content.add_widget(bar)
-        self.crossSection = CrossSection()
-        self.csShape = self.crossSection.csRectangle
+        self.cs = CrossSection()
+        self.csShape = self.cs.csRectangle
         # cross-section-editor is the default view
         # view is the focus-component
-        self.view = self.crossSection
+        self.view = self.cs
         self.create_componets()
         return self.content
 
@@ -67,15 +67,14 @@ class MXNApp(App):
     '''
 
     def create_material_editor(self):
-        self.materialEditor = MaterialEditor(csShape=self.crossSection)
+        self.materialEditor = MaterialEditor(csShape=self.cs)
 
     '''
     create the cross section-editor
     '''
 
     def create_cross_section_editor(self):
-        self.csEditor = CrossSectionEditor(cs=self.crossSection)
-        self.csEditor.set_cross_section(self.crossSection)
+        self.csEditor = CrossSectionEditor(cs=self.cs, csShape=self.cs.csRectangle)
         self.csEditor.add_view()
         self.content.add_widget(self.csEditor)
         self.view = self.csEditor
@@ -86,7 +85,7 @@ class MXNApp(App):
 
     def create_reinforcement_editor(self):
         self.reEditor = ReinforcementEditor()
-        self.reEditor.set_cross_section(self.crossSection)
+        self.reEditor.set_cross_section(self.cs)
     
     '''
     create the explorer where you can see the stress-strain-behavior of the
@@ -96,7 +95,7 @@ class MXNApp(App):
     def create_explorer(self):
         self.explorer = Explorer(csShape=self.csShape, bars=self.csShape.bars,
                                  layers=self.csShape.layers)
-        self.crossSection.explorer = self.explorer
+        self.cs.explorer = self.explorer
     
     '''
     create the mxnEmelope
@@ -120,7 +119,7 @@ class MXNApp(App):
         self.view = self.materialEditor
 
     '''
-    show the crossSection editor
+    show the cs editor
     '''
 
     def show_cross_section_editor(self):
@@ -175,19 +174,19 @@ class MXNApp(App):
     '''
         
     def update_explorer(self):
-        if self.csEditor.csShape == self.crossSection.csDoubleT:
-            self.explorer.update_csShape(self.crossSection.csDoubleT,
-                                         self.crossSection.csDoubleT.get_total_height(),
-                                         self.crossSection.csDoubleT.layers, self.crossSection.csDoubleT.bars)
-        elif self.csEditor.csShape == self.crossSection.csCircle:
-            self.explorer.update_csShape(self.crossSection.csCircle, self.crossSection.csCircle.d,
-                                         self.crossSection.csCircle.layers, self.crossSection.csCircle.bars)
-        elif self.csEditor.csShape == self.crossSection.csRectangle:
-            self.explorer.update_csShape(self.crossSection.csRectangle, self.crossSection.csRectangle.ch,
-                                         self.crossSection.csRectangle.layers, self.crossSection.csRectangle.bars)
-        elif self.csEditor.csShape == self.crossSection.csT:
-            self.explorer.update_csShape(self.crossSection.csT, self.crossSection.csT.get_total_height(),
-                                         self.crossSection.csT.layers, self.crossSection.csT.bars)
+        if self.csEditor.csShape == self.cs.csDoubleT:
+            self.explorer.update_csShape(self.cs.csDoubleT,
+                                         self.cs.csDoubleT.get_total_height(),
+                                         self.cs.csDoubleT.layers, self.cs.csDoubleT.bars)
+        elif self.csEditor.csShape == self.cs.csCircle:
+            self.explorer.update_csShape(self.cs.csCircle, self.cs.csCircle.d,
+                                         self.cs.csCircle.layers, self.cs.csCircle.bars)
+        elif self.csEditor.csShape == self.cs.csRectangle:
+            self.explorer.update_csShape(self.cs.csRectangle, self.cs.csRectangle.ch,
+                                         self.cs.csRectangle.layers, self.cs.csRectangle.bars)
+        elif self.csEditor.csShape == self.cs.csT:
+            self.explorer.update_csShape(self.cs.csT, self.cs.csT.get_total_height(),
+                                         self.cs.csT.layers, self.cs.csT.bars)
 '''
 starts the application
 '''

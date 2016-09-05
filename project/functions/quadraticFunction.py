@@ -31,6 +31,7 @@ class QuadraticFunction(IFunction):
     
     def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
         self.a, self.b = a, b
+        self.eps=1.05
         self.minStrain, self.maxStrain = minStrain, maxStrain
         self.minStress, self.maxStress = minStress, maxStress
         d = (self.maxStrain - self.minStrain) / 1e2
@@ -41,7 +42,7 @@ class QuadraticFunction(IFunction):
     '''
         
     def f(self, x):
-        if x >= self.minStrain and x <= self.maxStrain:
+        if x >= self.minStrain * self.eps and x <= self.maxStrain * self.eps:
             return self.a * x ** 2 + self.b * x
         else:
             return 0
