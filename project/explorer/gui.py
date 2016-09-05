@@ -146,10 +146,7 @@ class ExplorerGui:
             else:
                 self.integrationNumberBtn.text = s
                 self.numberIntegration = int(v)
-        self.reset_explorer()
-        self.update_strain_stress()
-        self.plot()
-        self.update_graph()
+        self.update_explorer()
         self.popupNumpad.dismiss()
     
     '''
@@ -161,7 +158,7 @@ class ExplorerGui:
         # update strain-graph
         self.graphStrain.xmin = self.minStrain * 1.05 
         self.graphStrain.xmax = self.maxStrain * 1.05 
-        self.graphStrain.x_ticks_major = (self.maxStrain - self.minStrain) / 5.
+        self.graphStrain.x_ticks_major = (self.graphStrain.xmax  - self.graphStrain.xmin) / 5.
         self.graphStrain.ymax = self.h
         self.graphStrain.y_ticks_major = self.h / 5.
         # updare stress-graph

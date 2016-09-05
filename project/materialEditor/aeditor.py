@@ -150,5 +150,5 @@ class AEditor:
         self.graph.xmax = maxStrain
         self.graph.ymin = minStress
         self.graph.ymax = maxStress
-        self.graph.x_ticks_major = self.graph.xmax / 5.
-        self.graph.y_ticks_major = self.graph.ymax / 5.
+        self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
+        self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.

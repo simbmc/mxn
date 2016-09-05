@@ -15,7 +15,7 @@ class Concrete(AMaterial):
     
     # constructor
     def __init__(self):
-        super(Concrete, self,).__init__('concrete', 0.065, 2300.,Linear(1, 0, 1, 0, 1))
+        super(Concrete, self,).__init__('concrete', 0.065, 2300.,Linear(100., -0.2, 0., -0.2, 0.))
 
 
         

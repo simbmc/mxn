@@ -15,6 +15,5 @@ class Steel(AMaterial):
     
     # constructor
     def __init__(self):
-        super(Steel, self,).__init__('steel', 0.35, 7850.,
-                                     Linear(1, 0, 1, 0, 1))
+        super(Steel, self,).__init__('steel', 0.35, 7850., Linear(500, -0.3, 0.3, -0.3, 0.3))
     

@@ -45,6 +45,7 @@ class ShapeSelection(GridLayout):
         super(ShapeSelection, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         print('create shape-selection')
+        self.create_gui()
     
     '''
     create the gui
@@ -58,62 +59,18 @@ class ShapeSelection(GridLayout):
     '''
 
     def create_graphs(self):
+        self.graph = OwnGraph(border_color=[1, 1, 1, 1],
+                            xmin=0, xmax=0.3, ymin=0, ymax=0.65)
+        self.pRec = LinePlot(color=[0, 0, 0, 1], points=self.draw_rectangle())
+        self.pdoubleT = LinePlot(color=[0, 0, 0, 1], points=self.draw_double_t())
+        self.pT = LinePlot(color=[0, 0, 0, 1], points=self.draw_t())
+        self.pCircle = Circle(d=0.225, pos=[0.15, 0.325], color=[0, 0, 0, 1])
         ##########################################################################
-        # when you implemented a new shape, make sure that the shape has a graph  #
+        # when you implemented a new shape, make sure that the shape has a plot  #
         ##########################################################################
-        self.create_graph_rectangle()
-        self.create_graph_double_t()
-        self.create_graph_t()
-        self.create_graph_circle()
-        # default-shape Rectangle
-        self.add_widget(self.graphRectangle)
-        self.focusGraph = self.graphRectangle
-        self.create_graph_double_t()
-    
-    '''
-    create the plot graph
-    '''
-
-    def create_graph_rectangle(self):
-        self.graphRectangle = OwnGraph(border_color=[1, 1, 1, 1],
-                                       xmin=0, xmax=0.5, ymin=0, ymax=0.25)
-        self.p = LinePlot(color=[0, 0, 0, 1])
-        self.p.points = self.draw_rectangle()
-        self.graphRectangle.add_plot(self.p)
-    
-    '''
-    create the doubleT graph
-    '''
-
-    def create_graph_double_t(self):
-        self.graphDoubleT = OwnGraph(border_color=[0.5, 0.5, 0.5, 0],
-                                     xmin=0, xmax=0.27, ymin=0, ymax=0.65)
-        self.p = LinePlot(color=[0, 0, 0, 1])
-        self.p.points = self.draw_double_t()
-        self.graphDoubleT.add_plot(self.p)
-    
-    '''
-    create the doubleT graph
-    '''
-
-    def create_graph_t(self):
-        self.graphT = OwnGraph(border_color=[0.5, 0.5, 0.5, 0],
-                               xmin=0, xmax=0.27, ymin=0, ymax=0.5)  
-        self.p = LinePlot(color=[0, 0, 0, 1])
-        self.p.points = self.draw_t()
-        self.graphT.add_plot(self.p)
-    
-    '''
-    create the graph circle
-    '''
-
-    def create_graph_circle(self):
-        self.graphCircle = OwnGraph(xmin=0, xmax=0.51, ymin=0, ymax=0.51)
-        self.circle = Circle()
-        self.circle.d = 0.25
-        self.circle.pos = [0.25, 0.25]
-        self.circle.color = [0, 0, 0, 1]
-        self.graphCircle.add_plot(self.circle)
+        self.focusPlot = self.pRec
+        self.graph.add_plot(self.focusPlot)
+        self.add_widget(self.graph)
     
     '''
     create the right area where you can select 
@@ -125,7 +82,6 @@ class ShapeSelection(GridLayout):
         self.contentRight = GridLayout(cols=1)
         # self.contentRight.add_widget(self.focusShape)
         self.btns = GridLayout(cols=1, spacing=Design.spacing, size_hint_y=None)
-        # self.contentRight.add_widget(self.btns)
         # Make sure the height is such that there is something to scroll.
         self.btns.bind(minimum_height=self.btns.setter('height'))
         self.btns.add_widget(self.plot)
@@ -156,16 +112,16 @@ class ShapeSelection(GridLayout):
         self.btnCancel.bind(on_press=self.information.cancel_shape_selection)
         # default-shape=rectangle
         self.focusShape = OwnButton(text=self.rectangleStr)
-        self.focusShape.bind(on_press=self.show_shapes_btn)
+        # self.focusShape.bind(on_press=self.show_shapes_btn)
         # btns
         self.plot = OwnButton(text=self.rectangleStr)
-        self.plot.bind(on_press=self.show_rectangle)
+        self.plot.bind(on_press=self.show_shape)
         self.doubleT = OwnButton(text=self.ishapeStr)
-        self.doubleT.bind(on_press=self.show_double_t)
+        self.doubleT.bind(on_press=self.show_shape)
         self.t = OwnButton(text=self.tshapeStr)
-        self.t.bind(on_press=self.show_t)
+        self.t.bind(on_press=self.show_shape)
         self.circle = OwnButton(text=self.circleStr)
-        self.circle.bind(on_press=self.show_circle_shape)
+        self.circle.bind(on_press=self.show_shape)
         #######################################################################
         # here you can add more shapes                                         #
         # Attention: make sure that the buttons habe the properties            #
@@ -185,53 +141,19 @@ class ShapeSelection(GridLayout):
     # every shape must implement a show-method  #
     ##############################################
     
-    '''
-    show doubleT-View
-    '''
-
-    def show_double_t(self, btn):
-        self.remove_widget(self.focusGraph)
-        self.add_widget(self.graphDoubleT, 1)
-        self.focusGraph = self.graphDoubleT
+    def show_shape(self, btn):
+        while self.graph.plots:
+            self.graph.remove_plot(self.focusPlot)
+        if btn.text == self.circleStr:
+            self.focusPlot = self.pCircle
+        elif btn.text == self.rectangleStr:
+            self.focusPlot = self.pRec
+        elif btn.text == self.ishapeStr:
+            self.focusPlot = self.pdoubleT
+        elif btn.text == self.tshapeStr:
+            self.focusPlot = self.pT
         self.focusShape.text = btn.text
-
-    '''
-    show T-View
-    '''
-
-    def show_t(self, btn):
-        self.remove_widget(self.focusGraph)
-        self.add_widget(self.graphT, 1)
-        self.focusGraph = self.graphT
-        self.focusShape.text = btn.text
-
-    '''
-    show Rectangle-Graph
-    '''
-
-    def show_rectangle(self, btn):
-        self.remove_widget(self.focusGraph)
-        self.add_widget(self.graphRectangle, 1)
-        self.focusGraph = self.graphRectangle
-        self.focusShape.text = btn.text
-
-    '''
-    show circle graph
-    '''
-
-    def show_circle_shape(self, btn):
-        self.remove_widget(self.focusGraph)
-        self.add_widget(self.graphCircle, 1)
-        self.focusGraph = self.graphCircle
-        self.focusShape.text = btn.text
-
-    '''
-    show the btns where you can select the shape
-    '''
-
-    def show_shapes_btn(self, btn):
-        self.contentRight.remove_widget(self.focusShape)
-        self.contentRight.add_widget(self.shapes)
+        self.graph.add_plot(self.focusPlot)
 
     ######################################
     # help-methods to draw the shapes    #
@@ -242,7 +164,7 @@ class ShapeSelection(GridLayout):
     '''
         
     def draw_rectangle(self):
-        c, h, w = 0.02, 0.23, 0.45
+        c, h, w = 0.02, 0.6, 0.25
         return [(c, 0.005), (c, h), (w, h), (w, 0.005), (c, 0.005)]
     
     '''
@@ -250,8 +172,8 @@ class ShapeSelection(GridLayout):
     '''
 
     def draw_t(self):
-        bw, bh = 0.1, 0.3
-        tw, th = 0.25, 0.15
+        bw, bh = 0.1, 0.4
+        tw, th = 0.25, 0.2
         x0 = 0.27 / 2.
         y1, y2 = 1e-3, bh
         x1 = x0 - bw / 2.

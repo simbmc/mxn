@@ -13,6 +13,7 @@ from crossSectionEditor.editor import CrossSectionEditor
 from materialEditor.editor import MaterialEditor
 from ownComponents.design import Design
 from reinforcementEditor.refEdit import ReinforcementEditorfrom explorer.stressStrainExplorer import Explorer
+from mxnenvelope.envelope import MXNEnvelop
 
 
 Window.clearcolor = (1, 1, 1, 1)
@@ -45,6 +46,7 @@ class MXNApp(App):
         self.crossSection = CrossSection()
         self.csShape = self.crossSection.csRectangle
         # cross-section-editor is the default view
+        # view is the focus-component
         self.view = self.crossSection
         self.create_componets()
         return self.content
@@ -58,6 +60,7 @@ class MXNApp(App):
         self.create_reinforcement_editor()
         self.create_cross_section_editor()
         self.create_explorer()
+        self.create_mxnEmelope()
 
     '''
     create the material-editor
@@ -71,7 +74,7 @@ class MXNApp(App):
     '''
 
     def create_cross_section_editor(self):
-        self.csEditor = CrossSectionEditor()
+        self.csEditor = CrossSectionEditor(cs=self.crossSection)
         self.csEditor.set_cross_section(self.crossSection)
         self.csEditor.add_view()
         self.content.add_widget(self.csEditor)
@@ -94,8 +97,13 @@ class MXNApp(App):
         self.explorer = Explorer(csShape=self.csShape, bars=self.csShape.bars,
                                  layers=self.csShape.layers)
         self.crossSection.explorer = self.explorer
-        
-
+    
+    '''
+    create the mxnEmelope
+    '''
+    def create_mxnEmelope(self):
+        self.mxnEmelope = MXNEnvelop(explorer=self.explorer)
+    
     #############################################################################
     # Attention:When you want write a new show-method than make sure             #
     # that actually component is remove from the widget and set                  #
@@ -145,9 +153,23 @@ class MXNApp(App):
             self.reEditor.add_view()
         self.content.remove_widget(self.view)
         self.content.add_widget(self.explorer)
-        self.view = self.explorer
         self.update_explorer()
+        self.explorer.update_explorer()
+        self.view = self.explorer
     
+    '''
+    show the mxn-emelope
+    '''
+    def show_mxnEmelope(self):
+        self.csEditor.remove_view()
+        if not self.reEditor.containsView:
+            self.reEditor.add_view()
+        self.content.remove_widget(self.view)
+        self.content.add_widget(self.mxnEmelope)
+        self.view = self.mxnEmelope
+        self.update_explorer()
+        self.mxnEmelope.calculation()
+        
     '''
     update the cross-section-information of the explorer
     '''
