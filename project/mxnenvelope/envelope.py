@@ -103,7 +103,6 @@ class MXNEnvelop(GridLayout):
         self.graphLeft.xmax = float(max_v)* 1.02
         self.graphLeft.xmin = float(min_v)* 1.02
         self.graphLeft.x_ticks_major = np.abs((self.graphLeft.xmax - self.graphLeft.xmin)) / 5.
-
         # update right graph
         max_index = np.argmax(self.M_arr)
         self.graphRight.xmax = float(self.M_arr[max_index]) * 1.02
@@ -156,7 +155,7 @@ class MXNEnvelop(GridLayout):
         eps_lo_arr = self.convert_eps_u_2_lo(
             self.explorer.minStrain, eps_u_r, y_r)
         env_reinf_idx = -1
-        if len(eps_lo_arr) <> 0:
+        if len(eps_lo_arr) > 0:
             env_reinf_idx = np.argmin(eps_lo_arr)
         eps_ccu = 0.8 * eps_cu
         self.eps_arr = self.get_strain_arrays(

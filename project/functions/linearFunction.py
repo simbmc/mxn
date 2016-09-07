@@ -33,7 +33,7 @@ class Linear(IFunction):
     '''
         
     def f(self, x):
-        if x >= self.minStrain and x <= self.maxStrain:
+        if x >= self.minStrain*self.eps and x <= self.maxStrain*self.eps:
             return self.a * x
         else:
             return 0

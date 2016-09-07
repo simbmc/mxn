@@ -101,9 +101,6 @@ class Explorer(GridLayout, ExplorerGui):
         self.csArea = np.zeros(n)
         self.strain_m, self.stress_m = np.zeros(numInt), np.zeros(numInt)
         self.strain_r, self.stress_r = np.zeros(n), np.zeros(n)
-        # parameters for the strain function
-        self.m = -(self.h) / (maxStrain - minStrain)
-        self.b = -self.m * maxStrain
         # update matrix
         self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
         self.y_m = np.linspace(0, self.h, numInt)
@@ -112,14 +109,14 @@ class Explorer(GridLayout, ExplorerGui):
         # update all layer-lines
         index = 0
         for layer in self.layers:
-            strain = self.f(layer.y)
+            strain=np.interp(layer.y, [0, self.h], [minStrain, maxStrain])
             stress = layer.material.materialLaw.f(strain)
             self.y_r[index], self.csArea[index] = layer.y, layer.h
             self.strain_r[index], self.stress_r[index] = strain, stress
             index += 1
         # #update all bar-lines
         for bar in self.bars:
-            strain = self.f(bar.y)
+            strain=np.interp(bar.y, [0, self.h], [minStrain, maxStrain])
             stress = bar.material.materialLaw.f(strain)
             self.y_r[index], self.csArea[index] = bar.y, bar.csArea
             self.strain_r[index], self.stress_r[index] = strain, stress
@@ -129,6 +126,7 @@ class Explorer(GridLayout, ExplorerGui):
         # normal force
         N_m = np.trapz(stress_y , self.y_m)
         N_r = np.sum(self.stress_r * self.csArea)
+        print('normal force: nm=' + str(N_m) + ' nr=' + str(N_r))
         N = N_m + N_r
         # moment - matrix
         gravity_center = self.csShape._get_gravity_centre()
@@ -166,13 +164,6 @@ class Explorer(GridLayout, ExplorerGui):
             self.plotsStrain[index].points = [(0, 0), (0, 0)]
             self.plotsStress[index].points = [(0, 0), (0, 0)]
             index += 1
-    '''
-    the function which describes the strain-line
-    '''
-                    
-    def f(self, y):
-        # y=mx+b <=> x=(y-b)/m
-        return (y - self.b) / self.m
     
     def get_coordinates_upperStrain(self):
         n = len(self.layers) + len(self.bars)
