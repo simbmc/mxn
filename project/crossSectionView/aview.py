@@ -22,13 +22,13 @@ class AView(object):
     are use
     '''
     
-    #cs-shape
+    # cs-shape
     csShape = ObjectProperty()
     
-    #line to show that the layer has the focus
+    # line to show that the layer has the focus
     focusLine = LinePlot(width=1.5, color=Design.focusColor)
     
-    #boolean whether a line has the focus
+    # boolean whether a line has the focus
     lineIsFocused = BooleanProperty(False)
     
     ylabelStr = StringProperty('cross-section-height [m]')
@@ -83,7 +83,7 @@ class AView(object):
         self.csShape.hide_error_message()
         self.focusLayer.y = y
         self.focusLayer.material = material
-        self.focusLayer.csArea = csArea
+        self.focusLayer.h = csArea
         if self.lineIsFocused:
             self.focusLine.points = self.focusLayer.line.points
             self.graph.remove_plot(self.focusLine)

@@ -99,14 +99,14 @@ class MXNEnvelop(GridLayout):
         self.graphLeft.ymax = h
         self.graphLeft.y_ticks_major = h / 5.
         min_v, max_v = self.find_min_max()
-        print(min_v, max_v)
-        self.graphLeft.xmax = float(max_v)* 1.02
-        self.graphLeft.xmin = float(min_v)* 1.02
+        self.graphLeft.xmax = float(max_v) * 1.02
+        self.graphLeft.xmin = float(min_v) * 1.02
         self.graphLeft.x_ticks_major = np.abs((self.graphLeft.xmax - self.graphLeft.xmin)) / 5.
         # update right graph
         max_index = np.argmax(self.M_arr)
+        min_index = np.argmin(self.M_arr)
         self.graphRight.xmax = float(self.M_arr[max_index]) * 1.02
-        self.graphRight.xmin = 0
+        self.graphRight.xmin = float(self.M_arr[min_index]) * 1.02
         self.graphRight.x_ticks_major = (self.graphRight.xmax - self.graphRight.xmin) / 3.
         max_index = np.argmax(self.N_arr)
         min_index = np.argmin(self.N_arr)

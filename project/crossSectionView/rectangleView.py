@@ -21,7 +21,6 @@ class CSRectangleView(GridLayout, AView):
     the cross-section
     '''
     
-    
     # height of the cross-section
     ch = NumericProperty(0.5)
     
