@@ -20,12 +20,12 @@ class MXNEnvelop(GridLayout):
 
     # explorer of the cross section
     explorer = ObjectProperty()
-    
+
     n_eps = NumericProperty(20)
-    
+
     # number of plots 4*n_eps
     n_plt = NumericProperty(80)
-    
+
     '''
     constructor
     '''
@@ -58,11 +58,13 @@ class MXNEnvelop(GridLayout):
     def create_graphs(self):
         self.graphs = GridLayout(cols=2, spacing=Design.spacing)
         # create the left graph- explorer graph
-        self.graphLeft = OwnGraph(x_ticks_major=0.1, y_ticks_major=0.1,
+        self.graphLeft = OwnGraph(xlabel='strain', ylabel='height [m]',
+                                  x_ticks_major=0.1, y_ticks_major=0.1,
                                   y_grid_label=True, x_grid_label=True,
                                   xmin=-0.5, xmax=0.5, ymin=0, ymax=self.explorer.h)
         # create the right graph
-        self.graphRight = OwnGraph(x_ticks_major=100, y_ticks_major=50,
+        self.graphRight = OwnGraph(xlabel='moment [kN.m]', ylabel='force [kN]',
+                                   x_ticks_major=100, y_ticks_major=50,
                                    y_grid_label=True, x_grid_label=True,
                                    xmin=-0.5, xmax=400, ymin=0, ymax=350)
         self.graphs.add_widget(self.graphLeft)
@@ -81,7 +83,7 @@ class MXNEnvelop(GridLayout):
         self.py = LinePlot(color=[255, 0, 0])
         self.graphRight.add_plot(self.px)
         self.graphRight.add_plot(self.py)
-    
+
     '''
     will called when the slider changes the value
     '''
@@ -89,10 +91,13 @@ class MXNEnvelop(GridLayout):
     def update_slider(self, inst, v):
         v = int(v)
         self.valueLbl.text = 'step: ' + str(v)
-        self.focusLine.points = [(-self.eps_arr[0][v], 0), (-self.eps_arr[1][v], self.explorer.h)]
-        self.focusPoint.xrange = [-self.M_arr[v] - self.eps_x, -self.M_arr[v] + self.eps_x]
-        self.focusPoint.yrange = [-self.N_arr[v] - self.eps_y, -self.N_arr[v] + self.eps_y]
-    
+        self.focusLine.points = [
+            (-self.eps_arr[0][v], 0), (-self.eps_arr[1][v], self.explorer.h)]
+        self.focusPoint.xrange = [-self.M_arr[v] -
+                                  self.eps_x, -self.M_arr[v] + self.eps_x]
+        self.focusPoint.yrange = [-self.N_arr[v] -
+                                  self.eps_y, -self.N_arr[v] + self.eps_y]
+
     '''
     update the graph
     '''
@@ -105,7 +110,8 @@ class MXNEnvelop(GridLayout):
         min_v, max_v = self.find_min_max()
         self.graphLeft.xmax = float(max_v) * 1.02
         self.graphLeft.xmin = float(min_v) * 1.02
-        self.graphLeft.x_ticks_major = np.abs((self.graphLeft.xmax - self.graphLeft.xmin)) / 5.
+        self.graphLeft.x_ticks_major = np.abs(
+            (self.graphLeft.xmax - self.graphLeft.xmin)) / 5.
         # update right graph
         max_index = np.argmax(self.M_arr)
         min_index = np.argmin(self.M_arr)
@@ -114,7 +120,8 @@ class MXNEnvelop(GridLayout):
         self.px.points = [(xmin, 0), (xmax, 0)]
         self.graphRight.xmax = xmax
         self.graphRight.xmin = xmin
-        self.graphRight.x_ticks_major = (self.graphRight.xmax - self.graphRight.xmin) / 3.
+        self.graphRight.x_ticks_major = (
+            self.graphRight.xmax - self.graphRight.xmin) / 3.
         max_index = np.argmax(self.N_arr)
         min_index = np.argmin(self.N_arr)
         ymin = -float(self.N_arr[max_index]) * 1.02
@@ -122,25 +129,27 @@ class MXNEnvelop(GridLayout):
         self.py.points = [(0, ymin), (0, ymax)]
         self.graphRight.ymax = ymax
         self.graphRight.ymin = ymin
-        self.graphRight.y_ticks_major = (self.graphRight.ymax - self.graphRight.ymin) / 5.
+        self.graphRight.y_ticks_major = (
+            self.graphRight.ymax - self.graphRight.ymin) / 5.
         # plot left side
         n = len(eps_arr[0])
         index = 0
         self.eps_x = (self.graphRight.xmax - self.graphRight.xmin) / 8e1
         self.eps_y = (self.graphRight.ymax - self.graphRight.ymin) / 8e1
         for i in range(n):
-            self.plots[index].points = [(-eps_arr[0][i], 0), (-eps_arr[1][i], h)]
+            self.plots[index].points = [
+                (-eps_arr[0][i], 0), (-eps_arr[1][i], h)]
             index += 1
         while index < self.n_plt:
             self.plots[index].points = [(0, 0), (0, 0)]
             index += 1
         # plot right side
         self.forceMomentLine.points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
-    
+
     '''
     find the minimum and maximum value of the eps_arr
     '''
-        
+
     def find_min_max(self):
         max_v = -1 * 1e8
         min_v = 1e8
@@ -155,14 +164,15 @@ class MXNEnvelop(GridLayout):
             if v2 > max_v:
                 max_v = v2
         return min_v, max_v
-        
+
     '''
     calculate parameters for the plot
     '''
 
     def calculation(self):
         eps_u_r, y_r, eps_cu = self.explorer.get_coordinates_upperStrain()
-        eps_lo_arr = self.convert_eps_u_2_lo(self.explorer.maxStrain, eps_u_r, y_r)
+        eps_lo_arr = self.convert_eps_u_2_lo(
+            self.explorer.maxStrain, eps_u_r, y_r)
         env_reinf_idx = -1
         if len(eps_lo_arr) > 0:
             env_reinf_idx = np.argmin(eps_lo_arr)
@@ -177,11 +187,16 @@ class MXNEnvelop(GridLayout):
                 self.eps_arr[0][i], self.eps_arr[1][i], self.n_eps)
             self.N_arr[i] = result[0]
             self.M_arr[i] = result[1]
+        self.N_arr *= 1000.
+        self.M_arr *= 1000.
         self.update_graph(self.eps_arr, self.M_arr, self.N_arr)
         self.slider.max = len(self.eps_arr[0]) - 1
-        self.focusLine.points = [(-self.eps_arr[0][0], 0), (-self.eps_arr[1][0], self.explorer.h)]
-        self.focusPoint.xrange = [-self.M_arr[0] - self.eps_x, -self.M_arr[0] + self.eps_x]
-        self.focusPoint.yrange = [-self.N_arr[0] - self.eps_y, -self.N_arr[0] + self.eps_y]
+        self.focusLine.points = [
+            (-self.eps_arr[0][0], 0), (-self.eps_arr[1][0], self.explorer.h)]
+        self.focusPoint.xrange = [-self.M_arr[0] -
+                                  self.eps_x, -self.M_arr[0] + self.eps_x]
+        self.focusPoint.yrange = [-self.N_arr[0] -
+                                  self.eps_y, -self.N_arr[0] + self.eps_y]
         self.slider.value = 0
         self.valueLbl.text = 'step: 0'
 

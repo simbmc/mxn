@@ -15,46 +15,46 @@ from plot.dashedLine import DashedLine
 
 
 class Explorer(GridLayout, ExplorerGui):
-    
+
     '''
     the Explorer is the component which shows the stress-strain.behaviour
     of the selected cross-section-shape
     '''
-    
+
     # cross-section-shape
     csShape = ObjectProperty()
-    
+
     # layers of the cross-section
     layers = ListProperty([])
-    
+
     # bars of the cross-section
     bars = ListProperty([])
-    
+
     # height of the cross-section-shape
     h = NumericProperty()
-    
+
     # minimum strain
     minStrain = NumericProperty(0.5)
-    
+
     # maximum strain
     maxStrain = NumericProperty(-0.5)
-    
+
     # minimum stress of the cross section
     minStress = NumericProperty()
-    
+
     # maximum stress of the cross section
     maxStress = NumericProperty()
-    
+
     # number of integration points
-    numberIntegration = NumericProperty(500)
-    
+    numberIntegration = NumericProperty(100)
+
     # limit of the integrationpoints
     limitIntegration = NumericProperty(1e3)
-    
+
     '''
     constructor
     '''
-    
+
     def __init__(self, **kwargs):
         super(Explorer, self).__init__(**kwargs)
         print('create explorer')
@@ -63,32 +63,33 @@ class Explorer(GridLayout, ExplorerGui):
         self.h = self.csShape.ch
         self.allMaterial = MaterialList.Instance()
         self.create_gui()
-    
+
     '''
     update just the cs-properties and the strain-stress-diagram
     '''
-   
+
     def update_csShape(self, cs, h, layers, bars):
         self.csShape = cs
         self.layers = layers
         self.bars = bars
         self.h = h
-    
+
     '''
     update the whole explorer
     '''
-    
+
     def update_explorer(self):
         self.minStress = self.minStrain
         self.maxStress = self.maxStrain
-        self.calculation(self.minStrain, self.maxStrain, self.numberIntegration)
+        self.calculation(
+            self.minStrain, self.maxStrain, self.numberIntegration)
         self.plot()
         self.update_graph()
-        
+
     '''
     calculate the normal force and the moment
     '''
-        
+
     def calculation(self, minStrain, maxStrain, numInt):
         # number of reinforcement components
         n = len(self.layers) + len(self.bars)
@@ -101,9 +102,11 @@ class Explorer(GridLayout, ExplorerGui):
         # update matrix
         self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
         self.y_m = np.linspace(0, self.h, numInt)
-        
-        self.strain_m = np.interp(self.y_m, [0, self.h], [minStrain, maxStrain])
-        self.stress_m = np.array([self.mlaw(strain) for strain in self.strain_m])
+
+        self.strain_m = np.interp(
+            self.y_m, [0, self.h], [minStrain, maxStrain])
+        self.stress_m = np.array([self.mlaw(strain)
+                                  for strain in self.strain_m])
         # update all layer-lines
         index = 0
         for layer in self.layers:
@@ -112,7 +115,7 @@ class Explorer(GridLayout, ExplorerGui):
             self.y_r[index], self.csArea[index] = layer.y, layer.h
             self.strain_r[index], self.stress_r[index] = strain, stress
             index += 1
-        # #update all bar-lines
+        # update all bar-lines
         for bar in self.bars:
             strain = np.interp(bar.y, [0, self.h], [minStrain, maxStrain])
             stress = bar.material.materialLaw.f(strain)
@@ -120,9 +123,10 @@ class Explorer(GridLayout, ExplorerGui):
             self.strain_r[index], self.stress_r[index] = strain, stress
             index += 1
         # calculate the normal force and the moment
-        stress_y = np.array([s * self.csShape.get_width(s) for s in self.stress_m])
+        stress_y = np.array([s * self.csShape.get_width(s)
+                             for s in self.stress_m])
         # normal force
-        N_m = np.trapz(stress_y , self.y_m)
+        N_m = np.trapz(stress_y, self.y_m)
         N_r = np.sum(self.stress_r * self.csArea)
         print('normal force: nm=' + str(N_m) + ' nr=' + str(N_r))
         N = N_m + N_r
@@ -134,12 +138,12 @@ class Explorer(GridLayout, ExplorerGui):
         M = (M_m + M_r)
         self.normalForceLbl.text = str('%.2E' % Decimal(str(N)))
         self.momentLbl.text = str('%.2E' % Decimal(str(M)))
-        return  N, M, self.strain_m, self.stress_m, self.strain_r, self.stress_r
-        
+        return N, M, self.strain_m, self.stress_m, self.strain_r, self.stress_r
+
     '''
     plot the strain- and the stress-line of the matrix and reinforcement
     '''
-        
+
     def plot(self):
         self.pMatrixStrain.points = []
         self.pMatrixStress.points = []
@@ -148,7 +152,7 @@ class Explorer(GridLayout, ExplorerGui):
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-                
+
             self.pMatrixStrain.points.append((strain, y))
             self.pMatrixStress.points.append((stress, y))
             # index += 1
@@ -163,8 +167,10 @@ class Explorer(GridLayout, ExplorerGui):
                 self.plotsStrain[index].points = [(0, y), (strain, y)]
                 self.plotsStress[index].points = [(0, y), (stress, y)]
             else:
-                pStrain = DashedLine(color=[255, 0, 0], points=[(0, y), (strain, y)])
-                pStress = DashedLine(color=[255, 0, 0], points=[(0, y), (stress, y)])
+                pStrain = DashedLine(
+                    color=[255, 0, 0], points=[(0, y), (strain, y)])
+                pStress = DashedLine(
+                    color=[255, 0, 0], points=[(0, y), (stress, y)])
                 self.plotsStrain.append(pStrain)
                 self.plotsStress.append(pStress)
                 self.graphStrain.add_plot(pStrain)
@@ -174,12 +180,12 @@ class Explorer(GridLayout, ExplorerGui):
             self.plotsStrain[index].points = [(0, 0), (0, 0)]
             self.plotsStress[index].points = [(0, 0), (0, 0)]
             index += 1
-    
+
     def get_coordinates_upperStrain(self):
         n = len(self.layers) + len(self.bars)
         y_r = np.zeros(n)
         eps_cu = self.allMaterial.allMaterials[3].materialLaw.minStrain
-        eps_u_r = -1e6 
+        eps_u_r = -1e6
         index = 0.
         for layer in self.layers:
             maxStrain = layer.material.materialLaw.maxStrain
