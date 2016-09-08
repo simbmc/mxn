@@ -14,7 +14,6 @@ from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
 
-
 class AEditor:
     
     '''
@@ -48,6 +47,7 @@ class AEditor:
     '''
     create the base btns
     '''
+    
     def create_base_btns(self):
         # materialname
         self.nameBtn = OwnButton(text=self.nameStr)
@@ -130,6 +130,7 @@ class AEditor:
     '''
     close_numpad will be called from the numpad!
     '''
+        
     def close_numpad(self):
         self.popupNumpad.dismiss()
     
@@ -143,12 +144,27 @@ class AEditor:
     '''
     update the graph by the given function-properties
     '''
-    def update_graph(self, minStress, maxStress, minStrain, maxStrain, points):
-        print('update graph (materialEditor.AEditor)')
+        
+    def update_graph(self, minStrain, maxStrain, points):
         self.p.points = points
         self.graph.xmin = minStrain
         self.graph.xmax = maxStrain
-        self.graph.ymin = minStress
-        self.graph.ymax = maxStress
+        self.graph.ymin, self.graph.ymax = self.find_min_max()
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
+    
+    '''
+    find the min- and the max-y-coordinate 
+    '''
+        
+    def find_min_max(self):
+        min_v = 1e10
+        max_v = -1e10
+        n = len(self.p.points)
+        for i in range(n):
+            c = self.p.points[i][1]
+            if c < min_v:
+                min_v = c
+            if c > max_v:
+                max_v = c
+        return float(min_v), float(max_v)

@@ -28,6 +28,7 @@ class LinearEditor(GridLayout, AEditor):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(LinearEditor, self).__init__(**kwargs)
         self.cols , self.spacing = 2, Design.spacing
@@ -37,8 +38,20 @@ class LinearEditor(GridLayout, AEditor):
         self.add_widget(self.information)
     
     '''
+    update the complete information and graph by the given function-properties
+    '''
+        
+    def update_function(self, points, minStrain, maxStrain, a):
+        self.minStrain = minStrain
+        self.maxStrain = maxStrain
+        self.a = a
+        self.information.update_function(points, minStrain, maxStrain, a)
+        self.view.update_function(points, minStrain, maxStrain)
+    
+    '''
     confirm the material-law and set the function f in the material-editor-class
     '''
+        
     def confirm(self, btn):
-        f = Linear(self.a, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
+        f = Linear(self.a, self.minStrain, self.maxStrain)
         self.create_function(f)

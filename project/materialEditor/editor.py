@@ -39,7 +39,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         super(MaterialEditor, self).__init__(**kwargs)
         print('create material-editor')
         self.btnSize = Design.btnHeight
-        self.firstPlot = True
         self.allMaterials = self.csShape.allMaterials
         self.allMaterials.add_listener(self)
         self.create_gui()
@@ -88,7 +87,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         self.information.add_widget(self.btnEdit)
         self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
-        self.p = LinePlot(color=[0, 0, 0, 1])
+        self.p = LinePlot(color=[0, 0, 0])
         self.graph.add_plot(self.p)
         self.content.add_widget(self.information)
         self.content.add_widget(self.graph)
@@ -123,6 +122,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
         
     def edit_material(self, btn):
+        print('edit material (editor)')
         self.focusBtnMaterial.text = self.nameBtn.text
         self.focusMaterial.name = self.nameBtn.text
         self.focusMaterial.density = float(self.densityBtn.text)
@@ -139,16 +139,15 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         print('show_material_information (editor)')
         for material in self.allMaterials.allMaterials:
             if material.name == btn.text:
-                self.materialLawEditor.f = material.materialLaw
                 self.focusBtnMaterial = btn
                 self.focusMaterial = material
+                self.materialLawEditor.f = material.materialLaw
                 self.nameBtn.text = material.name
                 self.priceBtn.text = str(material.price)
                 self.densityBtn.text = str(material.density)
                 self.materialLaw.text = material.materialLaw.f_toString()
-                self.update_graph(material.materialLaw.minStress, material.materialLaw.maxStress,
-                            material.materialLaw.minStrain, material.materialLaw.maxStrain,
-                            material.materialLaw.points)
+                self.update_graph(material.materialLaw.minStrain, material.materialLaw.maxStrain,
+                                  material.materialLaw.points)
                 self.popupInfo.open()
                 return
 
@@ -162,14 +161,18 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         self.materialLawEditor.f = f
         if isinstance(f, Linear):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnLinear
-            self.materialLawEditor.linearEditor.update_function(f.points, f.minStress, f.maxStress,
-                                                                f.minStrain, f.maxStrain, f.a)
+            self.materialLawEditor.linearEditor.update_function(f.points, f.minStrain,
+                                                                f.maxStrain, f.a)
             self.materialLawEditor.confirm(None)
         elif isinstance(f, Multilinear):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnMultiLinear
+#             self.materialLawEditor.multiLinearEditor.update_function(f.points, f.minStress, f.maxStress, f.minStrain,
+#                                                                 f.maxStrain)
             self.materialLawEditor.confirm(None)
         elif isinstance(f, QuadraticFunction):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnQuadratic
+            self.materialLawEditor.quadraticEditor.update_function(f.points, f.minStrain,
+                                                                f.maxStrain, f.a, f.b)
             self.materialLawEditor.confirm(None)
         elif isinstance(f, ExponentialFunction):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnExponentiell

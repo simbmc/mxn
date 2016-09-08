@@ -15,12 +15,6 @@ class IFunction:
     # maximal strain of the function
     maxStrain = NumericProperty()
     
-    # minimal stress of the function
-    minStress = NumericProperty()
-    
-    # maximal stress of the function
-    maxStress = NumericProperty()
-    
     
     '''
     the subclasses of IFunction must implemented 

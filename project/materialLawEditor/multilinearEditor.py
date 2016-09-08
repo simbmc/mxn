@@ -26,6 +26,7 @@ class MultilinearEditor(GridLayout, AEditor):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(MultilinearEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
@@ -33,11 +34,25 @@ class MultilinearEditor(GridLayout, AEditor):
         self.view = MultilinearView(editor=self)
         self.add_widget(self.view)
         self.add_widget(self.information)
+    
+    '''
+    update the complete information by the given function-properties
+    '''
+        
+    def update_function(self, points, minStress, maxStress, minStrain, maxStrain):
+        self.minStrain = minStrain
+        self.maxStrain = maxStrain
+        self.lowerStress = minStress
+        self.upperStress = maxStress
+        self.information.update_function(points, minStress, maxStress, minStrain, maxStrain)
+        self.view.update_function(points, minStrain, maxStrain)
 
-
-    # not finished yet
+    '''
+    confirm the material-law and set the function f in the material-editor-class
+    '''
+        
     def confirm(self, btn):
         x, y = self.view.get_coordinates()
-        f = Multilinear(x, y, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
+        f = Multilinear(x, y, self.minStrain, self.maxStrain, self.lowerStress, self.upperStress)
         self.create_function(f)
 

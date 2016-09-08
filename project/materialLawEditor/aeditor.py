@@ -22,13 +22,13 @@ class AEditor:
     information = ObjectProperty()    
     
     # upper strain limit 
-    upperStrain = NumericProperty(1.)
+    maxStrain = NumericProperty(1.)
     
     # upper stress limit 
     upperStress = NumericProperty(1.)
     
     # lower strain limit
-    lowerStrain = NumericProperty(0.)
+    minStrain = NumericProperty(0.)
     
     # lower stress limit
     lowerStress = NumericProperty(0.)
@@ -40,22 +40,9 @@ class AEditor:
     def create_function(self, f):
         self.lawEditor.f = f
         self.lawEditor.creater.materialLaw.text = f.f_toString()
-        self.lawEditor.creater.update_graph(self.lowerStress, self.upperStress, self.lowerStrain,
-                                            self.upperStrain, f.points)
+        self.lawEditor.creater.update_graph(self.minStrain,self.maxStrain, f.points)
         self.lawEditor.cancel_graphicShow()
         self.lawEditor.creater.close_material_law_editor(None)
-    
-    '''
-    update the complete information and graph by the given function-properties
-    '''
-        
-    def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a):
-        self.lowerStress = minStress
-        self.upperStress = maxStress
-        self.lowerStrain = minStrain
-        self.upperStrain = maxStrain
-        self.information.update_function(points, minStress, maxStress, minStrain, maxStrain, a)
-        self.view.update_function(points, minStress, maxStress, minStrain, maxStrain)
     
     '''
     cancel the selection where you can select the function-type

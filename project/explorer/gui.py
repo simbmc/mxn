@@ -1,6 +1,5 @@
 '''
 Created on 01.09.2016
-
 @author: mkennert
 '''
 from kivy.properties import StringProperty
@@ -12,7 +11,6 @@ from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-from plot.dashedLine import DashedLine
 from plot.line import LinePlot
 
 
@@ -34,7 +32,7 @@ class ExplorerGui:
     
     defaultMaxStrain = StringProperty('0.5')
     
-    defaultNumber = StringProperty('30')
+    defaultNumber = StringProperty('500')
     
     numberStr = StringProperty('integration points')
     
@@ -73,17 +71,13 @@ class ExplorerGui:
                                     y_grid_label=True, x_grid_label=True, padding=5,
                                     xmin=-0.5, xmax=0.5, ymin=0, ymax=self.h)
         self.graphContent.add_widget(self.graphStress)
-        self.pStressCs = LinePlot(color=[0, 0, 0])
+        self.pStressCs = LinePlot(color=[255, 0, 0])
         self.graphStress.add_plot(self.pStressCs)
         self.plotsStrain, self.plotsStress = [], []
-        # create all plots
-        for i in range(self.limitIntegration + self.limitReinforcement):
-            pStrain, pStress = DashedLine(color=[0, 0, 0]), DashedLine(color=[0, 0, 0])
-            self.plotsStrain.append(pStrain)
-            self.plotsStress.append(pStress)
-            self.graphStrain.add_plot(pStrain)
-            self.graphStress.add_plot(pStress)
-        
+        self.pMatrixStrain = LinePlot(color=[0, 0, 255])
+        self.pMatrixStress = LinePlot(color=[0, 0, 255])
+        self.graphStrain.add_plot(self.pMatrixStrain)
+        self.graphStress.add_plot(self.pMatrixStress)
     
     '''
     create the area where you can input the lower and upper strain
@@ -94,9 +88,9 @@ class ExplorerGui:
                              row_default_height=Design.btnHeight, size_hint_y=None,
                              height=2.1 * Design.btnHeight)
         # create and bind btns
-        self.lowerStrainBtn = OwnButton(text=self.defaultMinStrain)
+        self.lowerStrainBtn = OwnButton(text=self.defaultMaxStrain)
         self.lowerStrainBtn.bind(on_press=self.show_popup)
-        self.upperStrainBtn = OwnButton(text=self.defaultMaxStrain)
+        self.upperStrainBtn = OwnButton(text=self.defaultMinStrain)
         self.upperStrainBtn.bind(on_press=self.show_popup)
         self.integrationNumberBtn = OwnButton(text=self.defaultNumber)
         self.integrationNumberBtn.bind(on_press=self.show_popup)
@@ -150,7 +144,6 @@ class ExplorerGui:
         elif self.focusBtn == self.upperStrainBtn:
             self.maxStrain = v
         elif self.focusBtn == self.integrationNumberBtn:
-            # 100 is the limit
             if v > self.limitIntegration:
                 self.numberIntegration = self.limitIntegration
                 self.integrationNumberBtn.text = str(self.limitIntegration)
@@ -167,15 +160,45 @@ class ExplorerGui:
     def update_graph(self):
         print('update graph')
         # update strain-graph
-        self.graphStrain.xmin = self.minStrain * 1.05 
-        self.graphStrain.xmax = self.maxStrain * 1.05 
-        self.graphStrain.x_ticks_major = (self.graphStrain.xmax - self.graphStrain.xmin) / 5.
+        print('update strain-graph')
+        if self.maxStrain == self.minStrain:
+            if self.maxStrain > 0:
+                self.graphStrain.xmin = -1e-1
+                self.graphStrain.xmax = self.maxStrain + 1e-1
+                self.graphStrain.x_ticks_major = self.maxStrain / 5.
+            elif self.maxStrain < 0:
+                self.graphStrain.xmin = self.maxStrain - 1e-1
+                self.graphStrain.xmax = 1e-1 
+                self.graphStrain.x_ticks_major = -self.maxStrain / 5.
+            else:
+                self.graphStrain.xmin = -1e-1
+                self.graphStrain.xmax = 1e-1
+                self.graphStrain.x_ticks_major = 1e-1
+        else:
+            self.graphStrain.xmin = self.maxStrain * 1.05 
+            self.graphStrain.xmax = self.minStrain * 1.05 
+            self.graphStrain.x_ticks_major = (self.graphStrain.xmax - self.graphStrain.xmin) / 5.
         self.graphStrain.ymax = self.h
         self.graphStrain.y_ticks_major = self.h / 5.
-        # updare stress-graph
-        self.graphStress.xmin = self.minStress * 1.05
-        self.graphStress.xmax = self.maxStress * 1.05
-        self.graphStress.x_ticks_major = (self.maxStress - self.minStress) / 5.
+        # update stress-graph
+        print('update stress-graph')
+        if self.minStress == self.maxStress:
+            if self.maxStress > 0:
+                self.graphStress.xmin = -1e-1
+                self.graphStress.xmax = self.maxStress + 1e-1
+                self.graphStress.x_ticks_major = self.maxStress / 5.
+            elif self.maxStress < 0:
+                self.graphStress.xmin = self.maxStress - 1e-1
+                self.graphStress.xmax = 1e-1
+                self.graphStress.x_ticks_major = -self.maxStress / 5.
+            else:
+                self.graphStress.xmin = -1e-1
+                self.graphStress.xmax = 1e-1
+                self.graphStress.x_ticks_major = 1e-1
+        else:
+            self.graphStress.xmin = self.minStress * 1.05
+            self.graphStress.xmax = self.maxStress * 1.05
+            self.graphStress.x_ticks_major = (self.maxStress - self.minStress) / 5.
         self.graphStress.ymax = self.h
         self.graphStress.y_ticks_major = self.h / 5.
         # update plots

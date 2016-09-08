@@ -34,10 +34,10 @@ class Explorer(GridLayout, ExplorerGui):
     h = NumericProperty()
     
     # minimum strain
-    minStrain = NumericProperty(-0.5)
+    minStrain = NumericProperty(0.5)
     
     # maximum strain
-    maxStrain = NumericProperty(0.5)
+    maxStrain = NumericProperty(-0.5)
     
     # minimum stress of the cross section
     minStress = NumericProperty()
@@ -46,13 +46,10 @@ class Explorer(GridLayout, ExplorerGui):
     maxStress = NumericProperty()
     
     # number of integration points
-    numberIntegration = NumericProperty(30)
+    numberIntegration = NumericProperty(500)
     
     # limit of the integrationpoints
-    limitIntegration = NumericProperty(100)
-    
-    # limit of the reinforcemen-components 
-    limitReinforcement = NumericProperty(50)
+    limitIntegration = NumericProperty(1e3)
     
     '''
     constructor
@@ -104,19 +101,20 @@ class Explorer(GridLayout, ExplorerGui):
         # update matrix
         self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
         self.y_m = np.linspace(0, self.h, numInt)
-        self.strain_m = np.interp(self.y_m, [0, self.h], [maxStrain, minStrain])
+        
+        self.strain_m = np.interp(self.y_m, [0, self.h], [minStrain, maxStrain])
         self.stress_m = np.array([self.mlaw(strain) for strain in self.strain_m])
         # update all layer-lines
         index = 0
         for layer in self.layers:
-            strain=np.interp(layer.y, [0, self.h], [minStrain, maxStrain])
+            strain = np.interp(layer.y, [0, self.h], [minStrain, maxStrain])
             stress = layer.material.materialLaw.f(strain)
             self.y_r[index], self.csArea[index] = layer.y, layer.h
             self.strain_r[index], self.stress_r[index] = strain, stress
             index += 1
         # #update all bar-lines
         for bar in self.bars:
-            strain=np.interp(bar.y, [0, self.h], [minStrain, maxStrain])
+            strain = np.interp(bar.y, [0, self.h], [minStrain, maxStrain])
             stress = bar.material.materialLaw.f(strain)
             self.y_r[index], self.csArea[index] = bar.y, bar.csArea
             self.strain_r[index], self.stress_r[index] = strain, stress
@@ -139,28 +137,40 @@ class Explorer(GridLayout, ExplorerGui):
         return  N, M, self.strain_m, self.stress_m, self.strain_r, self.stress_r
         
     '''
-    plot the strain- and the stress-line of the matrix and reinforcment
+    plot the strain- and the stress-line of the matrix and reinforcement
     '''
         
     def plot(self):
-        index = 0
+        self.pMatrixStrain.points = []
+        self.pMatrixStress.points = []
         for y, strain, stress in zip(self.y_m, self.strain_m, self.stress_m):
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-            self.plotsStrain[index].points = [(0, y), (strain, y)]
-            self.plotsStress[index].points = [(0, y), (stress, y)]
-            index += 1
+                
+            self.pMatrixStrain.points.append((strain, y))
+            self.pMatrixStress.points.append((stress, y))
+            # index += 1
+        n = len(self.plotsStrain)
+        index = 0
         for y, strain, stress in zip(self.y_r, self.strain_r, self.stress_r):
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-            self.plotsStrain[index].points = [(0, y), (strain, y)]
-            self.plotsStress[index].points = [(0, y), (stress, y)]
+            if index < n:
+                self.plotsStrain[index].points = [(0, y), (strain, y)]
+                self.plotsStress[index].points = [(0, y), (stress, y)]
+            else:
+                pStrain = DashedLine(color=[255, 0, 0], points=[(0, y), (strain, y)])
+                pStress = DashedLine(color=[255, 0, 0], points=[(0, y), (stress, y)])
+                self.plotsStrain.append(pStrain)
+                self.plotsStress.append(pStress)
+                self.graphStrain.add_plot(pStrain)
+                self.graphStress.add_plot(pStress)
             index += 1
-        while index < self.limitIntegration:
+        while index < n:
             self.plotsStrain[index].points = [(0, 0), (0, 0)]
             self.plotsStress[index].points = [(0, 0), (0, 0)]
             index += 1

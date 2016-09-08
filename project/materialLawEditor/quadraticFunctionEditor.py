@@ -30,6 +30,7 @@ class QuadraticFunctionEditor(GridLayout, AEditor):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(QuadraticFunctionEditor, self).__init__(**kwargs)
         self.cols = 2
@@ -44,9 +45,25 @@ class QuadraticFunctionEditor(GridLayout, AEditor):
     def f(self, x):
         return self.a * np.power(x, 2) + self.b * x 
     
+    '''
+    update the complete information and graph by the given function-properties
+    '''
+        
+    def update_function(self, points, minStrain, maxStrain, a, b):
+        self.minStrain = minStrain
+        self.maxStrain = maxStrain
+        self.a = a
+        self.b = b
+        self.information.update_function(points, minStrain, maxStrain, a, b)
+        self.view.update_function(points, minStrain, maxStrain)
+    
+    '''
+    confirm the material-law and set the function f in the material-editor-class
+    '''
+   
     def confirm(self, btn):
         self.lawEditor.cancel_graphicShow()
-        f = QuadraticFunction(self.a, self.b, self.lowerStrain, self.upperStrain, self.lowerStress, self.upperStress)
+        f = QuadraticFunction(self.a, self.b, self.minStrain, self.maxStrain)
         self.create_function(f)
     
 

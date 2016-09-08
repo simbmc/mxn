@@ -4,10 +4,11 @@ Created on 06.05.2016
 '''
 from kivy.uix.gridlayout import GridLayout
 
+from materialLawEditor.aview import AView
 from ownComponents.design import Design
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
-from materialLawEditor.aview import AView
+
 
 class MultilinearView(GridLayout, AView):
     
@@ -18,6 +19,7 @@ class MultilinearView(GridLayout, AView):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(MultilinearView, self).__init__(**kwargs)
         self.cols = 1
@@ -30,11 +32,14 @@ class MultilinearView(GridLayout, AView):
         
     def create_points(self, n):
         self._points, self.lines = [], []
-        self.epsX = self.graph.xmax / Design.barProcent
-        self.epsY = self.graph.ymax / Design.barProcent
+        d = 60.
+        self.epsY = (self.graph.ymax - self.graph.ymin) / d
+        self.epsX = (self.graph.xmax - self.graph.xmin) / d
         w, h = self.graph.xmin, self.graph.ymin
         wi = (self.graph.xmax - self.graph.xmin) / n
         hi = (self.graph.ymax - self.graph.ymin) / n
+        if w>0:
+            w+=wi
         overZero = False
         while n > 0:
             p = FilledEllipse(color=[255, 0, 0], xrange=[w - self.epsX, w + self.epsX],
@@ -80,19 +85,9 @@ class MultilinearView(GridLayout, AView):
         self.graph.ymax = self.editor.upperStress
         self.graph.ymin = self.editor.lowerStress
         self.graph.y_ticks_major = (self.graph.ymax - self.graph.ymin) / 5.
-        self.graph.xmax = self.editor.upperStrain
-        self.graph.xmin = self.editor.lowerStrain
+        self.graph.xmax = self.editor.maxStrain
+        self.graph.xmin = self.editor.minStrain
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.
-        d = 50.
-        curX = self.graph.xmax / d
-        curY = self.graph.ymax / d
-        for point in self._points:
-            y = point.yrange[0] + self.epsY
-            point.yrange = [y - curY, y + curY]
-            x = point.xrange[0] + self.epsX
-            point.xrange = [x - curX, x + curX]
-        self.epsY = curY
-        self.epsX = curX
         self.update_points()
         
     '''

@@ -11,4 +11,4 @@ class CarbonFiber(AMaterial):
     database for the material carbonfiber
     '''
     def __init__(self):
-        super(CarbonFiber, self,).__init__('carbon fiber', 20, 1600.,Linear(1, 0, 1, 0, 1))
+        super(CarbonFiber, self,).__init__('carbon fiber', 20, 1600.,Linear(1, 0, 1))

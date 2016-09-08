@@ -26,11 +26,10 @@ class ExponentialFunction(IFunction):
     constructor
     '''
     
-    def __init__(self, a, b, minStrain, maxStrain, minStress, maxStress):
+    def __init__(self, a, b, minStrain, maxStrain):
         self.a, self.b = a, b
         self.eps = 1.05
         self.minStrain, self.maxStrain = minStrain, maxStrain
-        self.minStress, self.maxStress = minStrain, maxStress
         d = (self.maxStrain - self.minStrain) / 1e2
         self.points = [(x, self.f(x)) for x in arange(self.minStrain, self.maxStrain, d)]
     

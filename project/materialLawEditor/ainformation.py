@@ -27,12 +27,6 @@ class AInformation:
     # string strain-lower-limit
     strainLLStr = StringProperty('strain-lower-limit:')
     
-    # string stress-upper-limit  [MPa]
-    stressULStr = StringProperty('stress-upper-limit [MPa]:')
-    
-    # string stress-lower-limit [MPa]
-    stressLLStr = StringProperty('stress-lower-limit [MPa]:')
-    
     # string ok
     okStr = StringProperty('ok')
     
@@ -58,16 +52,12 @@ class AInformation:
     '''
         
     def create_base_btns(self):
-        self.btnStressUL = OwnButton(text=str(self.editor.upperStress))
-        self.btnStressLL = OwnButton(text=str(self.editor.lowerStress))
-        self.btnStrainUL = OwnButton(text=str(self.editor.upperStrain))
-        self.btnStrainLL = OwnButton(text=str(self.editor.lowerStrain))
+        self.btnStrainUL = OwnButton(text=str(self.editor.maxStrain))
+        self.btnStrainLL = OwnButton(text=str(self.editor.minStrain))
         self.btnConfirm = OwnButton(text=self.okStr)
         self.btnCancel = OwnButton(text=self.cancelStr)
         self.btnConfirm.bind(on_press=self.editor.confirm)
         self.btnStrainUL.bind(on_press=self.show_popup)
-        self.btnStressUL.bind(on_press=self.show_popup)
-        self.btnStressLL.bind(on_press=self.show_popup)
         self.btnStrainLL.bind(on_press=self.show_popup)
         self.btnCancel.bind(on_press=self.editor.cancel)
     
@@ -79,10 +69,6 @@ class AInformation:
         self.add_widget(self.btnStrainUL)
         self.add_widget(OwnLabel(text=self.strainLLStr))
         self.add_widget(self.btnStrainLL)
-        self.add_widget(OwnLabel(text=self.stressULStr))
-        self.add_widget(self.btnStressUL)
-        self.add_widget(OwnLabel(text=self.stressLLStr))
-        self.add_widget(self.btnStressLL)
         self.add_widget(self.btnConfirm)
         self.add_widget(self.btnCancel)
     
@@ -92,9 +78,5 @@ class AInformation:
     def set_popup_title(self):
         if self.focusBtn == self.btnStrainUL:
             self.popupNumpad.title = self.strainULStr
-        elif self.focusBtn == self.btnStressUL:
-            self.popupNumpad.title = self.stressULStr
         elif self.focusBtn == self.btnStrainLL:
             self.popupNumpad.title = self.strainLLStr
-        elif self.focusBtn == self.btnStressLL:
-            self.popupNumpad.title = self.stressLLStr

@@ -34,6 +34,7 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(QuadraticFunctionInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
@@ -60,6 +61,7 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     '''
     create all btns of the gui
     '''
+    
     def create_btns(self):
         self.aBtn = OwnButton(text=str(self.editor.a))
         self.aBtn.bind(on_press=self.show_popup)
@@ -72,35 +74,36 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     '''
     the method finished_numpad close the numpad_popup
     '''
+    
     def finished_numpad(self):
-        self.focusBtn.text = self.numpad.lblTextinput.text
-        v = float(self.focusBtn.text)
-        self.popupNumpad.dismiss()
-        self.numpad.reset_text()
+        v = float(self.numpad.lblTextinput.text)
         if self.focusBtn == self.aBtn:
             self.editor.a = v
             self.editor.view.update_points()
         elif self.focusBtn == self.bBtn:
             self.editor.b = v
-            self.editor.view.update_points()
         elif self.focusBtn == self.btnStrainUL:
-            self.editor.upperStrain = v
-            self.editor.view.update_graph_sizeproperties()
-        elif self.focusBtn == self.btnStressUL:
-            self.editor.upperStress = v
-            self.editor.view.update_graph_sizeproperties()
+            if v>self.editor.minStrain:
+                self.editor.maxStrain = v
+            else:
+                return
         elif self.focusBtn == self.btnStrainLL:
-            self.editor.lowerStrain = v
-            self.editor.view.update_graph_sizeproperties()
-        elif self.focusBtn == self.btnStressLL:
-            self.editor.lowerStress = v
-            self.editor.view.update_graph_sizeproperties()
+            if v<self.editor.maxStrain:
+                self.editor.minStrain = v
+            else:
+                return
+        self.editor.view.update_graph_sizeproperties()
+        self.focusBtn.text = str(v)
+        self.popupNumpad.dismiss()
+        self.numpad.reset_text()
     
     '''
     open the numpad popup
     '''
+    
     def show_popup(self, btn):
         self.focusBtn = btn
+        
         if self.focusBtn == self.aBtn:
             self.popupNumpad.title = self.aStr
         elif self.focusBtn == self.bBtn:
@@ -111,10 +114,9 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     '''
     update the complete information by the given function-properties
     '''
-    def update_function(self, points, minStress, maxStress, minStrain, maxStrain, a, b):
+        
+    def update_function(self, points, minStrain, maxStrain, a, b):
         self.btnStrainLL.text = str(minStrain)
         self.btnStrainUL.text = str(maxStrain)
-        self.btnStressLL.text = str(minStress)
-        self.btnStressUL.text = str(maxStress)
         self.aBtn.text = str(a)
-        self.bBtn.text=str(b)
+        self.bBtn.text = str(b)

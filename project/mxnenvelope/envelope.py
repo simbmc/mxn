@@ -77,6 +77,10 @@ class MXNEnvelop(GridLayout):
         self.graphRight.add_plot(self.forceMomentLine)
         self.focusPoint = FilledEllipse(color=[255, 0, 0])
         self.graphRight.add_plot(self.focusPoint)
+        self.px = LinePlot(color=[255, 0, 0])
+        self.py = LinePlot(color=[255, 0, 0])
+        self.graphRight.add_plot(self.px)
+        self.graphRight.add_plot(self.py)
     
     '''
     will called when the slider changes the value
@@ -86,7 +90,7 @@ class MXNEnvelop(GridLayout):
         v = int(v)
         self.valueLbl.text = 'step: ' + str(v)
         self.focusLine.points = [(-self.eps_arr[0][v], 0), (-self.eps_arr[1][v], self.explorer.h)]
-        self.focusPoint.xrange = [self.M_arr[v] - self.eps_x, self.M_arr[v] + self.eps_x]
+        self.focusPoint.xrange = [-self.M_arr[v] - self.eps_x, -self.M_arr[v] + self.eps_x]
         self.focusPoint.yrange = [-self.N_arr[v] - self.eps_y, -self.N_arr[v] + self.eps_y]
     
     '''
@@ -105,13 +109,19 @@ class MXNEnvelop(GridLayout):
         # update right graph
         max_index = np.argmax(self.M_arr)
         min_index = np.argmin(self.M_arr)
-        self.graphRight.xmax = float(self.M_arr[max_index]) * 1.02
-        self.graphRight.xmin = float(self.M_arr[min_index]) * 1.02
+        xmax = -float(self.M_arr[min_index]) * 1.02
+        xmin = -float(self.M_arr[max_index]) * 1.02
+        self.px.points = [(xmin, 0), (xmax, 0)]
+        self.graphRight.xmax = xmax
+        self.graphRight.xmin = xmin
         self.graphRight.x_ticks_major = (self.graphRight.xmax - self.graphRight.xmin) / 3.
         max_index = np.argmax(self.N_arr)
         min_index = np.argmin(self.N_arr)
-        self.graphRight.ymax = -float(self.N_arr[min_index]) * 1.02
-        self.graphRight.ymin = -float(self.N_arr[max_index]) * 1.02
+        ymin = -float(self.N_arr[max_index]) * 1.02
+        ymax = -float(self.N_arr[min_index]) * 1.02
+        self.py.points = [(0, ymin), (0, ymax)]
+        self.graphRight.ymax = ymax
+        self.graphRight.ymin = ymin
         self.graphRight.y_ticks_major = (self.graphRight.ymax - self.graphRight.ymin) / 5.
         # plot left side
         n = len(eps_arr[0])
@@ -125,7 +135,7 @@ class MXNEnvelop(GridLayout):
             self.plots[index].points = [(0, 0), (0, 0)]
             index += 1
         # plot right side
-        self.forceMomentLine.points = [(m, -n) for n, m in zip(N_arr, M_arr)]
+        self.forceMomentLine.points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
     
     '''
     find the minimum and maximum value of the eps_arr
@@ -152,8 +162,7 @@ class MXNEnvelop(GridLayout):
 
     def calculation(self):
         eps_u_r, y_r, eps_cu = self.explorer.get_coordinates_upperStrain()
-        eps_lo_arr = self.convert_eps_u_2_lo(
-            self.explorer.minStrain, eps_u_r, y_r)
+        eps_lo_arr = self.convert_eps_u_2_lo(self.explorer.maxStrain, eps_u_r, y_r)
         env_reinf_idx = -1
         if len(eps_lo_arr) > 0:
             env_reinf_idx = np.argmin(eps_lo_arr)
@@ -171,8 +180,8 @@ class MXNEnvelop(GridLayout):
         self.update_graph(self.eps_arr, self.M_arr, self.N_arr)
         self.slider.max = len(self.eps_arr[0]) - 1
         self.focusLine.points = [(-self.eps_arr[0][0], 0), (-self.eps_arr[1][0], self.explorer.h)]
-        self.focusPoint.xrange = [self.M_arr[0] - self.eps_x, self.M_arr[0] + self.eps_x]
-        self.focusPoint.yrange = [self.N_arr[0] - self.eps_y, self.N_arr[0] + self.eps_y]
+        self.focusPoint.xrange = [-self.M_arr[0] - self.eps_x, -self.M_arr[0] + self.eps_x]
+        self.focusPoint.yrange = [-self.N_arr[0] - self.eps_y, -self.N_arr[0] + self.eps_y]
         self.slider.value = 0
         self.valueLbl.text = 'step: 0'
 
