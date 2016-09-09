@@ -17,8 +17,9 @@ from plot.thickline import ThickLine
 import numpy as np
 
 class EnvelopeGui:
+    
     '''
-    create the gui of the graph
+    create the gui of the envelope
     '''
 
     def create_gui(self):
