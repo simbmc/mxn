@@ -39,7 +39,6 @@ class MXNApp(App):
     
     # constructor
     def build(self):
-        print('build application')
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         bar = AppActionBar()
         self.content.add_widget(bar)

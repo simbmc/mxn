@@ -36,7 +36,6 @@ class TInformation(GridLayout):
     '''
     def __init__(self, **kwargs):
         super(TInformation, self).__init__(**kwargs)
-        print('create t-information')
         self.cols, self.size_hint_y = 2, None
         self.spacing = Design.spacing
         

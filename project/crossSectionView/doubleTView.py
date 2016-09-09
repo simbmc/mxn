@@ -22,11 +22,11 @@ class DoubleTView(AView, GridLayout):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(DoubleTView, self).__init__(**kwargs)
         AView.__init__(self)
         self.cols = 1
-        print('create doubleT view')
         
     '''
     the method create_graph create the graph, where you can add 

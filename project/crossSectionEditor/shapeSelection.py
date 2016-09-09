@@ -44,7 +44,6 @@ class ShapeSelection(GridLayout):
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-        print('create shape-selection')
         self.create_gui()
     
     '''

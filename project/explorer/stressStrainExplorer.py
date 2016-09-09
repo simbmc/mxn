@@ -11,7 +11,6 @@ from explorer.gui import ExplorerGui
 from materialEditor.materiallist import MaterialList
 import numpy as np
 from ownComponents.design import Design
-from plot.dashedLine import DashedLine
 
 
 class Explorer(GridLayout, ExplorerGui):
@@ -57,7 +56,6 @@ class Explorer(GridLayout, ExplorerGui):
 
     def __init__(self, **kwargs):
         super(Explorer, self).__init__(**kwargs)
-        print('create explorer')
         self.cols, self.spacing = 1, Design.spacing
         self.graphContent = GridLayout(cols=2)
         self.h = self.csShape.ch
@@ -128,7 +126,6 @@ class Explorer(GridLayout, ExplorerGui):
         # normal force
         N_m = np.trapz(stress_y, self.y_m)
         N_r = np.sum(self.stress_r * self.csArea)
-        print('normal force: nm=' + str(N_m) + ' nr=' + str(N_r))
         N = N_m + N_r
         # moment - matrix
         gravity_center = self.csShape._get_gravity_centre()
@@ -139,47 +136,6 @@ class Explorer(GridLayout, ExplorerGui):
         self.normalForceLbl.text = str('%.2E' % Decimal(str(N)))
         self.momentLbl.text = str('%.2E' % Decimal(str(M)))
         return N, M, self.strain_m, self.stress_m, self.strain_r, self.stress_r
-
-    '''
-    plot the strain- and the stress-line of the matrix and reinforcement
-    '''
-
-    def plot(self):
-        self.pMatrixStrain.points = []
-        self.pMatrixStress.points = []
-        for y, strain, stress in zip(self.y_m, self.strain_m, self.stress_m):
-            if stress > self.maxStress:
-                self.maxStress = round(stress, 2)
-            elif stress < self.minStress:
-                self.minStress = round(stress, 2)
-
-            self.pMatrixStrain.points.append((strain, y))
-            self.pMatrixStress.points.append((stress, y))
-            # index += 1
-        n = len(self.plotsStrain)
-        index = 0
-        for y, strain, stress in zip(self.y_r, self.strain_r, self.stress_r):
-            if stress > self.maxStress:
-                self.maxStress = round(stress, 2)
-            elif stress < self.minStress:
-                self.minStress = round(stress, 2)
-            if index < n:
-                self.plotsStrain[index].points = [(0, y), (strain, y)]
-                self.plotsStress[index].points = [(0, y), (stress, y)]
-            else:
-                pStrain = DashedLine(
-                    color=[255, 0, 0], points=[(0, y), (strain, y)])
-                pStress = DashedLine(
-                    color=[255, 0, 0], points=[(0, y), (stress, y)])
-                self.plotsStrain.append(pStrain)
-                self.plotsStress.append(pStress)
-                self.graphStrain.add_plot(pStrain)
-                self.graphStress.add_plot(pStress)
-            index += 1
-        while index < n:
-            self.plotsStrain[index].points = [(0, 0), (0, 0)]
-            self.plotsStress[index].points = [(0, 0), (0, 0)]
-            index += 1
 
     def get_coordinates_upperStrain(self):
         n = len(self.layers) + len(self.bars)

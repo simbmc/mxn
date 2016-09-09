@@ -7,10 +7,10 @@ from kivy.properties import ObjectProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
-from functions.exponentialFunction import ExponentialFunction
-from functions.linearFunction import Linear
+from functions.exponential import Exponential
+from functions.linear import Linear
 from functions.multilinear import Multilinear
-from functions.quadraticFunction import QuadraticFunction
+from functions.quadratic import Quadratic
 from materialEditor.aeditor import AEditor
 from materialEditor.creater import MaterialCreater
 from materialEditor.iobserver import IObserver
@@ -37,7 +37,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
     def __init__(self, **kwargs):
         super(MaterialEditor, self).__init__(**kwargs)
-        print('create material-editor')
         self.btnSize = Design.btnHeight
         self.allMaterials = self.csShape.allMaterials
         self.allMaterials.add_listener(self)
@@ -83,8 +82,8 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         self.create_btns()
         self.content = GridLayout(cols=2, spacing=Design.spacing)
         self.create_information()
-        self.information.add_widget(self.btnBack)
         self.information.add_widget(self.btnEdit)
+        self.information.add_widget(self.btnBack)
         self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
         self.p = LinePlot(color=[0, 0, 0])
@@ -122,7 +121,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
         
     def edit_material(self, btn):
-        print('edit material (editor)')
         self.focusBtnMaterial.text = self.nameBtn.text
         self.focusMaterial.name = self.nameBtn.text
         self.focusMaterial.density = float(self.densityBtn.text)
@@ -136,7 +134,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
 
     def show_material_information(self, btn):
-        print('show_material_information (editor)')
         for material in self.allMaterials.allMaterials:
             if material.name == btn.text:
                 self.focusBtnMaterial = btn
@@ -156,7 +153,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
         
     def show_material_law_editor(self, btn):
-        print('show_material_law_editor (editor)')
         f = self.focusMaterial.materialLaw
         self.materialLawEditor.f = f
         if isinstance(f, Linear):
@@ -169,13 +165,15 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
 #             self.materialLawEditor.multiLinearEditor.update_function(f.points, f.minStress, f.maxStress, f.minStrain,
 #                                                                 f.maxStrain)
             self.materialLawEditor.confirm(None)
-        elif isinstance(f, QuadraticFunction):
+        elif isinstance(f, Quadratic):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnQuadratic
             self.materialLawEditor.quadraticEditor.update_function(f.points, f.minStrain,
                                                                 f.maxStrain, f.a, f.b)
             self.materialLawEditor.confirm(None)
-        elif isinstance(f, ExponentialFunction):
-            self.materialLawEditor.focusBtn = self.materialLawEditor.btnExponentiell
+        elif isinstance(f, Exponential):
+            self.materialLawEditor.focusBtn = self.materialLawEditor.btnExponential
+            self.materialLawEditor.exponentialEditor.update_function(f.points, f.minStrain,
+                                                                f.maxStrain, f.a, f.b)
             self.materialLawEditor.confirm(None)
         self.popupLawEditor.open()
             

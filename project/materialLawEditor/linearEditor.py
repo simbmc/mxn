@@ -6,7 +6,7 @@ Created on 03.05.2016
 from kivy.properties import  NumericProperty
 from kivy.uix.gridlayout import GridLayout
 
-from functions.linearFunction import Linear
+from functions.linear import Linear
 from materialLawEditor.linearInformation import LinearInformation
 from materialLawEditor.linearView import LinearView
 from ownComponents.design import Design

@@ -3,7 +3,7 @@ Created on 04.04.2016
 
 @author: mkennert
 '''
-from functions.linearFunction import Linear
+from functions.linear import Linear
 from materials.amaterial import AMaterial
 
 

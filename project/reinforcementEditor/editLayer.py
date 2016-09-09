@@ -34,7 +34,7 @@ class EditLayer(GridLayout):
     
     defaultValueStr = StringProperty('0.0')
     
-    confirmStr = StringProperty('confirm')
+    confirmStr = StringProperty('ok')
     
     cancelStr = StringProperty('cancel')
     
@@ -126,7 +126,6 @@ class EditLayer(GridLayout):
     '''
     def confirm_input(self, btn):
         if self.add:
-            print('add layer ')
             # when the user add a layer
             y = float(self.yCoordinateBtn.text)
             csArea = float(self.csAreaBtn.text)
@@ -136,11 +135,9 @@ class EditLayer(GridLayout):
                     self.p.add_layer(y, csArea, material)
                     return
         else:
-            print('edit layer ')
             # when the user want edit
             y = float(self.yCoordinateBtn.text)
             csArea = float(self.csAreaBtn.text)
-            print('csArea: ' + str(csArea))
             for i in range(0, len(self.allMaterial.allMaterials)):
                 material = self.allMaterial.allMaterials[i]
                 if material.name == self.materialBtn.text:

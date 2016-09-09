@@ -30,8 +30,7 @@ class CrossSection(GridLayout):
     # cross section view
     view = ObjectProperty()
     
-    # eplorer where you can see the strain-stress-behavior
-    # of the cross-section
+    # explorer to show the strain-stress-behavior
     explorer = ObjectProperty()
     
     #rectangle-shape
@@ -45,6 +44,7 @@ class CrossSection(GridLayout):
     
     #circle-shape
     csCircle = ObjectProperty(ShapeCircle())
+    
     ###################################
     # here you can add more shapes    #
     ###################################
@@ -54,7 +54,6 @@ class CrossSection(GridLayout):
     '''
     def __init__(self, **kwargs):
         super(CrossSection, self).__init__(**kwargs)
-        print('create cross-section')
         self.cols, self.spacing = 2, Design.spacing
         self.allMaterials = MaterialList.Instance()
         self.view = self.csRectangle.view
@@ -67,6 +66,7 @@ class CrossSection(GridLayout):
     '''
     show the rectangle-view
     '''
+    
     def show_rectangle_shape(self):
         self.remove_widget(self.view)
         self.view = self.csRectangle.view

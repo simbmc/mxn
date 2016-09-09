@@ -11,6 +11,7 @@ from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
+from plot.dashedLine import DashedLine
 from plot.line import LinePlot
 
 
@@ -32,7 +33,7 @@ class ExplorerGui:
     
     defaultMaxStrain = StringProperty('0.5')
     
-    defaultNumber = StringProperty('500')
+    defaultNumber = StringProperty('100')
     
     numberStr = StringProperty('integration points')
     
@@ -158,18 +159,17 @@ class ExplorerGui:
     '''
 
     def update_graph(self):
-        print('update graph')
         # update strain-graph
-        print('update strain-graph')
         if self.maxStrain == self.minStrain:
             if self.maxStrain > 0:
                 self.graphStrain.xmin = -1e-1
                 self.graphStrain.xmax = self.maxStrain + 1e-1
-                self.graphStrain.x_ticks_major = self.maxStrain / 5.
+                self.graphStrain.x_ticks_major = float(format(self.graph.xmax / 4., '.1g'))
             elif self.maxStrain < 0:
                 self.graphStrain.xmin = self.maxStrain - 1e-1
                 self.graphStrain.xmax = 1e-1 
-                self.graphStrain.x_ticks_major = -self.maxStrain / 5.
+                self.graphStrain.x_ticks_major = -float(
+                format(self.graph.xmax / 4., '.1g'))
             else:
                 self.graphStrain.xmin = -1e-1
                 self.graphStrain.xmax = 1e-1
@@ -177,20 +177,20 @@ class ExplorerGui:
         else:
             self.graphStrain.xmin = self.maxStrain * 1.05 
             self.graphStrain.xmax = self.minStrain * 1.05 
-            self.graphStrain.x_ticks_major = (self.graphStrain.xmax - self.graphStrain.xmin) / 5.
+            self.graphStrain.x_ticks_major = float(
+                format((self.graphStrain.xmax - self.graphStrain.xmin) / 4., '.1g'))
         self.graphStrain.ymax = self.h
-        self.graphStrain.y_ticks_major = self.h / 5.
+        self.graphStrain.y_ticks_major = float(format(self.h / 4., '.1g'))
         # update stress-graph
-        print('update stress-graph')
         if self.minStress == self.maxStress:
             if self.maxStress > 0:
                 self.graphStress.xmin = -1e-1
                 self.graphStress.xmax = self.maxStress + 1e-1
-                self.graphStress.x_ticks_major = self.maxStress / 5.
+                self.graphStress.x_ticks_major = float(format(self.maxStress / 4., '.1g'))
             elif self.maxStress < 0:
                 self.graphStress.xmin = self.maxStress - 1e-1
                 self.graphStress.xmax = 1e-1
-                self.graphStress.x_ticks_major = -self.maxStress / 5.
+                self.graphStress.x_ticks_major = -float(format(self.maxStress / 4., '.1g'))
             else:
                 self.graphStress.xmin = -1e-1
                 self.graphStress.xmax = 1e-1
@@ -198,9 +198,50 @@ class ExplorerGui:
         else:
             self.graphStress.xmin = self.minStress * 1.05
             self.graphStress.xmax = self.maxStress * 1.05
-            self.graphStress.x_ticks_major = (self.maxStress - self.minStress) / 5.
+            self.graphStress.x_ticks_major = float(format((self.graphStress.xmax - self.graphStress.xmin) / 4., '.1g'))
         self.graphStress.ymax = self.h
         self.graphStress.y_ticks_major = self.h / 5.
         # update plots
         self.pStrainCs.points = [ (0, 0), (0, self.h)]
         self.pStressCs.points = [(0, 0), (0, self.h)]
+    
+    '''
+    plot the strain- and the stress-line of the matrix and reinforcement
+    '''
+
+    def plot(self):
+        self.pMatrixStrain.points = []
+        self.pMatrixStress.points = []
+        for y, strain, stress in zip(self.y_m, self.strain_m, self.stress_m):
+            if stress > self.maxStress:
+                self.maxStress = round(stress, 2)
+            elif stress < self.minStress:
+                self.minStress = round(stress, 2)
+
+            self.pMatrixStrain.points.append((strain, y))
+            self.pMatrixStress.points.append((stress, y))
+            # index += 1
+        n = len(self.plotsStrain)
+        index = 0
+        for y, strain, stress in zip(self.y_r, self.strain_r, self.stress_r):
+            if stress > self.maxStress:
+                self.maxStress = round(stress, 2)
+            elif stress < self.minStress:
+                self.minStress = round(stress, 2)
+            if index < n:
+                self.plotsStrain[index].points = [(0, y), (strain, y)]
+                self.plotsStress[index].points = [(0, y), (stress, y)]
+            else:
+                pStrain = DashedLine(
+                    color=[255, 0, 0], points=[(0, y), (strain, y)])
+                pStress = DashedLine(
+                    color=[255, 0, 0], points=[(0, y), (stress, y)])
+                self.plotsStrain.append(pStrain)
+                self.plotsStress.append(pStress)
+                self.graphStrain.add_plot(pStrain)
+                self.graphStress.add_plot(pStress)
+            index += 1
+        while index < n:
+            self.plotsStrain[index].points = [(0, 0), (0, 0)]
+            self.plotsStress[index].points = [(0, 0), (0, 0)]
+            index += 1

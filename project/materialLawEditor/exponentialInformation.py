@@ -1,28 +1,27 @@
-# -*- coding: utf-8 -*-
 '''
-Created on 06.05.2016
+Created on 09.09.2016
 
 @author: mkennert
 '''
 from kivy.properties import StringProperty
-from kivy.uix.gridlayout import GridLayout
 
+from materialLawEditor.ainformation import AInformation
 from ownComponents.design import Design
 from ownComponents.numpad import Numpad
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownLabel import OwnLabel
 from ownComponents.ownPopup import OwnPopup
-from materialLawEditor.ainformation import AInformation
+from kivy.uix.gridlayout import GridLayout
 
 
-class QuadraticFunctionInformation(GridLayout, AInformation):
+class ExponentialInformation(GridLayout, AInformation):
     
     '''
-    with the QuadraticFunctionInformation you can set the properties of the function
+    with the ExponentialInformation you can set the properties of the function
     '''
     
     # string quadratic
-    quadraticStr = StringProperty('quadratic')
+    exponentialStr = StringProperty('exponential')
     
     # string parameter a
     aStr = StringProperty('a:')
@@ -30,13 +29,12 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     # string parameter b
     bStr = StringProperty('b:')
     
-    
     '''
     constructor
     '''
     
     def __init__(self, **kwargs):
-        super(QuadraticFunctionInformation, self).__init__(**kwargs)
+        super(ExponentialInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         self.create_information()
         # create the numpad
@@ -51,13 +49,13 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     def create_information(self):
         self.create_btns()
         self.add_widget(OwnLabel(text=self.functionStr))
-        self.add_widget(self.btnQuadratic)
+        self.add_widget(self.btnExponential)
         self.add_widget(OwnLabel(text=self.aStr))
         self.add_widget(self.aBtn)
         self.add_widget(OwnLabel(text=self.bStr))        
         self.add_widget(self.bBtn)
         self.add_base_btns()
-        
+    
     '''
     create all btns of the gui
     '''
@@ -67,10 +65,10 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
         self.aBtn.bind(on_press=self.show_popup)
         self.bBtn = OwnButton(text=str(self.editor.b))
         self.bBtn.bind(on_press=self.show_popup)
-        self.btnQuadratic = OwnButton(text=self.quadraticStr)
-        self.btnQuadratic.bind(on_press=self.show_type_selection)
+        self.btnExponential = OwnButton(text=self.exponentialStr)
+        self.btnExponential.bind(on_press=self.show_type_selection)
         self.create_base_btns()
-
+    
     '''
     the method finished_numpad close the numpad_popup
     '''
@@ -83,12 +81,12 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
         elif self.focusBtn == self.bBtn:
             self.editor.b = v
         elif self.focusBtn == self.btnStrainUL:
-            if v>self.editor.minStrain:
+            if v > self.editor.minStrain:
                 self.editor.maxStrain = v
             else:
                 return
         elif self.focusBtn == self.btnStrainLL:
-            if v<self.editor.maxStrain:
+            if v < self.editor.maxStrain:
                 self.editor.minStrain = v
             else:
                 return
@@ -103,7 +101,6 @@ class QuadraticFunctionInformation(GridLayout, AInformation):
     
     def show_popup(self, btn):
         self.focusBtn = btn
-        
         if self.focusBtn == self.aBtn:
             self.popupNumpad.title = self.aStr
         elif self.focusBtn == self.bBtn:

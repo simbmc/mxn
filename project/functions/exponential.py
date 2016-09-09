@@ -10,10 +10,10 @@ import numpy as np
 from kivy.properties import NumericProperty
 
 
-class ExponentialFunction(IFunction):
+class Exponential(IFunction):
     
     '''
-    represents a exponentialFunction f(x)=ae^(bx)
+    represents a exponentialFunction f(x)=a*exp(bx)-a
     '''
     
     # parameter a
@@ -39,7 +39,7 @@ class ExponentialFunction(IFunction):
     
     def f(self, x):
         if x >= self.minStrain * self.eps and x <= self.maxStrain * self.eps:
-            return self.a * np.exp(self.b * x)
+            return self.a * np.exp(self.b * x) - self.a 
         else:
             return 0
     
@@ -48,5 +48,5 @@ class ExponentialFunction(IFunction):
     '''
        
     def f_toString(self):
-        return "f(x)=" + str(self.a) + "e^(" + str(self.b) + "x)"
+        return "f(x)=" + str(self.a) + "e^(" + str(self.b) + "x)-" + str(self.a)
     

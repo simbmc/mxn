@@ -22,10 +22,10 @@ class TView(AView, GridLayout):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(TView, self).__init__(**kwargs)
         AView.__init__(self)
-        print('create t-view')
         self.cols = 1
         
     '''

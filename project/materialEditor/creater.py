@@ -29,7 +29,6 @@ class MaterialCreater(GridLayout, AEditor):
     '''
     def __init__(self, **kwargs):
         super(MaterialCreater, self).__init__(**kwargs)
-        print('create material-creater')
         self.cols, self.spacing = 2, Design.spacing
         self.create_gui()
 
@@ -42,8 +41,8 @@ class MaterialCreater(GridLayout, AEditor):
         self.create_base_popups()
         self.create_buttons()
         self.create_information()
-        self.information.add_widget(self.cancelBtn)
         self.information.add_widget(self.createBtn)
+        self.information.add_widget(self.cancelBtn)
         self.graph = OwnGraph(xlabel=self.strainStr, ylabel=self.stressStr,
                               y_grid_label=True, x_grid_label=True)
         self.p = LinePlot(color=[0, 0, 0, 1])

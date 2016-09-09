@@ -32,7 +32,6 @@ class LinearView(GridLayout, AView):
     '''    
         
     def update_graph_properties(self):
-        print('update_graph_properties (linearView)')
         self.graph.xmax = self.editor.maxStrain
         self.graph.xmin = self.editor.minStrain
         self.graph.x_ticks_major = (self.graph.xmax - self.graph.xmin) / 5.

@@ -46,6 +46,7 @@ class MultilinearInformation(GridLayout, AInformation):
         super(MultilinearInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         self.create_information()
+        self.create_limit_area()
         # create the numpad
         self.numpad = Numpad(sign=True, p=self)
         self.popupNumpad = OwnPopup(content=self.numpad)
@@ -56,20 +57,39 @@ class MultilinearInformation(GridLayout, AInformation):
     
     def create_information(self):
         self.create_btns()
-        self.add_widget(OwnLabel(text=self.functionStr))
-        self.add_widget(self.btnMultiLinear)
-        self.add_widget(OwnLabel(text=self.pointsStr))
-        self.add_widget(self.pointsBtn)
-        self.add_widget(OwnLabel(text=self.xStr))
-        self.add_widget(self.btnX)
-        self.add_widget(OwnLabel(text=self.yStr))
-        self.add_widget(self.btnY)
-        self.add_widget(OwnLabel(text=self.stressULStr))
-        self.add_widget(self.btnStressUL)
-        self.add_widget(OwnLabel(text=self.stressLLStr))
-        self.add_widget(self.btnStressLL)
-        self.add_base_btns()
+        self.information = GridLayout(cols=2, spacing=Design.spacing)
+        self.information.add_widget(OwnLabel(text=self.functionStr))
+        self.information.add_widget(self.btnMultiLinear)
+        self.information.add_widget(OwnLabel(text=self.pointsStr))
+        self.information.add_widget(self.pointsBtn)
+        self.information.add_widget(OwnLabel(text=self.xStr))
+        self.information.add_widget(self.btnX)
+        self.information.add_widget(OwnLabel(text=self.yStr))
+        self.information.add_widget(self.btnY)
+        self.information.add_widget(OwnLabel(text='change the'))
+        self.information.add_widget(self.btnLimitArea)
+        self.information.add_widget(self.btnConfirm)
+        self.information.add_widget(self.btnCancel)
+        self.add_widget(self.information)
     
+    '''
+    create the limit area
+    '''
+        
+    def create_limit_area(self):
+        self.limitArea = GridLayout(cols=2, spacing=Design.spacing)
+        self.limitArea.add_widget(OwnLabel(text=self.stressULStr))
+        self.limitArea.add_widget(self.btnStressUL)
+        self.limitArea.add_widget(OwnLabel(text=self.stressLLStr))
+        self.limitArea.add_widget(self.btnStressLL)
+        self.limitArea.add_widget(OwnLabel(text=self.strainULStr))
+        self.limitArea.add_widget(self.btnStrainUL)
+        self.limitArea.add_widget(OwnLabel(text=self.strainLLStr))
+        self.limitArea.add_widget(self.btnStrainLL)
+        btnConfirm = OwnButton(text='ok')
+        btnConfirm.bind(on_press=self.hide_limit_area)
+        self.limitArea.add_widget(btnConfirm)
+        
     '''
     create the btns
     '''
@@ -87,7 +107,25 @@ class MultilinearInformation(GridLayout, AInformation):
         self.btnY = OwnButton(text='-')
         self.btnX.bind(on_press=self.show_popup)
         self.btnY.bind(on_press=self.show_popup)
+        self.btnLimitArea = OwnButton(text='limits')
+        self.btnLimitArea.bind(on_press=self.show_limit_area)
         self.create_base_btns()
+    
+    '''
+    show the limitArea where you can set the limits
+    '''
+    
+    def show_limit_area(self, btn):
+        self.remove_widget(self.information)
+        self.add_widget(self.limitArea)
+    
+    '''
+    hide the limitArea
+    '''
+   
+    def hide_limit_area(self, btn):
+        self.remove_widget(self.limitArea)
+        self.add_widget(self.information)
     
     '''
     open the numpad popup
@@ -172,4 +210,3 @@ class MultilinearInformation(GridLayout, AInformation):
         self.btnStressUL.text = str(maxStress)
         self.btnX.text = str(0)
         self.btnY.text = str(0)
-    

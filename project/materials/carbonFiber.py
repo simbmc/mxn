@@ -4,7 +4,7 @@ Created on 04.04.2016
 @author: mkennert
 '''
 from materials.amaterial import AMaterial
-from functions.linearFunction import Linear
+from functions.linear import Linear
 
 class CarbonFiber(AMaterial):
     '''

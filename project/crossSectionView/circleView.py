@@ -30,7 +30,6 @@ class CSCircleView(AView, BoxLayout):
     '''
     def __init__(self, **kwargs):
         super(CSCircleView, self).__init__(**kwargs)
-        print('create circle view')
 
     '''
     the method create_graph create the graph, where you can add 

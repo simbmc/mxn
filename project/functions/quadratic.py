@@ -13,7 +13,7 @@ from numpy import arange
 from functions.function import IFunction
 
 
-class QuadraticFunction(IFunction):
+class Quadratic(IFunction):
     
     '''
     represents a quadratic-function f(x)=ax*x+b*x

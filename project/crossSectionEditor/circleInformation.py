@@ -30,15 +30,16 @@ class CircleInformation(GridLayout):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(CircleInformation, self).__init__(**kwargs)
-        print('create circle-information')
         self.cols, self.spacing = 2, Design.spacing
         self.height, self.size_hint_y = Design.btnHeight, None
     
     '''
     create the gui of the circle-information
     '''
+    
     def create_gui(self):
         # create the popup where you can set the diamter
         self.numpad = Numpad(p=self)
@@ -50,14 +51,16 @@ class CircleInformation(GridLayout):
         self.add_widget(self.btnDiameter)
     
     '''
-    close the numpad. this method will be call from the numpad
+    close the numpad. this method will be call by the numpad-component
     '''
+    
     def close_numpad(self):
         self.popup.dismiss()
         
     '''
     set the text of the button
     '''
+    
     def finished_numpad(self):
         self.btnDiameter.text = self.numpad.lblTextinput.text
         d = float(self.btnDiameter.text)

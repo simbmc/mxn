@@ -38,14 +38,15 @@ class DoubleTInformation(GridLayout):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(DoubleTInformation, self).__init__(**kwargs)
-        print('create doubleT-information')
         self.cols, self.spacing = 2, Design.spacing
         
     '''
     create the gui
     '''
+    
     def create_gui(self):
         self.create_btns()
         self.add_widget(OwnLabel(text=self.twStr))
@@ -67,6 +68,7 @@ class DoubleTInformation(GridLayout):
     '''
     create all btns of this component
     '''
+    
     def create_btns(self):
         self.topWidth = OwnButton(text=str(self.csShape.tw))
         self.middleWidth = OwnButton(text=str(self.csShape.mw))
@@ -84,6 +86,7 @@ class DoubleTInformation(GridLayout):
     '''
     open the popup
     '''
+    
     def show_numpad(self, btn):
         self.focusBtn = btn
         if self.focusBtn == self.topHeight:

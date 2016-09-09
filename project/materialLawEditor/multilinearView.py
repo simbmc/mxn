@@ -38,8 +38,9 @@ class MultilinearView(GridLayout, AView):
         w, h = self.graph.xmin, self.graph.ymin
         wi = (self.graph.xmax - self.graph.xmin) / n
         hi = (self.graph.ymax - self.graph.ymin) / n
-        if w>0:
-            w+=wi
+        if w >= 0:
+            h = 0
+            hi = self.graph.ymax / n
         overZero = False
         while n > 0:
             p = FilledEllipse(color=[255, 0, 0], xrange=[w - self.epsX, w + self.epsX],
@@ -125,8 +126,7 @@ class MultilinearView(GridLayout, AView):
                     self.lines[i + 1].points[0] = (x, y)
                     self._points[i].xrange = [x - self.epsX, x + self.epsX]
                     self._points[i].yrange = [y - self.epsY, y + self.epsY]
-                else:
-                    print('false input')
+                
     
     '''
     returns the coordinate of the points

@@ -8,13 +8,14 @@ from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.linearEditor import LinearEditor
 from materialLawEditor.multilinearEditor import MultilinearEditor
-from materialLawEditor.quadraticFunctionEditor import QuadraticFunctionEditor
+from materialLawEditor.quadraticEditor import QuadraticEditor
 from ownComponents.design import Design
 from ownComponents.ownButton import OwnButton
 from ownComponents.ownGraph import OwnGraph
 from ownComponents.ownPopup import OwnPopup
 from plot.line import LinePlot
-
+import numpy as np
+from materialLawEditor.exponentialEditor import ExponentialEditor
 
 class MaterialLawEditor(GridLayout):
     
@@ -32,6 +33,9 @@ class MaterialLawEditor(GridLayout):
     # editor for the quadratic-function
     quadraticEditor = ObjectProperty()
     
+    # editor for the exponential-function
+    exponentialEditor = ObjectProperty()
+    
     # parent of the law-editor
     creater = ObjectProperty()
     
@@ -48,7 +52,7 @@ class MaterialLawEditor(GridLayout):
     
     quadraticStr = StringProperty('quadratic')
     
-    expStr = StringProperty('exponentiell')
+    expStr = StringProperty('exponential')
     
     functiontypeStr = StringProperty('function-type')
     
@@ -61,11 +65,11 @@ class MaterialLawEditor(GridLayout):
     '''
     def __init__(self, **kwargs):
         super(MaterialLawEditor, self).__init__(**kwargs)
-        print('create law-editor')
         self.cols, self.spacing = 2, Design.spacing
         self.linearEditor = LinearEditor(lawEditor=self)
         self.multiLinearEditor = MultilinearEditor(lawEditor=self)
-        self.quadraticEditor = QuadraticFunctionEditor(lawEditor=self)
+        self.quadraticEditor = QuadraticEditor(lawEditor=self)
+        self.exponentialEditor=ExponentialEditor(lawEditor=self)
         self.create_gui()
     
     '''
@@ -83,9 +87,24 @@ class MaterialLawEditor(GridLayout):
     create all graphs to show the function
     '''
     def create_graphs(self):
-        self.create_graph_linear()
-        self.create_graph_multilinear()
-        self.create_graph_quadratic()
+        self.graph = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
+                                    x_ticks_major=0.1, y_ticks_major=0.1,
+                                    y_grid_label=True, x_grid_label=True,
+                                    xmin=0.0, xmax=0.5, ymin=0, ymax=0.5)
+        # all plots to represent the function
+        self.pLinear = LinePlot(points=[(0, 0), (0.5, 0.5)], color=Design.focusColor)
+        self.pQuadratic = LinePlot(points=[(0.005 * x, 0.0001 * x * x)
+                                  for x in range(100)], color=Design.focusColor)
+        self.pMultilinear = LinePlot(points=[(0, 0), (0.1, 0.3), (0.2, 0.1), (0.3, 0.2),
+                                             (0.4, 0.1), (0.5, 0.45)],
+                                     color=Design.focusColor)
+        self.pExponential = LinePlot(points=[(0.005 * x, 0.0001 * np.exp(0.1*x) - 0.0001)
+                                  for x in range(100)], color=Design.focusColor)
+        # default focus-plot is linear
+        self.focusPlot = self.pLinear
+        self.graph.add_plot(self.focusPlot)
+        self.functionSelection.add_widget(self.graph)
+        
     
     '''
     create the area where you can the function-type
@@ -96,7 +115,7 @@ class MaterialLawEditor(GridLayout):
         self.information.add_widget(self.btnLinear)
         self.information.add_widget(self.btnMultiLinear)
         self.information.add_widget(self.btnQuadratic)
-        self.information.add_widget(self.btnExponentiell)
+        self.information.add_widget(self.btnExponential)
         confirmArea = GridLayout(cols=2, spacing=Design.spacing)
         confirmArea.add_widget(self.btnOk)
         confirmArea.add_widget(self.btnCancel)
@@ -112,7 +131,7 @@ class MaterialLawEditor(GridLayout):
         self.focusBtn = self.btnLinear
         self.btnMultiLinear = OwnButton(text=self.mulitlinearStr)
         self.btnQuadratic = OwnButton(text=self.quadraticStr)
-        self.btnExponentiell = OwnButton(text=self.expStr)
+        self.btnExponential = OwnButton(text=self.expStr)
         self.btnOk = OwnButton(text=self.okStr)
         self.btnCancel = OwnButton(text=self.cancelStr)
         self.btnOk.bind(on_press=self.confirm)
@@ -120,77 +139,43 @@ class MaterialLawEditor(GridLayout):
         self.btnLinear.bind(on_press=self.show_linear)
         self.btnMultiLinear.bind(on_press=self.show_multilinear)
         self.btnQuadratic.bind(on_press=self.show_quadratic)
-        self.btnExponentiell.bind(on_press=self.show_exponentiell)
-        
-    '''
-    create the linear-function graph
-    '''
-    def create_graph_linear(self):
-        self.graphLinear = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
-                                    x_ticks_major=0.1, y_ticks_major=0.1,
-                                    y_grid_label=True, x_grid_label=True,
-                                    xmin=0.0, xmax=0.5, ymin=0, ymax=0.5)
-        self.p = LinePlot(points=[(0, 0), (0.5, 0.5)], color=Design.focusColor)
-        self.graphLinear.add_plot(self.p)
-        self.focusGraph = self.graphLinear
-        self.functionSelection.add_widget(self.graphLinear)
-
-    '''
-    create the quadratic-function graph
-    '''
-    def create_graph_quadratic(self):
-        self.graphQuadratic = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
-                                       x_ticks_major=0.1, y_ticks_major=0.1,
-                                       y_grid_label=True, x_grid_label=True,
-                                       xmin=0.0, xmax=0.5, ymin=0, ymax=0.5)
-        self.p = LinePlot(points=[(0.005 * x, 0.0001 * x * x)
-                                  for x in range(100)], color=Design.focusColor)
-        self.graphQuadratic.add_plot(self.p)
-    
-    '''
-    create the mulit-linear-function graph
-    '''
-    def create_graph_multilinear(self):
-        self.graphMulitLinear = OwnGraph(xlabel=self.stressStr, ylabel=self.strainStr,
-                                         x_ticks_major=0.1, y_ticks_major=0.1,
-                                         y_grid_label=True, x_grid_label=True,
-                                         xmin=0.0, xmax=0.5, ymin=0, ymax=0.5)
-        self.p = LinePlot(points=[(0, 0), (0.1, 0.3), (0.2, 0.1), (0.3, 0.2), (0.4, 0.1), (0.5, 0.45)],
-                          color=Design.focusColor)
-        self.graphMulitLinear.add_plot(self.p)
+        self.btnExponential.bind(on_press=self.show_exponentiell)    
     
     '''
     show the linear-function-view
     '''
     def show_linear(self, btn):
         self.focusBtn = btn
-        self.functionSelection.remove_widget(self.focusGraph)
-        self.functionSelection.add_widget(self.graphLinear, index=1)
-        self.focusGraph = self.graphLinear
+        self.graph.remove_plot(self.focusPlot)
+        self.focusPlot = self.pLinear
+        self.graph.add_plot(self.focusPlot)
     
     '''
     show the quadratic-function-view
     '''
     def show_quadratic(self, btn):
         self.focusBtn = btn
-        self.functionSelection.remove_widget(self.focusGraph)
-        self.functionSelection.add_widget(self.graphQuadratic, index=1)
-        self.focusGraph = self.graphQuadratic
+        self.graph.remove_plot(self.focusPlot)
+        self.focusPlot = self.pQuadratic
+        self.graph.add_plot(self.focusPlot)
     
     '''
     show the exp-function-view
     '''
     def show_exponentiell(self, btn):
-        print('not yet implemented')
+        self.focusBtn = btn
+        self.graph.remove_plot(self.focusPlot)
+        self.focusPlot = self.pExponential
+        self.graph.add_plot(self.focusPlot)
     
     '''
     show the multi-linear-function-view
     '''
     def show_multilinear(self, btn):
         self.focusBtn = btn
-        self.functionSelection.remove_widget(self.focusGraph)
-        self.functionSelection.add_widget(self.graphMulitLinear, index=1)
-        self.focusGraph = self.graphMulitLinear
+        self.graph.remove_plot(self.focusPlot)
+        self.focusPlot = self.pMultilinear
+        self.graph.add_plot(self.focusPlot)
         
     '''
     cancel the create-process
@@ -208,7 +193,6 @@ class MaterialLawEditor(GridLayout):
     confirm the selection of the function-type
     '''
     def confirm(self, btn):
-        print('confirm lawEditor (lawEditor)')
         self.remove_widget(self.focusEditor)
         if self.focusBtn == self.btnLinear:
             self.focusEditor = self.linearEditor
@@ -219,7 +203,7 @@ class MaterialLawEditor(GridLayout):
         elif self.focusBtn == self.btnQuadratic:
             self.focusEditor = self.quadraticEditor
             self.add_widget(self.focusEditor)
-        elif self.focusBtn == self.btnExponentiell:
-            print('not finished yet')
-            return  # not finished yet
+        elif self.focusBtn == self.btnExponential:
+            self.focusEditor=self.exponentialEditor
+            self.add_widget(self.exponentialEditor)
         self.editor.dismiss()

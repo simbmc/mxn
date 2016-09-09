@@ -33,7 +33,6 @@ class CSRectangleView(GridLayout, AView):
     def __init__(self, **kwargs):
         super(CSRectangleView, self).__init__(**kwargs)
         self.cols = 1
-        print('create rectangle view')
 
     '''
     the method create_graph create the graph, where you can add 

@@ -36,7 +36,7 @@ class EditBar(GridLayout):
     
     defaultValueStr = StringProperty('0.0')
     
-    confirmStr = StringProperty('confirm')
+    confirmStr = StringProperty('ok')
     
     cancelStr = StringProperty('cancel')
     
