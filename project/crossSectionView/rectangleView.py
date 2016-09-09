@@ -55,6 +55,7 @@ class CSRectangleView(GridLayout, AView):
     '''
 
     def add_layer(self, y, csArea, material):
+        #if the y-coordinate is out of range
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
         else:
@@ -66,6 +67,7 @@ class CSRectangleView(GridLayout, AView):
     '''
         
     def edit_layer(self, y, material, csArea):
+        #if the y-coordinate is out of range
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
         else:
@@ -73,12 +75,13 @@ class CSRectangleView(GridLayout, AView):
             self.update_layer_properties(y, material, csArea)
     
     '''
-    add a bar
+    add a bar to the cross-section
     '''
 
     def add_bar(self, x, y, csArea, material):
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
+        #if the coordinates are out of range
         if y + epsY > self.ch or y - epsY < 0 or x + epsX > self.cw + self.epsX or x - epsX < self.epsX:
             self.csShape.show_error_message()
         else:
@@ -91,17 +94,12 @@ class CSRectangleView(GridLayout, AView):
     def edit_bar(self, x, y, csArea, material):
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
+        #if the coordinates are out of range
         if y + epsY > self.ch or y - epsY < 0 or x + epsX > self.cw + self.epsX or x - epsX < self.epsX:
             self.csShape.show_error_message()
         else:
             self.update_bar_properties(x, y, csArea, material, epsX, epsY)     
     
-    '''
-    update the graph
-    '''
-
-    def update_graph(self):
-        self.p.points = self.draw_rectangle()
     
     '''
     the method update_height change the height of the cross section shape
@@ -110,10 +108,10 @@ class CSRectangleView(GridLayout, AView):
 
     def update_height(self, value):
         self.ch = value
-        self.csShape.view.graph._clear_buffer()
-        self.csShape.view.graph.y_ticks_major = value / 5.
+        self.graph.y_ticks_major = value / 5.
         self.graph.ymax = self.ch * 1.04 
-        self.update_graph()
+        self.p.points = self.draw_rectangle()
+        self.delete_reinforcement()
 
     '''
     the method update_width change the width of the cross section shape
@@ -122,14 +120,11 @@ class CSRectangleView(GridLayout, AView):
 
     def update_width(self, value):
         self.cw = value
-        self.csShape.view.graph._clear_buffer()
-        self.csShape.view.graph.x_ticks_major = value / 5.
-        self.update_graph()
+        self.graph.x_ticks_major = value / 5.
         self.graph.xmax = self.cw + 2 * self.epsX
-        for layer in self.csShape.layers:
-            layer.x = self.cw
-            layer.line.points = [(0, layer.y), (self.cw, layer.y)]
-
+        self.p.points = self.draw_rectangle()
+        self.delete_reinforcement()
+    
     '''
     give the user the possibility to focus a layer or a bar
     '''

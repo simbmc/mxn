@@ -43,6 +43,7 @@ class TView(AView, GridLayout):
                               xmin=0, xmax=self.cw + self.deltaX,
                               ymin=0, ymax=self.ch + self.deltaY)
         self.add_widget(self.graph)
+        # plot to show the shape of the cross-section
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_t()
         self.graph.add_plot(self.p)
@@ -53,12 +54,15 @@ class TView(AView, GridLayout):
 
     def add_layer(self, y, csArea, material):
         mid = self.graph.xmax / 2.
+        # if the y-coordinate is out of range
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
         else:
+            # if the y-coordinate is in the bottom-area
             if y > self.bh:
                 w1 = mid - self.bh / 2.
                 w2 = mid + self.bh / 2.
+            # if the y-coordinate is in the top-area
             else:
                 w1 = mid - self.th / 2.
                 w2 = mid + self.th / 2.
@@ -70,11 +74,14 @@ class TView(AView, GridLayout):
     '''
     def edit_layer(self, y, material, csArea):
         mid = self.graph.xmax / 2.
+        # if the y-coordinate is out of range
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
             return
+        # if the y-coordinate is in the bottom-area
         if y < self.bh:
             self.focusLayer.line.points = [(mid - self.bw / 2., y), (mid - self.bw / 2. + self.bw, y)]
+        # if the y-coordinate is in the top-area
         else:
             self.focusLayer.line.points = [(mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
         self.update_layer_properties(y, material, csArea)
@@ -87,6 +94,7 @@ class TView(AView, GridLayout):
         mid = self.graph.xmax / 2.
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
+        # if the coordinates are not correctly
         if self.proof_coordinates(x, y, epsX, epsY, mid):
             self.csShape.show_error_message()
         else:
@@ -100,6 +108,7 @@ class TView(AView, GridLayout):
         mid = self.graph.xmax / 2.
         epsY = self.ch / Design.barProcent
         epsX = self.cw / Design.barProcent
+        # if the coordinates are not correctly
         if self.proof_coordinates(x, y, epsX, epsY, mid):
             self.csShape.show_error_message()
         else:
@@ -112,6 +121,7 @@ class TView(AView, GridLayout):
     def update(self):
         self.update_values()
         self.update_all_graph()
+        self.delete_reinforcement()
     
     '''
     update the local values with the values of the shape
@@ -137,16 +147,19 @@ class TView(AView, GridLayout):
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
         self.p.points = self.draw_t()
-              
+        
     '''
     proofs whether the coordinates are in the shape. 
     return True, when the coordinates are not in the shape
     '''
     def proof_coordinates(self, x, y, epsX, epsY, mid):
+        # if the coordinates are out of the total width and height
         if y + epsY > self.ch or x > self.cw or x < self.deltaX or y - epsY < 0 :
             return True
+        # if the x-coordinate is not in the bottom-area
         elif y + epsY < self.bh and (x > mid + self.bw / 2. or x < mid - self.bw / 2.):
             return True
+        # if the x-coordinate is not in the middle-area
         elif y + epsY < self.ch and (x > mid + self.tw / 2. or x < mid - self.tw / 2.):
             return True
         else:

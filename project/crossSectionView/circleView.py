@@ -28,6 +28,7 @@ class CSCircleView(AView, BoxLayout):
     '''
     constructor
     '''
+    
     def __init__(self, **kwargs):
         super(CSCircleView, self).__init__(**kwargs)
 
@@ -41,30 +42,39 @@ class CSCircleView(AView, BoxLayout):
                               x_ticks_major=0.05, y_ticks_major=0.05,
                               y_grid_label=True, x_grid_label=True, padding=5,
                               xmin=0, xmax=self.d, ymin=0, ymax=self.d)
-        self.draw_circle()
+        # create the circle
+        self.p = Ellipse(xrange=[0, self.graph.xmax], yrange=[0, self.graph.ymax],
+                              color=[0, 0, 0, 1])
+        self.graph.add_plot(self.p)
         self.add_widget(self.graph)
 
     '''
-    set the radius of the circle
+    set the radius of the circle and update the circle-size
     '''
         
     def update_circle(self, r):
         self.d = r
-        self.graph.x_ticks_major = self.graph.y_ticks_major = self.d / 5.
         self.graph.xmax = self.graph.ymax = r
-        self.graph.remove_plot(self.circle)
-        self.draw_circle()
+        # update plot-size
+        self.p.xrange = [0, r]
+        self.p.yrange = [0, r]
+        # update graph-size
+        self.graph.x_ticks_major = self.graph.y_ticks_major = self.d / 5.
+        self.delete_reinforcement()
     
     '''
     add a new layer
     '''
         
     def add_layer(self, y, csArea, material):
+        # if the y-coordinate is out of range
         if y >= self.csShape.d or y <= 0:
             self.csShape.show_error_message()
             return
+        # calculate the x-coordinates by the given y-coordinate
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
+        # create a dashed-line to represent the layer
         line = DashedLine(color=[1, 0, 0, 1], points=[(x1, y), (x2, y)])
         self.create_layer(y, csArea, x2 - x1, material, line)
 
@@ -73,12 +83,15 @@ class CSCircleView(AView, BoxLayout):
     '''
         
     def edit_layer(self, y, material, csArea):
+        # if the y-coordinate is out of range
         if y >= self.csShape.d or y <= 0:
             self.csShape.show_error_message()
             return
+        # calculate the x-coordinates by the given y-coordinate
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
         self.focusLayer.line.points = [(x1, y), (x2, y)]
+        # update the layer-properties
         self.update_layer_properties(y, material, csArea)
         
     '''
@@ -88,9 +101,11 @@ class CSCircleView(AView, BoxLayout):
     def add_bar(self, x, y, csArea, material):
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
+        # proofs whether the coordinate are correctly
         if self.proof_coordinates(x, y, epsX, epsY):
             self.csShape.show_error_message()
             return
+        # create a bar and added the ellipse by the graph
         self.create_bar(x, y, csArea, material, epsX, epsY)
     
     '''
@@ -100,9 +115,11 @@ class CSCircleView(AView, BoxLayout):
     def edit_bar(self, x, y, csArea, material):
         epsY = self.d / Design.barProcent
         epsX = self.d / Design.barProcent
+        # proofs whether the coordinate are correctly
         if self.proof_coordinates(x, y, epsX, epsY):
             self.csShape.show_error_message()
             return
+        # update the properties of the bar
         self.update_bar_properties(x, y, csArea, material, epsX, epsY)
     
     '''
@@ -111,10 +128,12 @@ class CSCircleView(AView, BoxLayout):
     '''
         
     def proof_coordinates(self, x, y, epsX, epsY):
+        # if the y-coordinate out of the range
         if y + epsY > self.csShape.d or y - epsY < 0:
             return True
         x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2. - epsX
         x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2. + epsX
+        # if the x-coordinate are not in the circle
         if x < x1 or x > x2:
             return True
         else: 
@@ -129,16 +148,4 @@ class CSCircleView(AView, BoxLayout):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * (self.d)
         y = (touch.y - y0) / gh * (self.d)
-        # change_bar is a switch
         self.touch_reaction(x, y, self.d, self.d)
-    
-    '''
-    draw the circle
-    '''
-
-    def draw_circle(self):
-        self.circle = Ellipse()
-        self.circle.xrange = [0, self.graph.xmax]
-        self.circle.yrange = [0, self.graph.ymax]
-        self.circle.color = [0, 0, 0, 1]
-        self.graph.add_plot(self.circle)

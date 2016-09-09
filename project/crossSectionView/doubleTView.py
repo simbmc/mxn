@@ -34,16 +34,18 @@ class DoubleTView(AView, GridLayout):
     '''
 
     def create_graph(self):
-        # save the values of the cs shape
+        # save the values of the cross-section-shape
         self.update_values()
         self.deltaX = self.cw / 10.
         self.deltaY = self.ch / 50.
+        # create the graph to represent the shape
         self.graph = OwnGraph(xlabel=self.xlabelStr, ylabel=self.ylabelStr,
                               x_ticks_major=0.05, y_ticks_major=0.05,
                               y_grid_label=True, x_grid_label=True, padding=5,
                               xmin=0, xmax=self.cw + self.deltaX,
                               ymin=0, ymax=self.ch + self.deltaY)
         self.add_widget(self.graph)
+        # create the plot
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.p.points = self.draw_double_t()
         self.graph.add_plot(self.p)
@@ -64,20 +66,24 @@ class DoubleTView(AView, GridLayout):
 
     def add_layer(self, y, csArea, material):
         mid = self.graph.xmax / 2.
+        # if the y-coordinate is out of range
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
         else:
+            # if the y-coordinate is in the bottom-area
             if y < self.bh:
                 w1 = mid - self.bw / 2.
                 w2 = mid + self.bw / 2.
+            # if the y-coordinate is in the middle-area
             elif y <= self.bh + self.mh:
                 w1 = mid - self.mw / 2.
                 w2 = mid + self.mw / 2.
+            # if the y-coordinate is in the top-area
             else:
                 w1 = mid - self.tw / 2.
                 w2 = mid + self.tw / 2.
             line = DashedLine(color=[1, 0, 0, 1], points=[(w1, y), (w2, y)])
-            self.create_layer(y, csArea, w2-w1, material, line)
+            self.create_layer(y, csArea, w2 - w1, material, line)
             
     '''
     edit a layer which is already exist
@@ -88,11 +94,14 @@ class DoubleTView(AView, GridLayout):
         if y >= self.ch or y <= 0:
             self.csShape.show_error_message()
             return
+        # if the y-coordinate is in the bottom-area
         if y < self.bh:
             self.focusLayer.line.points = [(mid - self.bw / 2., y), (mid - self.bw / 2. + self.bw, y)]
+        # if the y-coordinate is in the middle-area
         elif y <= self.bh + self.mh:
             self.focusLayer.line.points = [(mid - self.mw / 2., y), (mid - self.mw / 2. + self.mw, y)]
-        elif y < self.bh + self.mh + self.th:
+        # if the y-coordinate is in the top-area
+        else:
             self.focusLayer.line.points = [(mid - self.tw / 2., y), (mid - self.tw / 2. + self.tw, y)]
         self.update_layer_properties(y, material, csArea)
                     
@@ -104,8 +113,10 @@ class DoubleTView(AView, GridLayout):
         mid = self.graph.xmax / 2.
         epsY = self.graph.ymax / Design.barProcent
         epsX = self.graph.xmax / Design.barProcent
+        # if the coordinates are not correctly
         if self.proof_coordinates(x, y, epsX, epsY, mid):
             self.csShape.show_error_message()
+        # else create a bar
         else:
             self.create_bar(x, y, csArea, material, epsX, epsY)
     
@@ -113,13 +124,15 @@ class DoubleTView(AView, GridLayout):
     edit a bar which is already exist
     '''
             
-    def edit_bar(self, x, y, csArea,material):
+    def edit_bar(self, x, y, csArea, material):
         mid = self.graph.xmax / 2.
         epsX = self.graph.xmax / Design.barProcent
         epsY = self.graph.ymax / Design.barProcent
+        # if the coordinates are not correctly
         if self.proof_coordinates(x, y, epsX, epsY, mid):
             self.csShape.show_error_message()
             return
+        # else update the bar-properties
         self.update_bar_properties(x, y, csArea, material, epsX, epsY)
     
     '''
@@ -149,6 +162,7 @@ class DoubleTView(AView, GridLayout):
         self.graph.x_ticks_major = self.graph.xmax / 5.
         self.graph.y_ticks_major = self.graph.ymax / 5.
         self.p.points = self.draw_double_t()
+        self.delete_reinforcement()
             
     '''
     proofs whether the coordinates are in the shape. 
@@ -156,12 +170,16 @@ class DoubleTView(AView, GridLayout):
     '''
         
     def proof_coordinates(self, x, y, epsX, epsY, mid):
+        # if the coordinates are out of the total width and height
         if y + epsY > self.ch or x > self.cw or x < self.deltaX or y - epsY < 0 :
             return True
+        # if the x-coordinate is not in the bottom-area
         elif y + epsY < self.bh and (x > mid + self.bw / 2. or x < mid - self.bw / 2.):
             return True
+        # if the x-coordinate is not in the middle-area
         elif y + epsY < self.bh + self.mh and y - epsY > self.bh and (x > mid + self.mw / 2. or x < mid - self.mw / 2.):
             return True
+        # if the x-coordinate is not in the top-area
         elif y + epsY < self.ch and y - epsY > self.bh + self.mh and (x > mid + self.tw / 2. or x < mid - self.tw / 2.):
             return True
         else:
