@@ -229,7 +229,7 @@ class AView(object):
             for layer in self.csShape.layers:
                 # proofs whether the y-coordinate are in the near enough
                 # by the layer
-                if layer.mouse_within(y, ch / 8e1):
+                if layer.mouse_within(y, ch / 2e1):
                     layer.focus = True
                     oneIsFocused = True
                     self.lineIsFocused = True

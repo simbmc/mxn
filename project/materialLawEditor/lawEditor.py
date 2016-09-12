@@ -3,7 +3,7 @@ Created on 06.07.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty, BooleanProperty
 from kivy.uix.gridlayout import GridLayout
 
 from materialLawEditor.linearEditor import LinearEditor
@@ -42,6 +42,15 @@ class MaterialLawEditor(GridLayout):
     # function f
     f = ObjectProperty()
     
+    # switch to proof whether the multi-linear-editor was created
+    boolMultLinearEditor = BooleanProperty(True)
+    
+    # switch to proof whether the exponential-editor was created
+    boolExponentialEditor = BooleanProperty(True)
+    
+    # switch to proof whether the quadratic-editor was created
+    boolQuadraticEditor = BooleanProperty(True)
+    
     okStr = StringProperty('ok')
     
     cancelStr = StringProperty('cancel')
@@ -60,6 +69,7 @@ class MaterialLawEditor(GridLayout):
     
     stressStr = StringProperty('stress')
     
+    
     '''
     constructor
     '''
@@ -67,9 +77,6 @@ class MaterialLawEditor(GridLayout):
         super(MaterialLawEditor, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         self.linearEditor = LinearEditor(lawEditor=self)
-        self.multiLinearEditor = MultilinearEditor(lawEditor=self)
-        self.quadraticEditor = QuadraticEditor(lawEditor=self)
-        self.exponentialEditor=ExponentialEditor(lawEditor=self)
         self.create_gui()
     
     '''
@@ -98,7 +105,7 @@ class MaterialLawEditor(GridLayout):
         self.pMultilinear = LinePlot(points=[(0, 0), (0.1, 0.3), (0.2, 0.1), (0.3, 0.2),
                                              (0.4, 0.1), (0.5, 0.45)],
                                      color=Design.focusColor)
-        self.pExponential = LinePlot(points=[(0.005 * x, 0.0001 * np.exp(0.1*x) - 0.0001)
+        self.pExponential = LinePlot(points=[(0.005 * x, 0.0001 * np.exp(0.1 * x) - 0.0001)
                                   for x in range(100)], color=Design.focusColor)
         # default focus-plot is linear
         self.focusPlot = self.pLinear
@@ -154,6 +161,9 @@ class MaterialLawEditor(GridLayout):
     show the quadratic-function-view
     '''
     def show_quadratic(self, btn):
+        if self.boolQuadraticEditor:
+            self.quadraticEditor = QuadraticEditor(lawEditor=self)
+            self.boolQuadraticEditor = False
         self.focusBtn = btn
         self.graph.remove_plot(self.focusPlot)
         self.focusPlot = self.pQuadratic
@@ -163,6 +173,9 @@ class MaterialLawEditor(GridLayout):
     show the exp-function-view
     '''
     def show_exponentiell(self, btn):
+        if self.boolExponentialEditor:
+            self.exponentialEditor = ExponentialEditor(lawEditor=self)
+            self.boolExponentialEditor = False
         self.focusBtn = btn
         self.graph.remove_plot(self.focusPlot)
         self.focusPlot = self.pExponential
@@ -172,6 +185,9 @@ class MaterialLawEditor(GridLayout):
     show the multi-linear-function-view
     '''
     def show_multilinear(self, btn):
+        if self.boolMultLinearEditor:
+            self.multiLinearEditor = MultilinearEditor(lawEditor=self)
+            self.boolMultLinearEditor = False
         self.focusBtn = btn
         self.graph.remove_plot(self.focusPlot)
         self.focusPlot = self.pMultilinear
@@ -198,12 +214,21 @@ class MaterialLawEditor(GridLayout):
             self.focusEditor = self.linearEditor
             self.add_widget(self.focusEditor)
         elif self.focusBtn == self.btnMultiLinear:
+            if self.boolMultLinearEditor:
+                self.multiLinearEditor = MultilinearEditor(lawEditor=self)
+                self.boolMultLinearEditor = False
             self.focusEditor = self.multiLinearEditor
             self.add_widget(self.focusEditor)
         elif self.focusBtn == self.btnQuadratic:
+            if self.boolQuadraticEditor:
+                self.quadraticEditor = QuadraticEditor(lawEditor=self)
+                self.boolQuadraticEditor = False
             self.focusEditor = self.quadraticEditor
             self.add_widget(self.focusEditor)
         elif self.focusBtn == self.btnExponential:
-            self.focusEditor=self.exponentialEditor
+            if self.boolExponentialEditor:
+                self.exponentialEditor = ExponentialEditor(lawEditor=self)
+                self.boolExponentialEditor = False
+            self.focusEditor = self.exponentialEditor
             self.add_widget(self.exponentialEditor)
         self.editor.dismiss()

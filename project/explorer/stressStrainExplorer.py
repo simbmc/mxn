@@ -47,7 +47,7 @@ class Explorer(GridLayout, ExplorerGui):
     # number of integration points
     numberIntegration = NumericProperty(100)
 
-    # limit of the integrationpoints
+    # limit of the integration-points
     limitIntegration = NumericProperty(1e3)
 
     '''
@@ -79,8 +79,7 @@ class Explorer(GridLayout, ExplorerGui):
     def update_explorer(self):
         self.minStress = self.minStrain
         self.maxStress = self.maxStrain
-        self.calculation(
-            self.minStrain, self.maxStrain, self.numberIntegration)
+        self.calculation(self.minStrain, self.maxStrain, self.numberIntegration)
         self.plot()
         self.update_graph()
 
@@ -92,7 +91,6 @@ class Explorer(GridLayout, ExplorerGui):
         # number of reinforcement components
         n = len(self.layers) + len(self.bars)
         self.y_r = np.zeros(n)
-        self.y_m = np.zeros(numInt)
         # reinforcement area
         self.csArea = np.zeros(n)
         self.strain_m, self.stress_m = np.zeros(numInt), np.zeros(numInt)
@@ -100,7 +98,6 @@ class Explorer(GridLayout, ExplorerGui):
         # update matrix
         self.mlaw = self.allMaterial.allMaterials[3].materialLaw.f
         self.y_m = np.linspace(0, self.h, numInt)
-
         self.strain_m = np.interp(
             self.y_m, [0, self.h], [minStrain, maxStrain])
         self.stress_m = np.array([self.mlaw(strain)
@@ -136,21 +133,33 @@ class Explorer(GridLayout, ExplorerGui):
         self.normalForceLbl.text = str('%.2E' % Decimal(str(N)))
         self.momentLbl.text = str('%.2E' % Decimal(str(M)))
         return N, M, self.strain_m, self.stress_m, self.strain_r, self.stress_r
-
+    
+    '''
+    return the maxStrain of all reinforcement, the y-coordinates and the 
+    minStrain of the concrete
+    '''
+   
     def get_coordinates_upperStrain(self):
+        #number of reinforcement components
         n = len(self.layers) + len(self.bars)
+        #array to save the y-coordinates of the reinforcement
         y_r = np.zeros(n)
+        #minstrain of the concrete
         eps_cu = self.allMaterial.allMaterials[3].materialLaw.minStrain
+        #cur infimum 
         eps_u_r = -1e6
         index = 0.
+        #find the maxStrain of the materials
         for layer in self.layers:
             maxStrain = layer.material.materialLaw.maxStrain
+            #if the maxStrain is bigger as the maximum
             if maxStrain > eps_u_r:
                 eps_u_r = maxStrain
             y_r[index] = layer.y
             index += 1
         for bar in self.bars:
             maxStrain = layer.material.materialLaw.maxStrain
+            #if the maxStrain is bigger as the maximum
             if maxStrain > eps_u_r:
                 eps_u_r = maxStrain
             y_r[index] = bar.y

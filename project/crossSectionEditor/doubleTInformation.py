@@ -42,6 +42,7 @@ class DoubleTInformation(GridLayout):
     def __init__(self, **kwargs):
         super(DoubleTInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
+        self.size_hint_y = None
         
     '''
     create the gui
@@ -113,9 +114,8 @@ class DoubleTInformation(GridLayout):
     set the text of the button
     '''
     def finished_numpad(self):
-        self.focusBtn.text = self.numpad.lblTextinput.text
-        self.popup.dismiss()
-        value = float(self.focusBtn.text)
+        value = float(self.numpad.lblTextinput.text)
+        self.focusBtn.text = str(value)
         if self.focusBtn == self.topHeight:
             self.csShape.th = value
         elif self.focusBtn == self.topWidth:
@@ -129,3 +129,4 @@ class DoubleTInformation(GridLayout):
         elif self.focusBtn == self.bottomWidth:
             self.csShape.bw = value
         self.csShape.view.update()
+        self.popup.dismiss()

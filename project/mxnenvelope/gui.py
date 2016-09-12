@@ -70,8 +70,8 @@ class EnvelopeGui:
         self.graphRight.add_plot(self.forceMomentLine)
         self.focusPoint = FilledEllipse(color=[255, 0, 0])
         self.graphRight.add_plot(self.focusPoint)
-        self.px = LinePlot(color=[255, 0, 0])
-        self.py = LinePlot(color=[255, 0, 0])
+        self.px = LinePlot(color=[0, 0, 0])
+        self.py = LinePlot(color=[0, 0, 0])
         self.graphRight.add_plot(self.px)
         self.graphRight.add_plot(self.py)
 

@@ -3,7 +3,7 @@ Created on 11.04.2016
 
 @author: mkennert
 '''
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 
@@ -32,12 +32,14 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     # cross-section-shape
     csShape = ObjectProperty()
     
+    # switch to proof whether the editor-gui was created
+    boolEditor = BooleanProperty(True)
+    
     '''
     constructor
     '''
     def __init__(self, **kwargs):
         super(MaterialEditor, self).__init__(**kwargs)
-        self.btnSize = Design.btnHeight
         self.allMaterials = self.csShape.allMaterials
         self.allMaterials.add_listener(self)
         self.create_gui()
@@ -48,7 +50,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
 
     def create_gui(self):
-        self.create_material_information()
+        # self.create_material_information()
         self.materialLayout = GridLayout(cols=1, spacing=2, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         self.materialLayout.bind(minimum_height=self.materialLayout.setter('height'))
@@ -57,7 +59,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
         self.btnMaterialEditor = OwnButton(text=self.createStr)
-        self.btnMaterialEditor.bind(on_press=self.popupCreate.open)
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
         
@@ -69,9 +70,10 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
 
     def create_popups(self):
         self.create_base_popups()
-        creater = MaterialCreater(_parent=self)
         self.popupInfo = OwnPopup(title=self.materialStr, content=self.content)
+        creater = MaterialCreater(_parent=self)
         self.popupCreate = OwnPopup(title=self.createStr, content=creater)
+        self.btnMaterialEditor.bind(on_press=self.popupCreate.open)
 
     '''
     create the gui which is necessary for the show of the 
@@ -88,8 +90,8 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
                               y_grid_label=True, x_grid_label=True)
         self.p = LinePlot(color=[0, 0, 0])
         self.graph.add_plot(self.p)
-        self.content.add_widget(self.information)
         self.content.add_widget(self.graph)
+        self.content.add_widget(self.information)
         self.create_popups()
     
     '''
@@ -134,6 +136,9 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     '''
 
     def show_material_information(self, btn):
+        if self.boolEditor:
+            self.create_material_information()
+            self.boolEditor = False
         for material in self.allMaterials.allMaterials:
             if material.name == btn.text:
                 self.focusBtnMaterial = btn
@@ -162,8 +167,6 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
             self.materialLawEditor.confirm(None)
         elif isinstance(f, Multilinear):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnMultiLinear
-#             self.materialLawEditor.multiLinearEditor.update_function(f.points, f.minStress, f.maxStress, f.minStrain,
-#                                                                 f.maxStrain)
             self.materialLawEditor.confirm(None)
         elif isinstance(f, Quadratic):
             self.materialLawEditor.focusBtn = self.materialLawEditor.btnQuadratic
@@ -187,7 +190,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
     
     '''
     close the popup, which shows the information from
-    the choosen material
+    the chosen material
     '''
 
     def cancel_show(self, button):

@@ -21,6 +21,9 @@ class CrossSection(GridLayout):
     will be show
     '''
     
+    # application-main
+    app = ObjectProperty()
+    
     # cross section editor
     csEditor = ObjectProperty()
     
@@ -33,16 +36,16 @@ class CrossSection(GridLayout):
     # explorer to show the strain-stress-behavior
     explorer = ObjectProperty()
     
-    #rectangle-shape
+    # rectangle-shape
     csRectangle = ObjectProperty(ShapeRectangle())
     
-    #doubleT/I-shape
+    # doubleT/I-shape
     csDoubleT = ObjectProperty(ShapeDoubleT())
     
-    #T-shape
+    # T-shape
     csT = ObjectProperty(ShapeT())
     
-    #circle-shape
+    # circle-shape
     csCircle = ObjectProperty(ShapeCircle())
     
     ###################################
@@ -68,8 +71,13 @@ class CrossSection(GridLayout):
     '''
     
     def show_rectangle_shape(self):
+        # remove the current view
         self.remove_widget(self.view)
+        # set the new current view
         self.view = self.csRectangle.view
+        # if the reinforcement-editor has not been created
+        if self.app.boolReinforcementEditor:
+            self.app.create_reinforcement_editor()
         self.reEditor.change_cross_section(self.view)
         
     '''
@@ -77,8 +85,13 @@ class CrossSection(GridLayout):
     '''
         
     def show_doublet_shape(self):
+        # remove the current view
         self.remove_widget(self.view)
+        # set the new current view
         self.view = self.csDoubleT.view
+        # if the reinforcement-editor has not been created
+        if self.app.boolReinforcementEditor:
+            self.app.create_reinforcement_editor()
         self.reEditor.change_cross_section(self.csDoubleT)
         
     '''
@@ -86,8 +99,13 @@ class CrossSection(GridLayout):
     '''
         
     def show_tshape(self):
+        # remove the current view
         self.remove_widget(self.view)
+        # set the new current view
         self.view = self.csT.view
+        # if the reinforcement-editor has not been created
+        if self.app.boolReinforcementEditor:
+            self.app.create_reinforcement_editor()
         self.reEditor.change_cross_section(self.view)
     
     '''
@@ -95,8 +113,13 @@ class CrossSection(GridLayout):
     '''
         
     def show_circle_shape(self):
+        # remove the current view
         self.remove_widget(self.view)
+        # set the new current view
         self.view = self.csCircle.view
+        # if the reinforcement-editor has not been created
+        if self.app.boolReinforcementEditor:
+            self.app.create_reinforcement_editor()
         self.reEditor.change_cross_section(self.view)
         
     '''

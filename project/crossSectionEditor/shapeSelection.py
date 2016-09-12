@@ -18,7 +18,7 @@ class ShapeSelection(GridLayout):
     
     '''
     create the component, where you can select
-    the currently cross-section-shape 
+    the currently cross-section-shape.
     '''
     
     # refEditor
@@ -44,15 +44,9 @@ class ShapeSelection(GridLayout):
     def __init__(self, **kwargs):
         super(ShapeSelection, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
-        self.create_gui()
-    
-    '''
-    create the gui
-    '''
-
-    def create_gui(self):
         self.create_graphs()
         self.create_selection()
+
     '''
     create all graphs
     '''
@@ -60,9 +54,13 @@ class ShapeSelection(GridLayout):
     def create_graphs(self):
         self.graph = OwnGraph(border_color=[1, 1, 1, 1],
                             xmin=0, xmax=0.3, ymin=0, ymax=0.65)
+        #plot of the rectangle-shape
         self.pRec = LinePlot(color=[0, 0, 0, 1], points=self.draw_rectangle())
+        #plot of the doubleT-shape
         self.pdoubleT = LinePlot(color=[0, 0, 0, 1], points=self.draw_double_t())
+        #plot of the T-shape
         self.pT = LinePlot(color=[0, 0, 0, 1], points=self.draw_t())
+        #plot of the circle-shape
         self.pCircle = Circle(d=0.225, pos=[0.15, 0.325], color=[0, 0, 0, 1])
         ##########################################################################
         # when you implemented a new shape, make sure that the shape has a plot  #
@@ -79,7 +77,6 @@ class ShapeSelection(GridLayout):
     def create_selection(self):
         self.create_btns()
         self.contentRight = GridLayout(cols=1)
-        # self.contentRight.add_widget(self.focusShape)
         self.btns = GridLayout(cols=1, spacing=Design.spacing, size_hint_y=None)
         # Make sure the height is such that there is something to scroll.
         self.btns.bind(minimum_height=self.btns.setter('height'))

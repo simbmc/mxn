@@ -148,9 +148,10 @@ class MultilinearView(GridLayout, AView):
         gw, gh = self.graph._plot_area.size  # graph size
         x = (touch.x - x0) / gw * (self.graph.xmax - self.graph.xmin) + self.graph.xmin
         y = (touch.y - y0) / gh * (self.graph.ymax - self.graph.ymin) + self.graph.ymin
+        eps=1.07
         for p in self._points:
-            if p.xrange[0] <= x and p.xrange[1] >= x \
-                    and p.yrange[0] <= y and p.yrange[1] >= y:
+            if p.xrange[0] <= x*eps and p.xrange[1]*eps >= x \
+                    and p.yrange[0] <= y*eps and p.yrange[1]*eps >= y:
                 # the point (0,0) can't get the focus
                 if p.xrange == [-self.epsX, self.epsX] and p.yrange == [-self.epsY, self.epsY]:
                     return

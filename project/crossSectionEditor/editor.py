@@ -25,6 +25,9 @@ class CrossSectionEditor(GridLayout):
     the size-properties of the shapes
     '''
     
+    # application-main
+    app = ObjectProperty()
+    
     # cross section
     cs = ObjectProperty()
     
@@ -177,6 +180,9 @@ class CrossSectionEditor(GridLayout):
         self.content.add_widget(self.rectangleInformation, 0)
         self.focusInformation = self.rectangleInformation
         self.cs.show_rectangle_shape()
+        if self.app.boolExplorer:
+            self.app.create_explorer()
+            self.app.boolExplorer = False
         self.cs.explorer.update_csShape(self.cs.csRectangle, self.cs.csRectangle.ch,
                                          self.cs.csRectangle.layers, self.cs.csRectangle.bars)
         self.update_view()
@@ -194,6 +200,9 @@ class CrossSectionEditor(GridLayout):
         self.content.add_widget(self.doubleTInformation, 0)
         self.focusInformation = self.doubleTInformation
         self.cs.show_doublet_shape()
+        if self.app.boolExplorer:
+            self.app.create_explorer()
+            self.app.boolExplorer = False
         self.cs.explorer.update_csShape(self.cs.csDoubleT,
                                          self.cs.csDoubleT.get_total_height(),
                                          self.cs.csDoubleT.layers, self.cs.csDoubleT.bars)
@@ -212,6 +221,9 @@ class CrossSectionEditor(GridLayout):
         self.content.add_widget(self.circleInformation, 0)
         self.focusInformation = self.circleInformation
         self.cs.show_circle_shape()
+        if self.app.boolExplorer:
+            self.app.create_explorer()
+            self.app.boolExplorer = False
         self.cs.explorer.update_csShape(self.cs.csCircle, self.cs.csCircle.d,
                                         self.cs.csCircle.layers, self.cs.csCircle.bars)
         self.update_view()
@@ -229,6 +241,9 @@ class CrossSectionEditor(GridLayout):
         self.content.add_widget(self.tInformation, 0)
         self.focusInformation = self.tInformation
         self.cs.show_tshape()
+        if self.app.boolExplorer:
+            self.app.create_explorer()
+            self.app.boolExplorer = False
         self.cs.explorer.update_csShape(self.cs.csT, self.cs.csT.get_total_height(),
                                          self.cs.csT.layers, self.cs.csT.bars)
         self.update_view()

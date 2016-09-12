@@ -49,7 +49,7 @@ class Layer:
     '''
     
     def mouse_within(self, y, d):
-        if y - d < self.y and y + d > self.y:
+        if y - d < self.y and y > self.y:
             return True
         else:
             return False

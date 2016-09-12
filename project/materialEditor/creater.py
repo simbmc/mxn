@@ -47,8 +47,8 @@ class MaterialCreater(GridLayout, AEditor):
                               y_grid_label=True, x_grid_label=True)
         self.p = LinePlot(color=[0, 0, 0, 1])
         self.graph.add_plot(self.p)
-        self.add_widget(self.information)
         self.add_widget(self.graph)
+        self.add_widget(self.information)
     
     '''
     the method create_buttons create all buttons of the class

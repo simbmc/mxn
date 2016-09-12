@@ -48,6 +48,6 @@ class ShapeCircle(GridLayout, AShape):
     '''
    
     def get_width(self, y):
-        x1 = -np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
-        x2 = np.sqrt(np.power(self.d / 2., 2) - np.power(y - self.d / 2., 2)) + self.d / 2.
+        x1 = -np.sqrt(np.abs((self.d / 2.)**2 - (y - self.d / 2.)** 2)) + self.d / 2.
+        x2 = np.sqrt(np.abs((self.d / 2.)**2 - (y - self.d / 2.)** 2)) + self.d / 2.
         return x2 - x1

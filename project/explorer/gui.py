@@ -75,7 +75,9 @@ class ExplorerGui:
         self.pStressCs = LinePlot(color=[255, 0, 0])
         self.graphStress.add_plot(self.pStressCs)
         self.plotsStrain, self.plotsStress = [], []
+        # plot-line to represent the matrix-strain
         self.pMatrixStrain = LinePlot(color=[0, 0, 255])
+        # plot-line to represent the matrix-stress
         self.pMatrixStress = LinePlot(color=[0, 0, 255])
         self.graphStrain.add_plot(self.pMatrixStrain)
         self.graphStress.add_plot(self.pMatrixStress)
@@ -160,20 +162,34 @@ class ExplorerGui:
 
     def update_graph(self):
         # update strain-graph
+        self.update_strain_graph()
+        # update stress-graph
+        self.update_stress_graph()
+        # update plots
+        self.pStrainCs.points = [ (0, 0), (0, self.h)]
+        self.pStressCs.points = [(0, 0), (0, self.h)]
+    
+    '''
+    update the graph-strain
+    '''
+        
+    def update_strain_graph(self):
+        # if the lower and upper-strain have the same value
         if self.maxStrain == self.minStrain:
             if self.maxStrain > 0:
                 self.graphStrain.xmin = -1e-1
                 self.graphStrain.xmax = self.maxStrain + 1e-1
-                self.graphStrain.x_ticks_major = float(format(self.graph.xmax / 4., '.1g'))
+                self.graphStrain.x_ticks_major = float(format(self.graphStrain.xmax / 4., '.1g'))
             elif self.maxStrain < 0:
                 self.graphStrain.xmin = self.maxStrain - 1e-1
                 self.graphStrain.xmax = 1e-1 
                 self.graphStrain.x_ticks_major = -float(
-                format(self.graph.xmax / 4., '.1g'))
+                format(self.graphStrain.xmax / 4., '.1g'))
             else:
                 self.graphStrain.xmin = -1e-1
                 self.graphStrain.xmax = 1e-1
                 self.graphStrain.x_ticks_major = 1e-1
+        # if the lower and upper-strain have different values
         else:
             self.graphStrain.xmin = self.maxStrain * 1.05 
             self.graphStrain.xmax = self.minStrain * 1.05 
@@ -181,7 +197,13 @@ class ExplorerGui:
                 format((self.graphStrain.xmax - self.graphStrain.xmin) / 4., '.1g'))
         self.graphStrain.ymax = self.h
         self.graphStrain.y_ticks_major = float(format(self.h / 4., '.1g'))
-        # update stress-graph
+    
+    '''
+    update the stress graph
+    '''
+        
+    def update_stress_graph(self):
+        # if the lower and upper-stress have the same value
         if self.minStress == self.maxStress:
             if self.maxStress > 0:
                 self.graphStress.xmin = -1e-1
@@ -195,43 +217,46 @@ class ExplorerGui:
                 self.graphStress.xmin = -1e-1
                 self.graphStress.xmax = 1e-1
                 self.graphStress.x_ticks_major = 1e-1
+        # if the lower and upper-stress have different values
         else:
             self.graphStress.xmin = self.minStress * 1.05
             self.graphStress.xmax = self.maxStress * 1.05
             self.graphStress.x_ticks_major = float(format((self.graphStress.xmax - self.graphStress.xmin) / 4., '.1g'))
         self.graphStress.ymax = self.h
         self.graphStress.y_ticks_major = self.h / 5.
-        # update plots
-        self.pStrainCs.points = [ (0, 0), (0, self.h)]
-        self.pStressCs.points = [(0, 0), (0, self.h)]
     
     '''
     plot the strain- and the stress-line of the matrix and reinforcement
     '''
 
     def plot(self):
+        # reset the points
         self.pMatrixStrain.points = []
         self.pMatrixStress.points = []
+        # save the matrix-strain and stress
         for y, strain, stress in zip(self.y_m, self.strain_m, self.stress_m):
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
-
             self.pMatrixStrain.points.append((strain, y))
             self.pMatrixStress.points.append((stress, y))
             # index += 1
         n = len(self.plotsStrain)
         index = 0
+        # save the reinforcement-strain and stress
         for y, strain, stress in zip(self.y_r, self.strain_r, self.stress_r):
             if stress > self.maxStress:
                 self.maxStress = round(stress, 2)
             elif stress < self.minStress:
                 self.minStress = round(stress, 2)
+            # take the plots which already exist
             if index < n:
                 self.plotsStrain[index].points = [(0, y), (strain, y)]
                 self.plotsStress[index].points = [(0, y), (stress, y)]
+            # if the there more the reinforcement then plot
             else:
+                # create new plots
                 pStrain = DashedLine(
                     color=[255, 0, 0], points=[(0, y), (strain, y)])
                 pStress = DashedLine(
@@ -241,6 +266,8 @@ class ExplorerGui:
                 self.graphStrain.add_plot(pStrain)
                 self.graphStress.add_plot(pStress)
             index += 1
+        # if more plots as reinforcement-components exist
+        # set the plots to default
         while index < n:
             self.plotsStrain[index].points = [(0, 0), (0, 0)]
             self.plotsStress[index].points = [(0, 0), (0, 0)]

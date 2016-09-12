@@ -24,7 +24,6 @@ class CircleInformation(GridLayout):
     # circle-shape
     csShape = ObjectProperty()
     
-    # diameter of the circle
     diameter = StringProperty('diameter [m]')
     
     '''
@@ -62,8 +61,8 @@ class CircleInformation(GridLayout):
     '''
     
     def finished_numpad(self):
-        self.btnDiameter.text = self.numpad.lblTextinput.text
-        d = float(self.btnDiameter.text)
+        d = float(self.numpad.lblTextinput.text)
+        self.btnDiameter.text = str(d)
         self.csShape.d = d
         self.csShape.view.update_circle(d)
         self.popup.dismiss()

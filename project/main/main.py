@@ -14,24 +14,36 @@ from materialEditor.editor import MaterialEditor
 from ownComponents.design import Design
 from reinforcementEditor.refEdit import ReinforcementEditorfrom explorer.stressStrainExplorer import Explorer
 from mxnenvelope.envelope import MXNEnvelop
-
+from kivy.properties import BooleanProperty
 
 Window.clearcolor = (1, 1, 1, 1)
 
 class AppActionBar(ActionBar):
     '''
-    create the Actionbar in the mainMenu with the kv.file screenmixapp
+    create the Actionbar in the mainMenu with the kv.file 
     '''
     pass
 
 class ActionMenu(ActionPrevious):
     '''
-    create the ActionMenu in the mainMenu with the kv.file screenmixapp
+    create the ActionMenu in the mainMenu with the kv.file 
     '''
     pass
 
 
 class MXNApp(App):
+    
+    # switch to proof whether the explorer-component was created
+    boolExplorer = BooleanProperty(True)
+    
+    # switch to proof whether the mxnEnvelope-component was created
+    boolMXNEnvelope = BooleanProperty(True)
+    
+    # switch to proof whether the material-editor was created
+    boolMaterialEditor = BooleanProperty(True)
+    
+    # switch to proof whether the reinforcement-editor was created
+    boolReinforcementEditor = BooleanProperty(True)
     
     '''
     Build the application
@@ -42,24 +54,13 @@ class MXNApp(App):
         self.content = GridLayout(cols=1, spacing=Design.spacing)
         bar = AppActionBar()
         self.content.add_widget(bar)
-        self.cs = CrossSection()
+        self.cs = CrossSection(app=self)
         self.csShape = self.cs.csRectangle
         # cross-section-editor is the default view
         # view is the focus-component
         self.view = self.cs
-        self.create_componets()
-        return self.content
-
-    '''
-    create all components of the Scrollview root
-    '''
-
-    def create_componets(self):
-        self.create_material_editor()
-        self.create_reinforcement_editor()
         self.create_cross_section_editor()
-        self.create_explorer()
-        self.create_mxnEmelope()
+        return self.content
 
     '''
     create the material-editor
@@ -73,7 +74,7 @@ class MXNApp(App):
     '''
 
     def create_cross_section_editor(self):
-        self.csEditor = CrossSectionEditor(cs=self.cs, csShape=self.cs.csRectangle)
+        self.csEditor = CrossSectionEditor(cs=self.cs, csShape=self.cs.csRectangle, app=self)
         self.csEditor.add_view()
         self.content.add_widget(self.csEditor)
         self.view = self.csEditor
@@ -99,7 +100,10 @@ class MXNApp(App):
     '''
     create the mxnEmelope
     '''
-    def create_mxnEmelope(self):
+    def create_mxnEnvelope(self):
+        if self.boolExplorer:
+            self.create_explorer()
+            self.boolExplorer = False
         self.mxnEmelope = MXNEnvelop(explorer=self.explorer)
     
     #############################################################################
@@ -113,6 +117,11 @@ class MXNApp(App):
     '''
 
     def show_material_editor(self):
+        #if the material-editor has not been created
+        if self.boolMaterialEditor:
+            self.create_material_editor()
+            #change the switch
+            self.boolMaterialEditor = False
         self.content.remove_widget(self.view)
         self.content.add_widget(self.materialEditor)
         self.view = self.materialEditor
@@ -122,6 +131,11 @@ class MXNApp(App):
     '''
 
     def show_cross_section_editor(self):
+        #if the reinforcement-editor has not been created
+        if self.boolReinforcementEditor:
+            self.create_reinforcement_editor()
+            #change the switch
+            self.boolReinforcementEditor = False
         self.reEditor.remove_view()
         if not self.csEditor.containsView:
             self.csEditor.add_view()
@@ -134,6 +148,11 @@ class MXNApp(App):
     '''
 
     def show_reinforcement_editor(self):
+        #if the reinforcement-editor has not been created
+        if self.boolReinforcementEditor:
+            self.create_reinforcement_editor()
+            #change the switch
+            self.boolReinforcementEditor = False
         self.csEditor.remove_view()
         if not self.reEditor.containsView:
             self.reEditor.add_view()
@@ -146,9 +165,12 @@ class MXNApp(App):
     '''
         
     def show_explorer(self):
+        #if the explorer has not been created
+        if self.boolExplorer:
+            self.create_explorer()
+            #change the switch
+            self.boolExplorer = False
         self.csEditor.remove_view()
-        if not self.reEditor.containsView:
-            self.reEditor.add_view()
         self.content.remove_widget(self.view)
         self.content.add_widget(self.explorer)
         self.update_explorer()
@@ -159,9 +181,12 @@ class MXNApp(App):
     show the mxn-emelope
     '''
     def show_mxnEmelope(self):
+        #if the mxn-envelope has not been created
+        if self.boolMXNEnvelope:
+            self.create_mxnEnvelope()
+            #change the switch
+            self.boolMXNEnvelope = False
         self.csEditor.remove_view()
-        if not self.reEditor.containsView:
-            self.reEditor.add_view()
         self.content.remove_widget(self.view)
         self.content.add_widget(self.mxnEmelope)
         self.view = self.mxnEmelope

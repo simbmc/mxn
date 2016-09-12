@@ -66,7 +66,10 @@ class AEditor:
     create the information where you can input the name, price, density and the material law
     '''
     def create_information(self):
-        self.information = GridLayout(cols=2, spacing=Design.spacing)
+        self.information = GridLayout(cols=2, row_force_default=True,
+                                    row_default_height=Design.btnHeight,
+                                    height=Design.btnHeight,
+                                    spacing=Design.spacing)
         self.information.add_widget(OwnLabel(text=self.nameStr))
         self.information.add_widget(self.nameBtn)
         self.information.add_widget(OwnLabel(text=self.priceStr))
