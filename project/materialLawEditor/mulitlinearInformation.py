@@ -153,48 +153,48 @@ class MultilinearInformation(GridLayout, AInformation):
     def finished_numpad(self):
         v = float(self.numpad.lblTextinput.text)
         if self.focusBtn == self.pointsBtn:
-            #if the number of points are positive
+            # if the number of points are positive
             if v > 0:
                 self.editor._points = int(v)
                 self.editor.view.update_points()
             else:
-                #nothing should happen
+                # nothing should happen
                 return
         elif self.focusBtn == self.btnStressUL:
-            #if the v (upper-stress) is bigger then the lower-stress
+            # if the v (upper-stress) is bigger then the lower-stress
             if v > self.editor.lowerStress:
                 self.editor.upperStress = v
                 self.editor.view.update_graph()
             else:
-                #nothing should happen
+                # nothing should happen
                 return
         elif self.focusBtn == self.btnStrainUL:
-            #if v (upper-strain) is bigger then the lower-strain
+            # if v (upper-strain) is bigger then the lower-strain
             if v > self.editor.minStrain:
                 self.editor.maxStrain = v
                 self.editor.view.update_graph()
             else:
-                #nothing should happen
+                # nothing should happen
                 return
         elif self.focusBtn == self.btnX:
             self.editor.view.update_point_position(float(self.btnX.text), float(self.btnY.text))
         elif self.focusBtn == self.btnY:
                 self.editor.view.update_point_position(float(self.btnX.text), float(self.btnY.text))
         elif self.focusBtn == self.btnStrainLL:
-            #if v (lower strain) is smaller as the upper-strain
+            # if v (lower strain) is smaller as the upper-strain
             if v < self.editor.maxStrain:
                 self.editor.minStrain = v
                 self.editor.view.update_graph()
             else:
-                #nothing should happen
+                # nothing should happen
                 return
         elif self.focusBtn == self.btnStressLL:
-            #if v (lower stress) is smaller as the upper-stress
-            if v < self.editor.maxStress:
+            # if v (lower stress) is smaller as the upper-stress
+            if v < self.editor.lowerStress:
                 self.editor.lowerStress = v
                 self.editor.view.update_graph()
             else:
-                #nothing should happen
+                # nothing should happen
                 return
         self.focusBtn.text = str(v)
         self.numpad.reset_text()
