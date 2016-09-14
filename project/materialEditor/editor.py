@@ -9,6 +9,7 @@ from kivy.uix.scrollview import ScrollView
 
 from functions.exponential import Exponential
 from functions.linear import Linear
+from functions.logarithm import Logarithm
 from functions.multilinear import Multilinear
 from functions.quadratic import Quadratic
 from materialEditor.aeditor import AEditor
@@ -59,6 +60,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
             btn.bind(on_press=self.show_material_information)
             self.materialLayout.add_widget(btn)
         self.btnMaterialEditor = OwnButton(text=self.createStr)
+        self.btnMaterialEditor.bind(on_press=self.show_creater)
         self.materialLayout.add_widget(self.btnMaterialEditor)
         self.add_widget(self.materialLayout)
         
@@ -73,8 +75,7 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
         self.popupInfo = OwnPopup(title=self.materialStr, content=self.content)
         creater = MaterialCreater(_parent=self)
         self.popupCreate = OwnPopup(title=self.createStr, content=creater)
-        self.btnMaterialEditor.bind(on_press=self.popupCreate.open)
-
+        
     '''
     create the gui which is necessary for the show of the 
     material-information
@@ -178,8 +179,23 @@ class MaterialEditor(ScrollView, IObserver, AEditor):
             self.materialLawEditor.exponentialEditor.update_function(f.points, f.minStrain,
                                                                 f.maxStrain, f.a, f.b)
             self.materialLawEditor.confirm(None)
+        elif isinstance(f, Logarithm):
+            self.materialLawEditor.focusBtn = self.materialLawEditor.btnLogarithm
+            self.materialLawEditor.logarithmEditor.update_function(f.points, f.minStrain,
+                                                                f.maxStrain, f.a, f.b)
+            self.materialLawEditor.confirm(None)
         self.popupLawEditor.open()
-            
+    
+    '''
+    open the material-creater
+    '''
+        
+    def show_creater(self, btn):
+        if self.boolEditor:
+            self.create_material_information()
+            self.boolEditor = False
+        self.popupCreate.open()
+                
     '''
     cancel the create-process. this method is necessary, because editor creator-instance call 
     the method cancel_edit_materialfrom the parent

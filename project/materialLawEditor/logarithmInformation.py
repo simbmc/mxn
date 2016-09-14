@@ -1,5 +1,5 @@
 '''
-Created on 09.09.2016
+Created on 13.09.2016
 
 @author: mkennert
 '''
@@ -14,14 +14,14 @@ from ownComponents.ownPopup import OwnPopup
 from kivy.uix.gridlayout import GridLayout
 
 
-class ExponentialInformation(GridLayout, AInformation):
+class LogarithmInformation(GridLayout, AInformation):
     
     '''
     with the ExponentialInformation you can set the properties of the function
     '''
     
     # string quadratic
-    exponentialStr = StringProperty('exponential')
+    exponentialStr = StringProperty('logarithm')
     
     # string parameter a
     aStr = StringProperty('a:')
@@ -34,7 +34,7 @@ class ExponentialInformation(GridLayout, AInformation):
     '''
     
     def __init__(self, **kwargs):
-        super(ExponentialInformation, self).__init__(**kwargs)
+        super(LogarithmInformation, self).__init__(**kwargs)
         self.cols, self.spacing = 2, Design.spacing
         self.create_information()
         # create the numpad
@@ -76,16 +76,22 @@ class ExponentialInformation(GridLayout, AInformation):
     def finished_numpad(self):
         v = float(self.numpad.lblTextinput.text)
         if self.focusBtn == self.aBtn:
-            self.editor.a = v
+            if v > 0:
+                self.editor.a = v
+            else:
+                return
         elif self.focusBtn == self.bBtn:
-            self.editor.b = v
+            if v != 0:
+                self.editor.b = v
+            else:
+                return
         elif self.focusBtn == self.btnStrainUL:
             if v > self.editor.minStrain:
                 self.editor.maxStrain = v
             else:
                 return
         elif self.focusBtn == self.btnStrainLL:
-            if v < self.editor.maxStrain:
+            if v < self.editor.maxStrain and v >= 0:
                 self.editor.minStrain = v
             else:
                 return

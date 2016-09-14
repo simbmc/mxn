@@ -120,6 +120,7 @@ class CSRectangleView(GridLayout, AView):
 
     def update_width(self, value):
         self.cw = value
+        self.epsX = self.cw / 2e1
         self.graph.x_ticks_major = value / 5.
         self.graph.xmax = self.cw + 2 * self.epsX
         self.p.points = self.draw_rectangle()

@@ -15,6 +15,7 @@ from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
 from plot.thickline import ThickLine
 import numpy as np
+from ownComponents.ownButton import OwnButton
 
 class EnvelopeGui:
     
@@ -29,17 +30,18 @@ class EnvelopeGui:
         slideArea = GridLayout(cols=2, row_force_default=True,
                                row_default_height=Design.btnHeight, size_hint_y=None,
                                height=1.1 * Design.btnHeight)
-        lblArea = GridLayout(cols=4, row_force_default=True,
+        lblArea = GridLayout(cols=3, row_force_default=True,
                              row_default_height=Design.btnHeight, size_hint_y=None,
                              height=1.1 * Design.btnHeight)
         self.normalForceLbl = OwnLabel()
         self.momentLbl = OwnLabel()
-        lblArea.add_widget(OwnLabel(text=self.forceStr + ':'))
         lblArea.add_widget(self.normalForceLbl)
-        lblArea.add_widget(OwnLabel(text=self.momentStr + ':'))
         lblArea.add_widget(self.momentLbl)
-        slideArea.add_widget(lblArea)
+        btnClear = OwnButton(text='clear')
+        btnClear.bind(on_press=self.clear_graph)
+        lblArea.add_widget(btnClear)
         slideArea.add_widget(self.slider)
+        slideArea.add_widget(lblArea)
         self.add_widget(slideArea)
 
     '''
@@ -66,7 +68,7 @@ class EnvelopeGui:
             self.graphLeft.add_plot(plot)
         self.focusLine = ThickLine(color=[255, 0, 0])
         self.graphLeft.add_plot(self.focusLine)
-        self.forceMomentLine = LinePlot(color=[0, 0, 255])
+        self.forceMomentLine = LinePlot(color=[255, 0, 0])
         self.graphRight.add_plot(self.forceMomentLine)
         self.focusPoint = FilledEllipse(color=[255, 0, 0])
         self.graphRight.add_plot(self.focusPoint)
@@ -87,9 +89,8 @@ class EnvelopeGui:
                                   self.eps_x, -self.M_arr[v] + self.eps_x]
         self.focusPoint.yrange = [-self.N_arr[v] - 
                                   self.eps_y, -self.N_arr[v] + self.eps_y]
-        self.normalForceLbl.text = str('%.2E' % Decimal(str(-self.N_arr[v])))
-        self.momentLbl.text = str('%.2E' % Decimal(str(-self.M_arr[v])))
-        
+        self.normalForceLbl.text = 'N: ' + str('%.2E' % Decimal(str(-self.N_arr[v])))
+        self.momentLbl.text = 'M: ' + str('%.2E' % Decimal(str(-self.M_arr[v])))
         
     '''
     update the graph
@@ -124,7 +125,6 @@ class EnvelopeGui:
         self.graphRight.ymin = ymin
         self.graphRight.y_ticks_major = float(
                 format((self.graphRight.ymax - self.graphRight.ymin) / 4., '.1g'))
-            
         # plot left side
         n = len(eps_arr[0])
         index = 0
@@ -138,8 +138,24 @@ class EnvelopeGui:
             self.plots[index].points = [(0, 0), (0, 0)]
             index += 1
         # plot right side
-        self.forceMomentLine.points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
-
+        points=[(-m, -n) for n, m in zip(N_arr, M_arr)]
+        if points!=self.forceMomentLine.points:
+            p = LinePlot(color=[0, 0, 255], points=self.forceMomentLine.points)
+            self.graphRight.add_plot(p)
+            self.forceMomentLine.points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
+    
+    '''
+    clear the graph
+    '''
+        
+    def clear_graph(self, btn):
+        while len(self.graphRight.plots)>4:
+            for plot in self.graphRight.plots:
+                if plot != self.forceMomentLine and plot != self.px\
+                    and plot != self.py and plot!=self.focusPoint:
+                    self.graphRight.remove_plot(plot)
+                    self.graphRight._clear_buffer()
+    
     '''
     find the minimum and maximum value of the eps_arr
     '''

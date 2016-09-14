@@ -72,8 +72,8 @@ class MXNEnvelop(GridLayout, EnvelopeGui):
         self.focusPoint.yrange = [-self.N_arr[0] - 
                                   self.eps_y, -self.N_arr[0] + self.eps_y]
         self.slider.value = 0
-        self.normalForceLbl.text = str('%.2E' % Decimal(str(-self.N_arr[0])))
-        self.momentLbl.text = str('%.2E' % Decimal(str(-self.M_arr[0])))
+        self.normalForceLbl.text = 'N: '+str('%.2E' % Decimal(str(-self.N_arr[0])))
+        self.momentLbl.text = 'M: '+str('%.2E' % Decimal(str(-self.M_arr[0])))
 
     '''
     return the strain_arrays
