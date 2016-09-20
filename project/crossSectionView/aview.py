@@ -118,6 +118,7 @@ class AView(object):
         # if the cross-section contains layers
         if len(self.csShape.layers) > 0:
             for layer in self.csShape.layers:
+                print(layer)
                 if layer.focus:
                     # remove the layer and the line
                     self.csShape.layers.remove(layer)

@@ -150,18 +150,34 @@ class Explorer(GridLayout, ExplorerGui):
         eps_u_r = -1e6
         index = 0.
         #find the maxStrain of the materials
+        maxStrain=-1e-10
+        max_stress=-1e-10
+        i=0;
+        cnt=0
         for layer in self.layers:
-            maxStrain = layer.material.materialLaw.maxStrain
-            #if the maxStrain is bigger as the maximum
+            points=layer.material.materialLaw.points
+            for p in points:
+                if p[1]>max_stress:
+                    max_stress=p[1]
+                    i=cnt
+                cnt+=1
+                #if the maxStrain is bigger as the maximum
             if maxStrain > eps_u_r:
-                eps_u_r = maxStrain
+                eps_u_r = points[i][0]
             y_r[index] = layer.y
             index += 1
+        i=0;
+        cnt=0
         for bar in self.bars:
-            maxStrain = layer.material.materialLaw.maxStrain
-            #if the maxStrain is bigger as the maximum
+            points=bar.material.materialLaw.points
+            for p in points:
+                if p[1]>max_stress:
+                    max_stress=p[1]
+                    i=cnt
+                cnt+=1
+                #if the maxStrain is bigger as the maximum
             if maxStrain > eps_u_r:
-                eps_u_r = maxStrain
+                eps_u_r = points[i][0]
             y_r[index] = bar.y
             index += 1
         return eps_u_r, y_r, eps_cu

@@ -14,7 +14,6 @@ from ownComponents.ownLabel import OwnLabel
 from plot.filled_ellipse import FilledEllipse
 from plot.line import LinePlot
 from plot.thickline import ThickLine
-import numpy as np
 from ownComponents.ownButton import OwnButton
 
 class EnvelopeGui:
@@ -106,30 +105,9 @@ class EnvelopeGui:
         self.graphLeft.xmin = float(min_v) * 1.02
         self.graphLeft.x_ticks_major = float(
                 format((self.graphLeft.xmax - self.graphLeft.xmin) / 4., '.1g'))
-        # update right graph
-        max_index = np.argmax(self.M_arr)
-        min_index = np.argmin(self.M_arr)
-        xmax = -float(self.M_arr[min_index]) * 1.02
-        xmin = -float(self.M_arr[max_index]) * 1.02
-        self.px.points = [(xmin, 0), (xmax, 0)]
-        self.graphRight.xmax = xmax
-        self.graphRight.xmin = xmin
-        self.graphRight.x_ticks_major = float(
-                format((self.graphRight.xmax - self.graphRight.xmin) / 4., '.1g'))
-        max_index = np.argmax(self.N_arr)
-        min_index = np.argmin(self.N_arr)
-        ymin = -float(self.N_arr[max_index]) * 1.02
-        ymax = -float(self.N_arr[min_index]) * 1.02
-        self.py.points = [(0, ymin), (0, ymax)]
-        self.graphRight.ymax = ymax
-        self.graphRight.ymin = ymin
-        self.graphRight.y_ticks_major = float(
-                format((self.graphRight.ymax - self.graphRight.ymin) / 4., '.1g'))
         # plot left side
         n = len(eps_arr[0])
         index = 0
-        self.eps_x = (self.graphRight.xmax - self.graphRight.xmin) / 8e1
-        self.eps_y = (self.graphRight.ymax - self.graphRight.ymin) / 8e1
         for i in range(n):
             self.plots[index].points = [
                 (-eps_arr[0][i], 0), (-eps_arr[1][i], h)]
@@ -138,23 +116,61 @@ class EnvelopeGui:
             self.plots[index].points = [(0, 0), (0, 0)]
             index += 1
         # plot right side
-        points=[(-m, -n) for n, m in zip(N_arr, M_arr)]
-        if points!=self.forceMomentLine.points:
+        points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
+        if points != self.forceMomentLine.points:
             p = LinePlot(color=[0, 0, 255], points=self.forceMomentLine.points)
             self.graphRight.add_plot(p)
             self.forceMomentLine.points = [(-m, -n) for n, m in zip(N_arr, M_arr)]
+            self.update_graph_borders()
     
+    def update_graph_borders(self):
+        minM, maxM = 1e10, -1e10
+        minN, maxN = 1e10, -1e10
+        for plt in self.graphRight.plots:
+            if plt != self.px and plt != self.py:
+                for p in plt.points:
+                    x, y = -p[0], -p[1]
+                    if x > maxM:
+                        maxM = x
+                    if x < minM:
+                        minM = x
+                    if y > maxN:
+                        maxN = y
+                    if y < minN:
+                        minN = y
+        eps = 1.05
+        self.graphRight.xmin = float(-maxM) * eps
+        self.graphRight.xmax = float(-minM) * eps
+        self.graphRight.ymin = float(-maxN) * eps
+        self.graphRight.ymax = float(-minN) * eps
+        self.graphRight.y_ticks_major = float(
+            format((self.graphRight.ymax - self.graphRight.ymin) / 5., '.1g'))
+        self.graphRight.x_ticks_major = float(
+            format((self.graphRight.xmax - self.graphRight.xmin) / 5., '.1g'))
+        self.eps_x = (self.graphRight.xmax - self.graphRight.xmin) / 8e1
+        self.eps_y = (self.graphRight.ymax - self.graphRight.ymin) / 8e1
+        self.focusPoint.xrange = [-self.M_arr[0] - 
+                                  self.eps_x, -self.M_arr[0] + self.eps_x]
+        self.focusPoint.yrange = [-self.N_arr[0] - 
+                                  self.eps_y, -self.N_arr[0] + self.eps_y]
+        self.slider.value=0
+        self.py.points = [(0, self.graphRight.ymin), (0, self.graphRight.ymax)]
+        self.px.points = [(self.graphRight.xmin, 0), (self.graphRight.xmax, 0)]
+            
     '''
     clear the graph
     '''
         
     def clear_graph(self, btn):
-        while len(self.graphRight.plots)>4:
+        if len(self.graphRight.plots) < 4:
+            return
+        while len(self.graphRight.plots) > 4:
             for plot in self.graphRight.plots:
                 if plot != self.forceMomentLine and plot != self.px\
-                    and plot != self.py and plot!=self.focusPoint:
+                    and plot != self.py and plot != self.focusPoint:
                     self.graphRight.remove_plot(plot)
                     self.graphRight._clear_buffer()
+        self.update_graph_borders()
     
     '''
     find the minimum and maximum value of the eps_arr

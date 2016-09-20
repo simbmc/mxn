@@ -32,7 +32,7 @@ class Layer:
     h = NumericProperty()
     
     # # boolean to save whether the layer has the focus
-    focus = BooleanProperty(False)
+    focus = False
     
     '''
     constructor
